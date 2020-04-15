@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Projects\\GitHub\\PixelDatabase\\DataJuggler.PixelDatabase.csproj": {
-      "version": "1.0.1",
+      "version": "1.0.7",
       "restore": {
         "projectUniqueName": "C:\\Projects\\GitHub\\PixelDatabase\\DataJuggler.PixelDatabase.csproj",
         "projectName": "DataJuggler.PixelDatabase",
@@ -74,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.1": {
           "dependencies": {
@@ -102,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

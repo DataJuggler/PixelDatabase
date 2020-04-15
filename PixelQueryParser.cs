@@ -103,8 +103,8 @@ namespace DataJuggler.PixelDatabase
                             // if there are 3 words
                             if (words.Count == 3)
                             {
-                                // if the third word is null
-                                if (words[2].Text.ToLower() == "null")
+                                // if the third word is remove
+                                if (words[2].Text.ToLower() == "remove")
                                 {
                                     // Set the value for the property 'RemoveBackColor' to true
                                     pixelCriteria.RemoveBackColor = true;
@@ -132,7 +132,7 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
                     // if this is a draw line
-                    else if (actionType == ActionTypeEnum.DrawLine)
+                    else if ((actionType == ActionTypeEnum.DrawTransparentLine) || (actionType == ActionTypeEnum.DrawLine))
                     {
                         // if the existingCriteria 
                         if (NullHelper.IsNull(existingCriteria))
@@ -155,11 +155,11 @@ namespace DataJuggler.PixelDatabase
                             // Get the words
                             List<Word> words = WordParser.GetWords(text, delimiterChars);
 
-                            // If the words collection exists and has one or more items
-                            if (ListHelper.HasOneOrMoreItems(words))
+                            // If the words collection exists and has three or more items
+                            if (ListHelper.HasXOrMoreItems(words, 3))
                             {
                                 // Get the lastWord
-                                Word lastWord = words[words.Count - 1];
+                                Word lastWord = words[2];
 
                                 // Set the thickness
                                 pixelCriteria.Thickness = NumericHelper.ParseInteger(lastWord.Text, -1000, -1001);
@@ -202,15 +202,76 @@ namespace DataJuggler.PixelDatabase
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.X;
                         }
-                        if ((text.StartsWith("y ")) || (text.Contains(" y ")))
+                        else if ((text.StartsWith("y ")) || (text.Contains(" y ")))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.Y;
+                        }
+                        else if (text.Contains("bluegreendifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueGreenDifference;
+                        }
+                        else if (text.Contains("bluemindifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueMinDifference;
+                        }
+                        else if (text.Contains("bluemaxdifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueMaxDifference;
+                        }
+                        else if (text.Contains("blueaveragedifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueAverageDifference;
+                        }
+                        else if (text.Contains("greenaveragedifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.GreenAverageDifference;
+                        }
+                        else if (text.Contains("greenmindifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.GreenMinDifference;
+                        }
+                        else if (text.Contains("greenmaxdifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.GreenMaxDifference;
+                        }
+                        else if (text.Contains("redaveragedifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.RedAverageDifference;
+                        }
+                        else if (text.Contains("redmindifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.RedMinDifference;
+                        }
+                        else if (text.Contains("redmaxdifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.RedMaxDifference;
+                        }
+                        else if (text.Contains("blueaveragedifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueAverageDifference;
                         }
                         else if (text.Contains("bluegreen"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueGreen;
+                        }
+                        // if this text contains bluered
+                        else if (text.Contains("bluereddifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.BlueRedDifference;
                         }
                         // if this text contains bluered
                         else if (text.Contains("bluered"))
@@ -219,10 +280,36 @@ namespace DataJuggler.PixelDatabase
                             pixelCriteria.PixelType = PixelTypeEnum.BlueRed;
                         }
                         // if this text contains greenred
+                        else if (text.Contains("greenreddifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.GreenRedDifference;
+                        }
+                        // if this text contains greenred
                         else if (text.Contains("greenred"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenRed;
+                        }
+                        else if (text.Contains("minmaxdifference"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.MinMaxDifference;
+                        }
+                        else if (text.Contains("min"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.Min;
+                        }
+                        else if (text.Contains("max"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.Max;
+                        }
+                        else if (text.Contains("average"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.Average;
                         }
                         else if (text.Contains("red"))
                         {
@@ -293,11 +380,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region ParseActionType(string queryText)
+            #region ParseActionType(string queryText, ref PixelQuery pixelQuery)
             /// <summary>
             /// This method returns the Action Type
             /// </summary>
-            public static ActionTypeEnum ParseActionType(string queryText)
+            public static ActionTypeEnum ParseActionType(string queryText, ref PixelQuery pixelQuery)
             {
                 // initial value
                 ActionTypeEnum actionType = ActionTypeEnum.Unknown;
@@ -323,8 +410,49 @@ namespace DataJuggler.PixelDatabase
                     }
                     else if (queryText.Contains("draw line"))
                     {
-                        // set the actionType to DrawLine
-                        actionType = ActionTypeEnum.DrawLine;
+                        // get the textLines
+                        List<TextLine> textLines = WordParser.GetTextLines(queryText);
+
+                        // If the textLines collection exists and has one or more items
+                        if (ListHelper.HasOneOrMoreItems(textLines))
+                        {
+                            // get the topLine
+                            TextLine topLine = textLines[0];
+
+                            // get the words
+                            List<Word> words = WordParser.GetWords(topLine.Text);
+
+                            if (words.Count == 3)
+                            {
+                                // set the actionType to DrawLine
+                                actionType = ActionTypeEnum.DrawTransparentLine;
+                            }
+                            if (words.Count == 4)
+                            {
+                                // Set the Color
+                                pixelQuery.Color = Color.FromName(words[3].Text);
+
+                                // set the actionType to DrawLine
+                                actionType = ActionTypeEnum.DrawLine;
+                            }
+                            if (words.Count == 6)
+                            {
+                                // get the red green blue values
+                                int red = NumericHelper.ParseInteger(words[3].Text, -1, -1);
+                                int green = NumericHelper.ParseInteger(words[4].Text, -1, -1);
+                                int blue = NumericHelper.ParseInteger(words[5].Text, -1, -1);
+
+                                // if in range
+                                if ((red > 0) && (red <= 255) && (green > 0) && (green <= 255) && (blue > 0) && (blue <= 255))
+                                {
+                                    // Set the color
+                                    pixelQuery.Color = Color.FromArgb(red, green, blue);
+                                }
+
+                                // set the actionType to DrawLine
+                                actionType = ActionTypeEnum.DrawLine;
+                            }
+                        }
                     }
                     else if (queryText.Contains("set backcolor"))
                     {
@@ -382,7 +510,7 @@ namespace DataJuggler.PixelDatabase
                             if (TextHelper.Exists(text))
                             {  
                                 // if this is DrawLine
-                                if (actionType == ActionTypeEnum.DrawLine)
+                                if ((actionType == ActionTypeEnum.DrawTransparentLine) || (actionType == ActionTypeEnum.DrawLine))
                                 {
                                     // if this is the first line
                                     if (count == 1)
@@ -636,6 +764,17 @@ namespace DataJuggler.PixelDatabase
                 // If the queryText string exists
                 if (TextHelper.Exists(queryText))
                 {
+                     // if the NewLine is not found
+                    if (!queryText.Contains(Environment.NewLine))
+                    {
+                        // The parsing on lines isn't working, this is a good hack till
+                        // I rewrite the parser to be more robust someday
+                        queryText = queryText.Replace("\n", Environment.NewLine);
+                    }
+
+                    // just in case, fix for the hack
+                    queryText = queryText.Replace("\r\r", "\r");
+
                     // get the lowercase version of the text
                     queryText = queryText.ToLower().Trim();
 
@@ -643,7 +782,7 @@ namespace DataJuggler.PixelDatabase
                     List<TextLine> lines = WordParser.GetTextLines(queryText);
 
                     // parse the ActionType (Show Pixels, Hide Pixels, Draw Line, Update)
-                    pixelQuery.ActionType = ParseActionType(queryText);
+                    pixelQuery.ActionType = ParseActionType(queryText, ref pixelQuery);
 
                     // if we are doing an update query, we have to modify this a little
                     if (pixelQuery.ActionType == ActionTypeEnum.Update)

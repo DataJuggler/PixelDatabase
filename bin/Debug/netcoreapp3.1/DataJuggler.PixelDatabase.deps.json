@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "DataJuggler.PixelDatabase/1.0.1": {
+      "DataJuggler.PixelDatabase/1.0.6": {
         "dependencies": {
           "DataJuggler.UltimateHelper.Core": "1.2.1",
           "System.Drawing.Common": "4.7.0"
@@ -149,7 +149,7 @@
     }
   },
   "libraries": {
-    "DataJuggler.PixelDatabase/1.0.1": {
+    "DataJuggler.PixelDatabase/1.0.6": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

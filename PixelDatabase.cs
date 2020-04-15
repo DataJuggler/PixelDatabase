@@ -31,6 +31,8 @@ namespace DataJuggler.PixelDatabase
         private bool abort;
         private Color lineColor;
         private bool lineColorSet;
+        private List<Layer> layers;
+        private PixelQuery pixelQuery;
         #endregion
 
         #region Constructor
@@ -39,8 +41,8 @@ namespace DataJuggler.PixelDatabase
         /// </summary>
         public PixelDatabase()
         {
-            // Create a new collection of 'PixelInformation' objects.
-            this.Pixels = new List<PixelInformation>();
+            // Perform initializations for this object
+            Init();            
         }
         #endregion
 
@@ -310,6 +312,126 @@ namespace DataJuggler.PixelDatabase
 
                                 // required
                                 break;
+
+                            case PixelTypeEnum.Min:
+
+                                 // Handle Alpha Pixels
+                                pixels = HandleMinPixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                             case PixelTypeEnum.Max:
+
+                                 // Handle Alpha Pixels
+                                pixels = HandleMaxPixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.MinMaxDifference:
+
+                                 // Handle Alpha Pixels
+                                pixels = HandleMinMaxDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.BlueGreenDifference:
+
+                                 // Handle Alpha Pixels
+                                pixels = HandleBlueGreenDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.BlueRedDifference:
+
+                                 // Handle Alpha Pixels
+                                pixels = HandleBlueRedDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.GreenRedDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleGreenRedDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.RedMinDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleRedMinDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.RedMaxDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleRedMaxDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.RedAverageDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleRedAverageDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                             case PixelTypeEnum.GreenMinDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleGreenMinDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.GreenMaxDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleGreenMaxDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.GreenAverageDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleGreenAverageDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                             case PixelTypeEnum.BlueMinDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleBlueMinDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.BlueMaxDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleBlueMaxDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
+
+                            case PixelTypeEnum.BlueAverageDifference:
+
+                                // Handle Alpha Pixels
+                                pixels = HandleBlueAverageDifferencePixels(pixels, criteria);
+
+                                // required
+                                break;
                         }
                     }
                 }
@@ -319,11 +441,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region AddPixel(Color color, int x, int y)
+            #region AddPixel(Color color, int x, int y, Guid updateId)
             /// <summary>
             /// method returns the Pixel
             /// </summary>
-            public PixelInformation AddPixel(Color color, int x, int y)
+            public PixelInformation AddPixel(Color color, int x, int y, Guid updateId)
             {  
                 // Create a pixe
                 PixelInformation pixel = new PixelInformation();
@@ -337,6 +459,9 @@ namespace DataJuggler.PixelDatabase
 
                 /// The Index is set before the count increments when this item is added
                 pixel.Index = this.Pixels.Count;
+
+                // Set the UpdateId so new pixels can always be determined
+                pixel.UpdateId = updateId;
 
                 // Add this pixel
                 this.Pixels.Add(pixel);
@@ -379,7 +504,7 @@ namespace DataJuggler.PixelDatabase
             /// This method parses and applies the queryText passed in.
             /// </summary>
             /// <param name="queryText"></param>
-            public void ApplyQuery(string queryText, StatusUpdate status)
+            public PixelQuery ApplyQuery(string queryText, StatusUpdate status)
             {
                 // locals
                 int alpha = 0;
@@ -388,17 +513,23 @@ namespace DataJuggler.PixelDatabase
                 Graphics g = Graphics.FromImage(bmp);
                 Guid historyId = Guid.NewGuid();
                 Color color;
-                bool checkForMask = false;
-
+                
                 // if the queryText exists
                 if (TextHelper.Exists(queryText))
-                {  
-                    // Parse the PixelQuery
-                   PixelQuery pixelQuery = PixelQueryParser.ParsePixelQuery(queryText);
+                {
+                   // Parse the PixelQuery
+                   pixelQuery = PixelQueryParser.ParsePixelQuery(queryText);
 
                     // if this is a valid query
                     if (pixelQuery.IsValid)
                     {
+                        // If the PixelQuery does not contain a LastUpdate criteria
+                        if (!pixelQuery.ContainsLastUpdateCriteria)
+                        {
+                            // erase in case no pixels were found
+                            LastUpdate = null;
+                        }
+                        
                         // Set the alpha value based upon the ActionType
                         alpha = SetAlpha(pixelQuery.ActionType, pixelQuery);
 
@@ -416,7 +547,7 @@ namespace DataJuggler.PixelDatabase
                             else
                             {
                                 // Send a message
-                                string message = "SetBackColor" + pixelQuery.Criteria[0].BackColor.Name;
+                                string message = "SetBackColor" + "|" + pixelQuery.Criteria[0].BackColor.Name;
 
                                 // Set the back color
                                 status(message, 0);
@@ -440,6 +571,9 @@ namespace DataJuggler.PixelDatabase
                             // Find the pixels that match the Criteria given
                             pixels = ApplyCriteria(pixels, pixelQuery);
 
+                            // set the PixelsUpdated
+                            pixelQuery.PixelsUpdated = pixels;
+
                             // if there are one or more pixels
                             if (ListHelper.HasOneOrMoreItems(pixels))
                             {
@@ -457,49 +591,27 @@ namespace DataJuggler.PixelDatabase
                                 }
                                 else
                                 {
-                                    // If there are one or more Masks
-                                    checkForMask = ListHelper.HasOneOrMoreItems(MaskManager.Masks);
-
                                     // Apply these pixels
                                     ApplyPixels(pixels, pixelQuery, status);
-
-                                    // if the value for checkForMask is true
-                                    if (checkForMask)
-                                    {
-                                        foreach (Mask mask in MaskManager.Masks)      
-                                        {
-                                            // Apply the pixels
-                                            ApplyPixels(mask.Pixels, pixelQuery, status, true);
-                                        }
-                                    }
                                 }
                             }
                             else
                             {
-                                
+                                // show a message  
                                 status("No pixels could be found matching your search criteria", 0);
                             }
                         }
                         // if we are drawing
-                        else if (pixelQuery.ActionType >= ActionTypeEnum.DrawLine)
+                        else if ((pixelQuery.ActionType >= ActionTypeEnum.DrawTransparentLine) || (pixelQuery.ActionType == ActionTypeEnum.DrawLine))
                         {
-                            // if there are one or more criteria items
-                            if (ListHelper.HasOneOrMoreItems(pixelQuery.Criteria))
-                            {
-                                // get the first criteria
-                                PixelCriteria criteria = pixelQuery.Criteria[0];
+                            // Handle drawing a line
+                            HandleDrawLine(pixelQuery, historyId, status);
 
-                                // if we are drawing a single line
-                                if (criteria.RepeatType == RepeatTypeEnum.NoRepeat)
-                                {
-                                    // Draw the line
-                                    DrawLine(criteria, alpha, this.DirectBitmap.Bitmap, historyId, status);
-                                }
-                                else
-                                {
-                                    // Draw repeating lines
-                                    DrawRepeatingLines(criteria, alpha, this.DirectBitmap.Bitmap, historyId, status);
-                                }
+                            // if the LastUpdate exists
+                            if (HasLastUpdate)
+                            {
+                                // Set the LastUpdate
+                                pixelQuery.PixelsUpdated = LastUpdate;
                             }
                         }
                         else
@@ -509,13 +621,15 @@ namespace DataJuggler.PixelDatabase
                             // Find the pixels that match the Criteria given
                             pixels = ApplyCriteria(pixels, pixelQuery);
 
+                            // set the pixelsUpdated
+                            pixelQuery.PixelsUpdated = pixels;
+
+                            // local
+                            int count = 0;
+
                             // if we have pixels to apply the criteria to
                             if (ListHelper.HasOneOrMoreItems(pixels))
                             {
-                                // Refresh everything
-                                // this.Refresh();
-                                // Application.DoEvents();
-
                                 // Iterate the collection of PixelInformation objects
                                 foreach (PixelInformation pixel in pixels)
                                 {
@@ -527,41 +641,66 @@ namespace DataJuggler.PixelDatabase
 
                                     // Update the Pixels so the database stays updated
                                     pixel.Color = color;
-                                }
+
+                                    // Increment the value for count
+                                    count++;
+
+                                    // refresh every 500,000 in case this is a long query
+                                    if (count % 500000 == 0)
+                                    {
+                                        // if abort is true
+                                        if (Abort)
+                                        {
+                                            // Show the user a message
+                                            status("Operation Aborted.", 0);
+
+                                            // break out of the loop
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            // Update the pixels affected by the query
+                                            status("Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", pixels.Count), count);    
+                                        }
+                                    }
+                                }                                
                             }
                         }
                     }
                 }
+
+                // return value
+                return pixelQuery;
             }
             #endregion
 
-            #region ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status, bool isMask = false)
+            #region ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
             /// This method Apply Pixels
             /// </summary>
-            public void ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status, bool isMask = false)
+            public void ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status)
             {
                 // locals
-                Color previousColor;
+                Color previousColor = Color.Empty;
                 Color color = Color.Empty;
                 Guid historyId = Guid.NewGuid();
                 int count = 0;
                 
                 // Update the pixels
                 foreach (PixelInformation pixel in pixels)
-                {  
-                    // get the prevoiusColor
-                    previousColor = this.DirectBitmap.GetPixel(pixel.X, pixel.Y);
-
-                    // Get the color
-                    color = pixel.Color;
-
-                    // if this pixel is not part of any active masks
-                    if ((pixelQuery.AdjustColor) || (pixelQuery.SwapColors) || (pixelQuery.SetColor))
+                {
+                    // if this pixel is not under a mask. Masked pixels don't get updated (are not supposed to is a better way to put it).
+                    if (!pixel.IsMask)
                     {
-                        // if this is not a mask, masks get set as is
-                        if (!isMask)
-                        {
+                        // get the prevoiusColor
+                        previousColor = this.DirectBitmap.GetPixel(pixel.X, pixel.Y);
+
+                        // Get the color
+                        color = pixel.Color;
+
+                        // if this pixel is not part of any active masks
+                        if ((pixelQuery.AdjustColor) || (pixelQuery.SwapColors) || (pixelQuery.SetColor))
+                        {  
                             // if adjust color is true
                             if (pixelQuery.AdjustColor)
                             {
@@ -578,33 +717,33 @@ namespace DataJuggler.PixelDatabase
                                 // Set the color from here
                                 color = pixelQuery.Color;
                             }
+
+                            // Increment the value for count
+                            count++;
+
+                            // refresh every 500,000 in case this is a long query
+                            if (count % 500000 == 0)
+                            {
+                                // if abort is true
+                                if (Abort)
+                                {
+                                    // Show the user a message
+                                    status("Operation Aborted.", 0);
+
+                                    // break out of the loop
+                                    break;
+                                }
+                                else
+                                {
+                                    // Update the pixels affected by the query
+                                    status("Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", pixels.Count), count);    
+                                }
+                            }
                         }
 
-                        // Increment the value for count
-                        count++;
-
-                        // refresh every 500,000 in case this is a long query
-                        if (count % 500000 == 0)
-                        {
-                            // if abort is true
-                            if (Abort)
-                            {
-                                // Show the user a message
-                                status("Operation Aborted.", 0);
-
-                                // break out of the loop
-                                break;
-                            }
-                            else
-                            {
-                                // Update the pixels affected by the query
-                                status("Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", pixels.Count), count);    
-                            }
-                        }
+                        // Set the pixel
+                        this.DirectBitmap.SetPixel(pixel.X, pixel.Y, color, historyId, previousColor);
                     }
-
-                    // Set the pixel
-                    this.DirectBitmap.SetPixel(pixel.X, pixel.Y, color, historyId, previousColor);
                 }
 
                 // Update the pixels affected by the query
@@ -615,15 +754,24 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, bool replaceColors = true)
+            #region DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, Graphics graphics, bool replaceColors = true, Color? colorToUse = null)
             /// <summary>
             /// This method Draws a Line based upon the pixelCriteria
             /// </summary>
-            public void DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, bool replaceColors = true)
+            public void DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, Graphics graphics, bool replaceColors = true, Color? colorToUse = null)
             {
+                // locals
+                bool useColor = false;
+                Color color = Color.Empty;
+
+                // This now draws lines in color, or lines in a line color not in your image and then replaces that color.
+
                 // This is a little cumberson, but what this is doing is drawing a line with a replacement color 
                 // (a color not in the source image). Next the pixels that match the replacement color are 
                 // replaced with a transparent pixel. This has to be done since Pen object does not support full opacity.
+
+                // Create a pen
+                Pen pen;
 
                 // if the LineColor has not been set
                 if (!this.LineColorSet)
@@ -632,15 +780,28 @@ namespace DataJuggler.PixelDatabase
                     this.LineColor = SetLineColor();
                 }
 
-                // Create a pen
-                Pen pen = new Pen(LineColor, pixelCriteria.Thickness);
+                // create the pen to use the LineColor
+                pen =  new Pen(LineColor, pixelCriteria.Thickness);
 
-                // Create a graphics object
-                Graphics graphics = Graphics.FromImage(bitmap);
+                // if null
+                if (NullHelper.Exists(colorToUse))
+                {
+                    // we are using the color here
+                    useColor = true;
 
-                // Draw a line
+                    // local
+                    color = (Color) colorToUse;
+
+                    // color
+                    pen = new Pen(color, pixelCriteria.Thickness);
+
+                    // no need
+                    replaceColors = false;
+                }
+                
+                // Draw the line in LineColor
                 graphics.DrawLine(pen, pixelCriteria.StartPoint, pixelCriteria.EndPoint);
-
+                
                 // if replaceColors is true
                 if (replaceColors)
                 {
@@ -648,32 +809,76 @@ namespace DataJuggler.PixelDatabase
                     PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
 
                     // Now get the pixels that are equal to the lineColor
-                    List<PixelInformation> pixels = pixelDatabase.Pixels.Where(x => x.Color == LineColor).ToList();
+                    List<PixelInformation> pixels = null;
+                    
+                    // Get the pixels in the LineColor (it is supposed to be unique)
+                    pixels = pixelDatabase.Pixels.Where(x => x.Color == LineColor).ToList();
 
                     // if one or more pixels were founds
                     if (ListHelper.HasOneOrMoreItems(pixels))
                     {
+                        // local
+                        int count = 0;
+
                         // iterate the pixels
                         foreach (PixelInformation pixel in pixels)
                         {
+                            // get the count
+                            count++;
+
+                            // If the status object exists
+                            if (NullHelper.Exists(status))
+                            {
+                                // update every 1,000
+                                if (count % 1000 == 0)
+                                {
+                                    // set a message
+                                    string message = "Draw Line has completed  " + String.Format("{0:n0}", count) + " of " + String.Format("{0:n0}", pixels.Count) + ".";
+
+                                    // send updated message
+                                    status(message, pixels.Count);
+                                }
+                            }
+
                             // attempt to find the source pixel
                             PixelInformation source = this.Pixels.FirstOrDefault(x => x.X == pixel.X && x.Y == pixel.Y);
 
                             // if the source pixel exists
                             if (NullHelper.Exists(source))
                             {
-                                // Create a transparent color
-                                Color transparent = Color.FromArgb(alpha, source.Color);
+                                // if we are not using a color, then we need a transparent color
+                                if (!useColor)
+                                {
+                                    // Create a transparent color
+                                    color = Color.FromArgb(alpha, source.Color);
+                                }
 
                                 // Set the pixels
-                                pixel.Color = transparent;
+                                pixel.Color = color;
+                                pixel.UpdateId = historyId;
 
                                 // Set the color
-                                this.DirectBitmap.SetPixel(pixel.X, pixel.Y, transparent, historyId, source.Color);
+                                this.DirectBitmap.SetPixel(pixel.X, pixel.Y, color, historyId, source.Color);
 
                                 // Update the color of the source
-                                source.Color = transparent;
+                                source.Color = color;
+
+                                // Set the lastUpdateId
+                                source.UpdateId = historyId;
                             }
+                        }
+
+                        // Set the last pixels updated
+                        LastUpdate = pixels;
+
+                        // if the status exists
+                        if (NullHelper.Exists(status))
+                        {
+                            // set a message
+                            string message = "Draw Line completed with " + String.Format("{0:n0}", pixels.Count) + " updated.";
+
+                            // send updated message
+                            status(message, pixels.Count);
                         }
                     }
                 }
@@ -726,14 +931,14 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status)
+            #region DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, Graphics graphics, Color? colorToUse = null)
             /// <summary>, 
             /// This method Draw Repeating Lines
             /// </summary>
-            public void DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status)
+            public void DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, Guid historyId, StatusUpdate status, Graphics graphics, Color? colorToUse = null)
             {
-                // verify both objects exist                
-                if (NullHelper.Exists(pixelCriteria, bitmap))
+                // verify all objects exist                
+                if (NullHelper.Exists(pixelCriteria, bitmap, graphics))
                 {
                     // iterate the Reps
                     for (int x = 0; x < pixelCriteria.Repititions; x++)
@@ -749,12 +954,12 @@ namespace DataJuggler.PixelDatabase
                         if (x == (pixelCriteria.Repititions - 1))
                         {
                             // Draw the line and replace the LineColor with a transparency. This only has to be done once.
-                            DrawLine(pixelCriteria, alpha, bitmap, historyId, status, true);
+                            DrawLine(pixelCriteria, alpha, bitmap, historyId, status, graphics, true, colorToUse);
                         }
                         else
                         {
                             // Draw the line, but do not replace the colors
-                            DrawLine(pixelCriteria, alpha, bitmap, historyId, status, false);
+                            DrawLine(pixelCriteria, alpha, bitmap, historyId, status, graphics, false, colorToUse);
                         }
                     }
                 }
@@ -861,6 +1066,156 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region HandleBlueAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon BlueAverageDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleBlueAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueAverageDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueAverageDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueAverageDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueAverageDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleBlueMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon BlueMaxDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleBlueMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueMaxDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueMaxDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueMaxDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleBlueMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon BlueMinDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleBlueMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueMinDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueMinDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueMinDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueMinDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
             #region HandleBlueGreenPixels(List<PixelInformation> pixels, PixelCriteria criteria)
             /// <summary>
             /// This method returns a list of pixels that match the criteria given
@@ -900,6 +1255,106 @@ namespace DataJuggler.PixelDatabase
 
                             // Get the pixels greater than the mixValue
                             pixels = pixels.Where(x => x.BlueGreen == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleBlueGreenDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon BlueGreenDifference values
+            /// </summary>
+            public List<PixelInformation> HandleBlueGreenDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueGreenDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueGreenDifference >= criteria.MinValue && x.BlueGreenDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueGreenDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueGreenDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleBlueRedDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon BlueRedDifference values
+            /// </summary>
+            public List<PixelInformation> HandleBlueRedDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueRedDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.BlueRedDifference >= criteria.MinValue && x.BlueRedDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueRedDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.BlueRedDifference == criteria.TargetValue).ToList();
 
                             // required
                             break;
@@ -961,6 +1416,214 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region HandleDrawLine(PixelQuery pixelQuery,  Guid historyId, StatusUpdate status)
+            /// <summary>
+            /// This method Handle Draw Line
+            /// </summary>
+            public PixelQuery HandleDrawLine(PixelQuery pixelQuery,  Guid historyId, StatusUpdate status)
+            {
+                 // locals
+                int alpha = 0;
+                List<PixelInformation> pixels = this.Pixels;
+                
+                // if there are one or more criteria items
+                if (ListHelper.HasOneOrMoreItems(pixelQuery.Criteria))
+                {
+                    // get the first criteria
+                    PixelCriteria criteria = pixelQuery.Criteria[0];
+
+                    // initial value
+                    Color? colorToUse = null;
+
+                    // if draw line
+                    if (pixelQuery.ActionType == ActionTypeEnum.DrawLine)
+                    {
+                        // set the color
+                        colorToUse = pixelQuery.Color;
+                    }
+
+                    // Create a graphics object
+                    Graphics graphics = Graphics.FromImage(this.DirectBitmap.Bitmap);
+
+                    // if we are drawing a single line
+                    if (criteria.RepeatType == RepeatTypeEnum.NoRepeat)
+                    {
+                        // Draw the line
+                        DrawLine(criteria, alpha, this.DirectBitmap.Bitmap, historyId, status, graphics, true, colorToUse);
+                    }
+                    else
+                    {
+                        // Draw repeating lines
+                        DrawRepeatingLines(criteria, alpha, this.DirectBitmap.Bitmap, historyId, status, graphics, colorToUse);
+                    }
+
+                    // load again
+                    PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(this.DirectBitmap.Bitmap, status);
+
+                    // If the pixelDatabase object exists
+                    if (NullHelper.Exists(pixelDatabase))
+                    {
+                        // Replace out the Pixels and DirectBitmap
+                        this.Pixels = pixelDatabase.Pixels;
+                        this.DirectBitmap = pixelDatabase.DirectBitmap;
+                    }
+                }
+
+                // return value
+                return pixelQuery;
+            }
+            #endregion
+            
+            #region HandleGreenAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon GreenAverageDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleGreenAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenAverageDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenAverageDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenAverageDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenAverageDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleGreenMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon GreenMaxDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleGreenMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenMaxDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenMaxDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenMaxDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleGreenMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon GreenMinDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleGreenMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenMinDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenMinDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenMinDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenMinDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
             #region HandleGreenPixels(List<PixelInformation> pixels, PixelCriteria criteria)
             /// <summary>
             /// This method returns a list of pixels that match the criteria given
@@ -1000,6 +1663,56 @@ namespace DataJuggler.PixelDatabase
 
                             // Get the pixels greater than the mixValue
                             pixels = pixels.Where(x => x.Green == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleGreenRedDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon GreenRedDifference values
+            /// </summary>
+            public List<PixelInformation> HandleGreenRedDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenRedDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.GreenRedDifference >= criteria.MinValue && x.GreenRedDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenRedDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.GreenRedDifference == criteria.TargetValue).ToList();
 
                             // required
                             break;
@@ -1084,7 +1797,10 @@ namespace DataJuggler.PixelDatabase
             {
                 // If the MaskManager and Mask both exist, and the mask is valid
                 if ((this.HasMaskManager) && (MaskManager.HasMasks) && (NullHelper.Exists(mask)) && (mask.HasAction) && (mask.HasName))
-                { 
+                {
+                    // Set to true
+                    pixels.ForEach(x => x.IsMask = true);
+
                     // if Replace or Clear
                     if ((mask.Action == MaskActionEnum.Replace) || (mask.Action == MaskActionEnum.Clear))
                     {
@@ -1112,12 +1828,312 @@ namespace DataJuggler.PixelDatabase
                         MaskManager.Masks.Add(mask);
 
                         // Show the TextBox
-                        status("Mask " + mask.Name + " Created With " + String.Format("{0:n0}", pixels.Count) + " Pixels", 0);
+                        status("Mask " + mask.Name + " Created With " + String.Format("{0:n0}", pixels.Count) + " Pixels", mask.Pixels.Count);
                     }
                 }
             }
             #endregion
-            
+
+            #region HandleMaxPixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon Max values
+            /// </summary>
+            public List<PixelInformation> HandleMaxPixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.Max <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.Max >= criteria.MaxValue && x.Max <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.Max >= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.Max == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleMinPixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon Min values
+            /// </summary>
+            public List<PixelInformation> HandleMinPixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.Min <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.Min >= criteria.MinValue && x.Min <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.Min >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.Min == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleMinMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon MinMaxDifference values
+            /// </summary>
+            public List<PixelInformation> HandleMinMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.MinMaxDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.MinMaxDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.MinMaxDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleRedAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon RedAverageDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleRedAverageDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedAverageDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedAverageDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedAverageDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedAverageDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleRedMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon RedMaxDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleRedMaxDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedMaxDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedMaxDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedMaxDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region HandleRedMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            /// <summary>
+            /// This method returns a list of pixels that match the criteria given based upon RedMinDifference values.
+            /// </summary>
+            public List<PixelInformation> HandleRedMinDifferencePixels(List<PixelInformation> pixels, PixelCriteria criteria)
+            {
+                // verify everything is valid
+                if ((ListHelper.HasOneOrMoreItems(pixels)) && (NullHelper.Exists(criteria)))
+                {
+                    switch (criteria.ComparisonType)
+                    {   
+                        case ComparisonTypeEnum.LessThan:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedMinDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Between:
+
+                            // Set the pixels
+                            pixels = pixels.Where(x => x.RedMinDifference >= criteria.MinValue && x.MinMaxDifference <= criteria.MaxValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.GreaterThan:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedMinDifference >= criteria.MinValue).ToList();
+
+                            // required
+                            break;
+
+                        case ComparisonTypeEnum.Equals:
+
+                            // Get the pixels greater than the mixValue
+                            pixels = pixels.Where(x => x.RedMinDifference == criteria.TargetValue).ToList();
+
+                            // required
+                            break;
+                    }
+                }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
             #region HandleRedPixels(List<PixelInformation> pixels, PixelCriteria criteria)
             /// <summary>
             /// This method returns a list of pixels that match the criteria given
@@ -1340,6 +2356,29 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region Init()
+            /// <summary>
+            /// This method  This method performs initializations for this object.
+            /// </summary>
+            public void Init()
+            {
+                // Create a new collection of 'PixelInformation' objects.
+                this.Pixels = new List<PixelInformation>();
+
+                // Create the Layers
+                this.Layers = new List<Layer>();
+
+                // create a layer for Background
+                Layer layer = new Layer();
+                layer.Name = "Background";
+                layer.Visible = true;
+                layer.Selected = true;
+
+                // Add this layer
+                Layers.Add(layer);
+            }
+            #endregion
+            
             #region MoveLine(PixelCriteria pixelCriteria)
             /// <summary>
             /// This method returns the Line
@@ -1449,49 +2488,46 @@ namespace DataJuggler.PixelDatabase
 
                 // locals
                 List<PixelInformation> pixels = null;
-
-                if (ListHelper.HasOneOrMoreItems(pixels))
+                
+                // iterate red up to 255
+                for (int red = 0; red < 255; red++)
                 {
-                    // iterate red up to 255
-                    for (int red = 0; red < 255; red++)
+                    // iterate green up to 255
+                    for (int green = 0; green < 255; green++)
                     {
-                        // iterate green up to 255
-                        for (int green = 0; green < 255; green++)
+                        // iterate blue up to 255
+                        for (int blue = 0; blue < 255; blue++)
                         {
-                            // iterate blue up to 255
-                            for (int blue = 0; blue < 255; blue++)
+                            // attempt to get a list of pixels with this value
+                            pixels = this.Pixels.Where(x => x.Red == red && x.Green == green && x.Blue == blue).ToList();
+
+                            // if no pixels were found matching this color combination
+                            if (!ListHelper.HasOneOrMoreItems(pixels))
                             {
-                                // attempt to get a list of pixels with this value
-                                pixels = this.Pixels.Where(x => x.Red == red && x.Green == green && x.Blue == blue).ToList();
+                                // set the return value
+                                lineColor = Color.FromArgb(red, green, blue);
 
-                                // if no pixels were found matching this color combination
-                                if (!ListHelper.HasOneOrMoreItems(pixels))
-                                {
-                                    // set the return value
-                                    lineColor = Color.FromArgb(red, green, blue);
+                                // Set to true
+                                LineColorSet = true;
 
-                                    // Set to true
-                                    LineColorSet = true;
-
-                                    // break out of the loop
-                                    break;
-                                }
-                            }
-
-                            // if the line color has been set
-                            if (LineColorSet)
-                            {
-                                    // break out of this loop also
-                                    break;
+                                // break out of the loop
+                                break;
                             }
                         }
 
                         // if the line color has been set
                         if (LineColorSet)
                         {
-                            // break out of this loop also
-                            break;
+                                // break out of this loop also
+                                break;
                         }
+                    }
+
+                    // if the line color has been set
+                    if (LineColorSet)
+                    {
+                        // break out of this loop also
+                        break;
                     }
                 }
                 
@@ -1502,7 +2538,7 @@ namespace DataJuggler.PixelDatabase
             
             #region SwapColor(Color previousColor, PixelQuery pixelQuery)
             /// <summary>
-            /// This method returns the Color
+            /// This method swaps one color with another
             /// </summary>
             public Color SwapColor(Color previousColor, PixelQuery pixelQuery)
             {
@@ -1517,7 +2553,7 @@ namespace DataJuggler.PixelDatabase
                         case SwapTypeEnum.BlueToGreen:
 
                             // create the new color
-                            color = Color.FromArgb(previousColor.R, previousColor.B, previousColor.G);
+                            color = Color.FromArgb(previousColor.A, previousColor.R, previousColor.B, previousColor.G);
 
                             // required
                             break;
@@ -1525,7 +2561,7 @@ namespace DataJuggler.PixelDatabase
                         case SwapTypeEnum.RedToBlue:
 
                             // create the new color
-                            color = Color.FromArgb(previousColor.B, previousColor.G, previousColor.R);
+                            color = Color.FromArgb(previousColor.A, previousColor.B, previousColor.G, previousColor.R);
 
                             // required
                             break;
@@ -1533,7 +2569,7 @@ namespace DataJuggler.PixelDatabase
                         case SwapTypeEnum.RedToGreen:
 
                             // create the new color
-                            color = Color.FromArgb(previousColor.G, previousColor.R, previousColor.B);
+                            color = Color.FromArgb(previousColor.A, previousColor.G, previousColor.R, previousColor.B);
 
                             // required
                             break;
@@ -1605,6 +2641,23 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region HasLayers
+            /// <summary>
+            /// This property returns true if this object has a 'Layers'.
+            /// </summary>
+            public bool HasLayers
+            {
+                get
+                {
+                    // initial value
+                    bool hasLayers = (this.Layers != null);
+                    
+                    // return value
+                    return hasLayers;
+                }
+            }
+            #endregion
+            
             #region HasMaskManager
             /// <summary>
             /// This property returns true if this object has a 'MaskManager'.
@@ -1639,6 +2692,23 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region HasPixelQuery
+            /// <summary>
+            /// This property returns true if this object has a 'PixelQuery'.
+            /// </summary>
+            public bool HasPixelQuery
+            {
+                get
+                {
+                    // initial value
+                    bool hasPixelQuery = (this.PixelQuery != null);
+                    
+                    // return value
+                    return hasPixelQuery;
+                }
+            }
+            #endregion
+            
             #region HasPixels
             /// <summary>
             /// This property returns true if this object has a 'Pixels'.
@@ -1664,6 +2734,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return lastUpdate; }
                 set { lastUpdate = value; }
+            }
+            #endregion
+            
+            #region Layers
+            /// <summary>
+            /// This property gets or sets the value for 'Layers'.
+            /// </summary>
+            public List<Layer> Layers
+            {
+                get { return layers; }
+                set { layers = value; }
             }
             #endregion
             
@@ -1697,6 +2778,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return maskManager; }
                 set { maskManager = value; }
+            }
+            #endregion
+            
+            #region PixelQuery
+            /// <summary>
+            /// This property gets or sets the value for 'PixelQuery'.
+            /// </summary>
+            public PixelQuery PixelQuery
+            {
+                get { return pixelQuery; }
+                set { pixelQuery = value; }
             }
             #endregion
             

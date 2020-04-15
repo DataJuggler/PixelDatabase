@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace DataJuggler.PixelDatabase
 {
 
-    # region delegate StatusUpdate(string message, int pixelsCompleted)
+    # region delegate StatusUpdate(string message, int pixelsUpdated)
     /// <summary>
     /// The StatusUpdate is used to send feedback back from an operation
     /// </summary>
     /// <param name="message"></param>
     /// <param name="pixelsCompleted"></param>
-    public delegate void StatusUpdate(string message, int pixelsCompleted);
+    public delegate void StatusUpdate(string message, int pixelsUpdated);
     #endregion
 
 }

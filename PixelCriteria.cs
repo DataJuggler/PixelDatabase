@@ -56,7 +56,7 @@ namespace DataJuggler.PixelDatabase
                 set { comparisonType = value; }
             }
             #endregion
-            
+
             #region Distance
             /// <summary>
             /// This property gets or sets the value for 'Distance'.

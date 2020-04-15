@@ -10,7 +10,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using DataJuggler.PixelDatabase;
 
 #endregion
 
@@ -116,11 +115,11 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method Sets a Pixel and it includes a historyId so any changes are stored in history
             /// </summary>
-            public void SetPixel(int x, int y, Color color, Guid historyId, Color prevoiusColor)
+            public void SetPixel(int x, int y, Color color, Guid historyId, Color previous)
             {
                 // history has to be set before the pixel is set
                 // Handle the history
-                HandleHistory(x, y, historyId, prevoiusColor);
+                HandleHistory(x, y, historyId, previous);
 
                 int index = x + (y * Width);
                 int col = color.ToArgb();

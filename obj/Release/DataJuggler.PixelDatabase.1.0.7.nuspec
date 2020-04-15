@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DataJuggler.PixelDatabase</id>
+    <version>1.0.7</version>
+    <authors>DataJuggler.PixelDatabase</authors>
+    <owners>DataJuggler.PixelDatabase</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">License.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>Eraser.png</icon>
+    <projectUrl>https://github.com/DataJuggler/PixelDatabase</projectUrl>
+    <description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project called PixelDatabase.Net https://pixeldatabase.net (will be live by April 15 2020).
+
+This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</description>
+    <releaseNotes>1.0.7: I am publishing the version that is going to be on my website https://pixeldatabase.net.
+
+This version includes many new properties on a PixelInformation object, such as:
+1. Min
+2. Max
+3. Average
+4. MinMaxDifference
+5. RedMinDifference
+6. RedMaxDifference
+7. RedAverageDifference
+8. GreenMinDifference
+9. GreenMaxDifference
+10. GreenAverageDifference
+11. BlueMinDifference
+12. BlueMaxDifference
+13. BlueAverageDifference
+
+These should all work for queries such as:
+
+Hide Pixels Where
+MinMaxDifference &gt; 25
+
+Or
+
+Update
+Set Swap Blue Red
+Where
+RedMinDifference &lt; 10
+
+
+
+
+
+1.0.6: I have been working on this project for several weeks, and I need to update Nuget.
+
+1.0.5: I fixed a bug where Swap Colors was not taking the Alpha into account from the previous color.
+
+1.0.4: I made some changes while working on the .Net Framework version, and I am trying to keep them in sync. The changes involved I added a new draw line in color feature, a new feature for LastUpdate can always be queried by:
+
+Update
+blah blah blah
+Where
+Pixels In LastUpdate
+
+Also some changes to the Draw Line, which is still very slow, but now a message shows.
+I need to create an abort for Draw Line, just haven't had a chance yet. I will work on this some more next week.
+
+1.0.3: I added a new override to PixelDatabaseLoder for ImageUrl.
+
+1.0.2: I had forgot to list the Project Url, as well as the description changed from untested, to lightly tested.
+
+1.0.1: Changed TargetFramework netcoreapp3.1 to TargetFrameworks netstandard2.1;netcoreapp3.1
+
+First release, i will update the rest of the info if it gets past proof of concept.</releaseNotes>
+    <tags>C#,Imaging,Drawing,Bitmap,Canvas,EditImages,Pixel</tags>
+    <repository type="Git - GitHub" url="https://github.com/DataJuggler/PixelDatabase" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1">
+        <dependency id="DataJuggler.UltimateHelper.Core" version="1.2.1" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="4.7.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="DataJuggler.UltimateHelper.Core" version="1.2.1" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="4.7.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Projects\GitHub\PixelDatabase\bin\Release\netcoreapp3.1\DataJuggler.PixelDatabase.dll" target="lib\netcoreapp3.1\DataJuggler.PixelDatabase.dll" />
+    <file src="C:\Projects\GitHub\PixelDatabase\bin\Release\netstandard2.1\DataJuggler.PixelDatabase.dll" target="lib\netstandard2.1\DataJuggler.PixelDatabase.dll" />
+    <file src="C:\Projects\GitHub\PixelDatabase\Eraser.png" target="Eraser.png" />
+    <file src="C:\Projects\GitHub\PixelDatabase\License\License.txt" target="License.txt" />
+  </files>
+</package>

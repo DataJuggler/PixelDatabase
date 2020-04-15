@@ -12,10 +12,11 @@ namespace DataJuggler.PixelDatabase.Enumerations
         HidePixels = 1,
         ShowPixels = 2,
         DrawLine = 3,
-        SetBackColor = 4,
-        Update = 5,
-        HideFrom = 6,
-        Undo = 7
+        DrawTransparentLine = 4,
+        SetBackColor = 5,
+        Update = 6,
+        HideFrom = 7,
+        Undo = 8
     }
     #endregion
 
@@ -33,7 +34,7 @@ namespace DataJuggler.PixelDatabase.Enumerations
         Equals = 3,
         In = 4
     }
-    #endregion
+    #endregion    
 
     #region MaskActionEnum
     /// <summary>
@@ -68,7 +69,23 @@ namespace DataJuggler.PixelDatabase.Enumerations
         Y = 9,
         DrawLine = 10,
         LastUpdate = 11,
-        Alpha = 12
+        Alpha = 12,
+        Min = 13,
+        Max = 14,
+        Average = 15,
+        MinMaxDifference = 16,
+        BlueGreenDifference = 17,
+        BlueRedDifference = 18,
+        GreenRedDifference = 19,
+        RedMinDifference = 20,
+        RedMaxDifference = 21,
+        RedAverageDifference = 22,
+        GreenMinDifference = 23,
+        GreenMaxDifference = 24,
+        GreenAverageDifference = 25,
+        BlueMinDifference = 26,
+        BlueMaxDifference = 27,
+        BlueAverageDifference = 28
     }
     #endregion
 

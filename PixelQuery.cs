@@ -40,6 +40,7 @@ namespace DataJuggler.PixelDatabase
         private RGBColor colorToAdjust;
         private RGBColor assignToColor;
         private string queryText;
+        private List<PixelInformation> pixelsUpdated;
         #endregion
 
         #region Constructor
@@ -160,6 +161,42 @@ namespace DataJuggler.PixelDatabase
                 set { colorToAdjust = value; }
             }
             #endregion
+
+            #region ContainsLastUpdateCriteria
+            /// <summary>
+            /// This read only returns true if this PixelQuery contains a Criteria involving LastUpdate
+            /// </summary>
+            /// <returns></returns>
+            public bool ContainsLastUpdateCriteria
+            {
+                get
+                {
+                    // initial value
+                    bool containsLastUpdate = false;
+
+                    // if the value for HasCriteria is true
+                    if (HasCriteria)
+                    {
+                        // Iterate the collection of PixelCriteria objects
+                        foreach (PixelCriteria criteria in Criteria)
+                        {
+                            // if this Critieria.PixelType equals LastUpdate
+                            if (criteria.PixelType == PixelTypeEnum.LastUpdate)
+                            {
+                                // set the return value to true
+                                containsLastUpdate = true;
+
+                                // break out of the loop
+                                break;
+                            }
+                        }
+                    }
+
+                    // return value
+                    return containsLastUpdate;
+                }
+            }
+            #endregion
             
             #region Criteria
             /// <summary>
@@ -262,6 +299,23 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region HasPixelsUpdated
+            /// <summary>
+            /// This property returns true if this object has a 'PixelsUpdated'.
+            /// </summary>
+            public bool HasPixelsUpdated
+            {
+                get
+                {
+                    // initial value
+                    bool hasPixelsUpdated = (this.PixelsUpdated != null);
+                    
+                    // return value
+                    return hasPixelsUpdated;
+                }
+            }
+            #endregion
+            
             #region IsValid
             /// <summary>
             /// This read only property returns the value for 'IsValid'.
@@ -281,8 +335,8 @@ namespace DataJuggler.PixelDatabase
 
                         // Set the Properties on the criteria
                         pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
-                        pixelCriteria.PixelType = PixelTypeEnum.Total;
-                        pixelCriteria.TargetValue = 0;
+                        pixelCriteria.PixelType = PixelTypeEnum.Alpha;
+                        pixelCriteria.MinValue = 1;
 
                         // Create Default Criteria
                         Criteria = new List<PixelCriteria>();
@@ -330,6 +384,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return mask; }
                 set { mask = value; }
+            }
+            #endregion
+            
+            #region PixelsUpdated
+            /// <summary>
+            /// This property gets or sets the value for 'PixelsUpdated'.
+            /// </summary>
+            public List<PixelInformation> PixelsUpdated
+            {
+                get { return pixelsUpdated; }
+                set { pixelsUpdated = value; }
             }
             #endregion
             
