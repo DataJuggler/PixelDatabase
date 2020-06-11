@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Projects\\GitHub\\PixelDatabase\\DataJuggler.PixelDatabase.csproj": {
-      "version": "1.0.7",
+      "version": "1.1.0",
       "restore": {
         "projectUniqueName": "C:\\Projects\\GitHub\\PixelDatabase\\DataJuggler.PixelDatabase.csproj",
         "projectName": "DataJuggler.PixelDatabase",
@@ -52,7 +52,7 @@
           "dependencies": {
             "DataJuggler.UltimateHelper.Core": {
               "target": "Package",
-              "version": "[1.2.1, )"
+              "version": "[1.2.3, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
@@ -74,13 +74,13 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.1": {
           "dependencies": {
             "DataJuggler.UltimateHelper.Core": {
               "target": "Package",
-              "version": "[1.2.1, )"
+              "version": "[1.2.3, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
@@ -102,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
         }
       }
     }

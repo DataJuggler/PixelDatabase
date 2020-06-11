@@ -31,6 +31,7 @@ namespace DataJuggler.PixelDatabase
         private int distance;
         private Color backColor;
         private bool removeBackColor;
+        private int index;
         #endregion
 
         #region Properties
@@ -77,6 +78,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return endPoint; }
                 set { endPoint = value; }
+            }
+            #endregion
+            
+            #region Index
+            /// <summary>
+            /// This property gets or sets the value for 'Index'.
+            /// </summary>
+            public int Index
+            {
+                get { return index; }
+                set { index = value; }
             }
             #endregion
             

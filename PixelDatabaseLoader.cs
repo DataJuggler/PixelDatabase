@@ -4,8 +4,10 @@
 
 using DataJuggler.UltimateHelper.Core;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 
 #endregion
@@ -21,7 +23,7 @@ namespace DataJuggler.PixelDatabase
     {
 
         #region Methods
-
+            
             #region LoadPixelDatabase(Image original, StatusUpdate updateCallback)
             /// <summary>
             /// This method is used to load a PixelDatabase and its DirectBitmap object.
@@ -38,7 +40,49 @@ namespace DataJuggler.PixelDatabase
                     // convert to a bitmap
                     Bitmap bitmap = (Bitmap) original;
 
+                    // Load the PixelDatabase
                     pixelDatabase = LoadPixelDatabase(bitmap, updateCallback);
+                }
+                catch (Exception error)
+                {
+                    // write to console for now
+                    DebugHelper.WriteDebugError("LoadPixelDatabase", "PixelDatabaseLoader", error);
+                }
+                finally
+                {
+                    
+                }
+
+                // return value
+                return pixelDatabase;
+            }
+            #endregion
+
+            #region LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
+            /// <summary>
+            /// This method is used to load a PixelDatabase and its DirectBitmap object from an imagePath
+            /// </summary>
+            /// <param name="imagePath">The path to the image</param>
+            /// <param name="updateCallback">The delegate to call during load for status.</param>
+            /// <param name="copyInPlaceForResetImage">If true, a copy of the image will be created, and the ResetPath and UndoPath will be set to this new filename.</param>
+            /// <returns></returns>
+            public static PixelDatabase LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
+            {
+                // initial valule
+                PixelDatabase pixelDatabase = null;
+
+                try
+                {
+                    // if we have an imagePath
+                    if ((TextHelper.Exists(imagePath)) && (File.Exists(imagePath)))
+                    {
+                        // create the Bitmap
+                        using (Bitmap bitmap = (Bitmap) Bitmap.FromFile(imagePath))
+                        {
+                            // load the pixelDatabase
+                            pixelDatabase = LoadPixelDatabase(bitmap, updateCallback);                            
+                        }
+                    }   
                 }
                 catch (Exception error)
                 {
@@ -66,17 +110,23 @@ namespace DataJuggler.PixelDatabase
                 // initial valule
                 PixelDatabase pixelDatabase = null;
 
-                // local
+                // locals
                 int max = 0;
-
+                
                 try
                 {
                     // if we have an image
                     if (NullHelper.Exists(original))
-                    { 
+                    {
                         // create a new bitmap
                         using (Bitmap source = new Bitmap(original))
                         {
+                             // Create a new instance of a 'PixelDatabase' object.
+                            pixelDatabase = new PixelDatabase();
+
+                            // Create a DirectBitmap
+                            pixelDatabase.DirectBitmap = new DirectBitmap(source.Width, source.Height);
+
                             // Code To Lockbits
                             BitmapData bitmapData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadWrite, source.PixelFormat);
                             IntPtr pointer = bitmapData.Scan0;
@@ -88,9 +138,6 @@ namespace DataJuggler.PixelDatabase
 
                             // Marshal.Copy(pixels,0,pointer, size);
                             source.UnlockBits(bitmapData);
-
-                            // Create a new instance of a 'PixelDatabase' object.
-                            pixelDatabase = new PixelDatabase();
 
                             // locals
                             Color color = Color.FromArgb(0, 0, 0);
@@ -115,13 +162,10 @@ namespace DataJuggler.PixelDatabase
                                 updateCallback("SetGraphMax", max);
                             }
 
-                            // Create a Guid
-                            Guid loadId = Guid.NewGuid();
-
                             // Iterating the pixel array, every 4th byte is a new pixel, much faster than GetPixel
                             for (int a = 0; a < pixels.Length; a = a + 4)
                             {
-                                    // increment the value for x
+                                // increment the value for x
                                 x++;
 
                                 // every new column
@@ -143,25 +187,11 @@ namespace DataJuggler.PixelDatabase
                                 // create a color
                                 color = Color.FromArgb(alpha, red, green, blue);
 
-                                // Add this pixel
-                                PixelInformation pixelInformation = pixelDatabase.AddPixel(color, x, y, loadId);
-                            }
-
-                            // Create a DirectBitmap
-                            pixelDatabase.DirectBitmap = new DirectBitmap(source.Width, source.Height);
-                        }
-
-                        // Now we must copy over the Pixels from the PixelDatabase to the DirectBitmap
-                        if ((NullHelper.Exists(pixelDatabase)) && (ListHelper.HasOneOrMoreItems(pixelDatabase.Pixels)))
-                        {
-                            // iterate the pixels
-                            foreach (PixelInformation pixel in pixelDatabase.Pixels)
-                            {
                                 // Set the pixel at this spot
-                                pixelDatabase.DirectBitmap.SetPixel(pixel.X, pixel.Y, pixel.Color);
+                                pixelDatabase.DirectBitmap.SetPixel(x, y, color);
                             }
                         }
-
+                        
                         // Create the MaskManager 
                         pixelDatabase.MaskManager = new MaskManager();
                     }
@@ -170,49 +200,6 @@ namespace DataJuggler.PixelDatabase
                 {
                     // write to console for now
                     DebugHelper.WriteDebugError("LoadPixelDatabase", "PixelDatabaseLoader", error);
-                }
-                finally
-                {
-                    
-                }
-
-                // return value
-                return pixelDatabase;
-            }
-            #endregion
-
-            #region LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
-            /// <summary>
-            /// This method is used to load a PixelDatabase and its DirectBitmap object from an imagePath
-            /// </summary>
-            /// <param name="bitmap"></param>
-            /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
-            {
-                // initial valule
-                PixelDatabase pixelDatabase = null;
-
-                try
-                {
-                    // if we have an imagePath
-                    if (TextHelper.Exists(imagePath))
-                    { 
-                        // create the Bitmap
-                        using (Bitmap bitmap = (Bitmap) Bitmap.FromFile(imagePath))
-                        {
-                            // load the pixelDatabase
-                            pixelDatabase = LoadPixelDatabase(bitmap, updateCallback);
-                        }
-                    }   
-                }
-                catch (Exception error)
-                {
-                    // write to console for now
-                    DebugHelper.WriteDebugError("LoadPixelDatabase", "PixelDatabaseLoader", error);
-                }
-                finally
-                {
-                    
                 }
 
                 // return value

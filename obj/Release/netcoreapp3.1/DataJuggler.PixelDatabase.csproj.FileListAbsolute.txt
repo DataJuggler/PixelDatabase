@@ -5,5 +5,5 @@ C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelData
 C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.AssemblyInfo.cs
 C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.dll
 C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.pdb
-C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.csprojAssemblyReference.cache
 C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.csproj.CoreCompileInputs.cache
+C:\Projects\GitHub\PixelDatabase\obj\Release\netcoreapp3.1\DataJuggler.PixelDatabase.csprojAssemblyReference.cache

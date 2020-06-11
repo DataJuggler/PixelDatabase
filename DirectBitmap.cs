@@ -24,7 +24,7 @@ namespace DataJuggler.PixelDatabase
     {
 
         #region Private Variables
-        private History history;
+        
         #endregion
 
         #region Constructor
@@ -70,34 +70,6 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region HandleHistory(int x, int y, Guid historyId, Color previousColor)
-            /// <summary>
-            /// This method Handle History
-            /// </summary>
-            public void HandleHistory(int x, int y, Guid historyId, Color previousColor)
-            {
-                // If the History object exists
-                if ((!this.HasHistory) || (History.Id != historyId) && (historyId != Guid.Empty))
-                {
-                    // here a new History object is created and the pixels are added to it instead
-                    this.History = new History(historyId);
-                }
-
-                // If the History object exists
-                if (this.HasHistory)
-                {
-                    // Create a new instance of a 'PixelInformation' object.
-                    PixelInformation pixel = new PixelInformation();
-                    pixel.X = x;
-                    pixel.Y = y;
-                    pixel.Color = previousColor;
-
-                    // Add this pixel to history
-                    this.History.ChangedPixels.Add(pixel);
-                }
-            }
-            #endregion
-            
             #region SetPixel(int x, int y, Color color)
             /// <summary>
             /// method Set Pixel
@@ -111,51 +83,6 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region SetPixel(int x, int y, Color color, Guid historyId, Color prevoiusColor)
-            /// <summary>
-            /// This method Sets a Pixel and it includes a historyId so any changes are stored in history
-            /// </summary>
-            public void SetPixel(int x, int y, Color color, Guid historyId, Color previous)
-            {
-                // history has to be set before the pixel is set
-                // Handle the history
-                HandleHistory(x, y, historyId, previous);
-
-                int index = x + (y * Width);
-                int col = color.ToArgb();
-                
-                Bits[index] = col;
-            }
-            #endregion
-            
-            #region UndoChanges()
-            /// <summary>
-            /// This method Undo Changes
-            /// </summary>
-            public void UndoChanges()
-            {
-                // If the History object exists
-                if ((this.HasHistory) && (this.History.HasChangedPixels))
-                {
-                    // get the changed pixels
-                    List<PixelInformation> pixels = this.History.ChangedPixels;
-
-                    // Iterate the collection of PixelInformation objects
-                    foreach (PixelInformation pixel in pixels)
-                    {
-                        // for debugging only
-                        int alpha = pixel.Color.A;
-
-                        // Restore this pixel 
-                        SetPixel(pixel.X, pixel.Y, pixel.Color);
-                    }
-
-                    // Remove the history
-                    this.History = null;
-                }
-            }
-            #endregion
-            
         #endregion
         
         #region Properties
@@ -188,39 +115,11 @@ namespace DataJuggler.PixelDatabase
             public bool Disposed { get; private set; }
             #endregion
             
-            #region HasHistory
-            /// <summary>
-            /// This property returns true if this object has a 'History'.
-            /// </summary>
-            public bool HasHistory
-            {
-                get
-                {
-                    // initial value
-                    bool hasHistory = (this.History != null);
-                    
-                    // return value
-                    return hasHistory;
-                }
-            }
-            #endregion
-            
             #region Height
             /// <summary>
             /// method [Enter Method Description]
             /// </summary>
             public int Height { get; private set; }
-            #endregion
-           
-            #region History
-            /// <summary>
-            /// This property gets or sets the value for 'History'.
-            /// </summary>
-            public History History
-            {
-                get { return history; }
-                set { history = value; }
-            }
             #endregion
             
             #region Width

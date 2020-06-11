@@ -6,7 +6,11 @@
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project called PixelDatabase.Net https://pixeldatabase.net (will be live by April 15 2020).
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>1.0.7: I am publishing the version that is going to be on my website https://pixeldatabase.net.
+    <PackageReleaseNotes>1.1.0: I discovered in my initial testing that the old way was using 7 gigs of memory to hold a list of 
+millions of PixelInformation objects. Now I do the BQL comparisons without instantiating tons of objects and
+the memory foot print went down to under 300 meg for a Blazor website with a 20 meg image loaded.
+
+1.0.7: I am publishing the version that is going to be on my website https://pixeldatabase.net.
 
 This version includes many new properties on a PixelInformation object, such as:
 1. Min
@@ -62,7 +66,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>1.0.7</Version>
+    <Version>1.1.0</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -72,7 +76,11 @@ First release, i will update the rest of the info if it gets past proof of conce
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.1" />
+    <Compile Remove="PixelInformation2.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 

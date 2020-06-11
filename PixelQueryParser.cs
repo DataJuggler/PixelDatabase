@@ -764,7 +764,7 @@ namespace DataJuggler.PixelDatabase
                 // If the queryText string exists
                 if (TextHelper.Exists(queryText))
                 {
-                     // if the NewLine is not found
+                    // if the NewLine is not found
                     if (!queryText.Contains(Environment.NewLine))
                     {
                         // The parsing on lines isn't working, this is a good hack till

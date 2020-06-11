@@ -30,27 +30,37 @@ namespace DataJuggler.PixelDatabase
         private Guid updateId;
         #endregion
 
-        #region Constructor
-        /// <summary>
-        /// Create a new instance of a PixelInformationObject
-        /// </summary>
-        public PixelInformation()
-        {
-            // Perform initializations for this object
-            Init();
-        }
+        #region Constructors
+
+            #region DefaultConstructor
+            /// <summary>
+            /// Create a new instance of a PixelInformationObject
+            /// </summary>
+            public PixelInformation()
+            { 
+                // Set the values
+                Color = System.Drawing.Color.Empty;
+                X = 0;
+                Y = 0;
+            }
+            #endregion
+
+            #region Parameterized Constructor(int x, int y, Color color)
+            /// <summary>
+            /// Create a new instance of a PixelInformationObject
+            /// </summary>
+            public PixelInformation(int x, int y, Color color)
+            { 
+                // store the args
+                Color = color;
+                X = x;
+                Y = y;
+            }
+            #endregion
+
         #endregion
 
         #region Methods
-
-            #region Init()
-            /// <summary>
-            /// This method performs initializations for this object.
-            /// </summary>
-            public void Init()
-            {
-            }
-            #endregion
 
             #region ToString()
             /// <summary>
@@ -563,17 +573,6 @@ namespace DataJuggler.PixelDatabase
                     // return value
                     return total;
                 }
-            }
-            #endregion
-            
-            #region UpdateId
-            /// <summary>
-            /// This property gets or sets the value for 'UpdateId'.
-            /// </summary>
-            public Guid UpdateId
-            {
-                get { return updateId; }
-                set { updateId = value; }
             }
             #endregion
             

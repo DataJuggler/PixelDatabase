@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "fmHfVFT2UXB4sfl9kqGUgZ3TsCIWjews0++O1yumPlPf7FRjNzNd5on9xPc5gBCr0Df2efoRCjDzuOsyA2nPew==",
+  "dgSpecHash": "lWDBP7gr5JhOJqecboD6Fv16Qy9KXJrG+8Xw8Cdp1WZTGAu9wc00XimqDE7Vz51WNMmkP6ck0yki/NaselOzYA==",
   "success": true,
   "projectFilePath": "C:\\Projects\\GitHub\\PixelDatabase\\DataJuggler.PixelDatabase.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Corby\\.nuget\\packages\\datajuggler.ultimatehelper.core\\1.2.1\\datajuggler.ultimatehelper.core.1.2.1.nupkg.sha512",
+    "C:\\Users\\Corby\\.nuget\\packages\\datajuggler.ultimatehelper.core\\1.2.3\\datajuggler.ultimatehelper.core.1.2.3.nupkg.sha512",
     "C:\\Users\\Corby\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Corby\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Corby\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
