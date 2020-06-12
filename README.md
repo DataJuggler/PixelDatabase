@@ -1,4 +1,12 @@
 # PixelDatabase
+
+PixelDatabase.Net is now live: https://pixeldatabase.net
+
+I am starting a batch version of this project now because I need it for videos.
+
+Please visit my YouTube channel, as I make videos for PixelDatabase.Net as often as I can:
+https://www.youtube.com/channel/UCaw0joqvisKr3lYJ9Pd2vHA
+
 This class library and Nuget package was built as part of my project TransparencyMaker. I created this library so I can build a Blazor version for a domain I just bought today called PixelDatabase.
 
 The documentation below is copied from Transparency Maker.
