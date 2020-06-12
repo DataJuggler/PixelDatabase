@@ -1233,6 +1233,9 @@ namespace DataJuggler.PixelDatabase
                                 // verify everything is valid
                                 if ((pixelQuery.Red >= 0) && (pixelQuery.Green >= 0) && (pixelQuery.Red >= 0) && (pixelQuery.Alpha >= 0))
                                 {
+                                    // SetColor is true
+                                    pixelQuery.SetColor = true;
+
                                     // Set the Color
                                     pixelQuery.Color = Color.FromArgb(pixelQuery.Alpha, pixelQuery.Red, pixelQuery.Green, pixelQuery.Blue);
                                 }

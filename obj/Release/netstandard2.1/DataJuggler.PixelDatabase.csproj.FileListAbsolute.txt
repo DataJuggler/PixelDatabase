@@ -6,3 +6,4 @@ C:\Projects\GitHub\PixelDatabase\obj\Release\netstandard2.1\DataJuggler.PixelDat
 C:\Projects\GitHub\PixelDatabase\obj\Release\netstandard2.1\DataJuggler.PixelDatabase.dll
 C:\Projects\GitHub\PixelDatabase\obj\Release\netstandard2.1\DataJuggler.PixelDatabase.pdb
 C:\Projects\GitHub\PixelDatabase\obj\Release\netstandard2.1\DataJuggler.PixelDatabase.csproj.CoreCompileInputs.cache
+C:\Projects\GitHub\PixelDatabase\obj\Release\netstandard2.1\DataJuggler.PixelDatabase.csprojAssemblyReference.cache

@@ -218,14 +218,14 @@ namespace DataJuggler.PixelDatabase
             #region BlueGreenDifference
             /// <summary>
             /// This read only property returns the value for 'BlueGreenDifference'.
-            /// This value is calculated by taking the absolute value of Blue - Green.
+            /// This value is calculated by taking the value of Blue - Green.
             /// </summary>
             public int BlueGreenDifference
             {
                 get
                 {
                     // initial value
-                    int blueGreenDifference = Math.Abs(Blue - Green);
+                    int blueGreenDifference = Blue - Green;
                     
                     // return value
                     return blueGreenDifference;
@@ -253,14 +253,14 @@ namespace DataJuggler.PixelDatabase
             #region BlueRedDifference
             /// <summary>
             /// This read only property returns the value for 'BlueRedDifference'.
-            /// This value is calculated by taking the absolute value of Blue - Red.
+            /// This value is calculated by taking the value of Blue - Red.
             /// </summary>
             public int BlueRedDifference
             {
                 get
                 {
                     // initial value
-                    int blueRedDifference = Math.Abs(Blue - Red);
+                    int blueRedDifference = Blue - Red;
                     
                     // return value
                     return blueRedDifference;
@@ -370,14 +370,14 @@ namespace DataJuggler.PixelDatabase
             #region GreenRedDifference
             /// <summary>
             /// This read only property returns the value for 'GreenRedDifference'.
-            /// This value is calculated by taking the absolute value of Green - Red.
+            /// This value is calculated by taking the value of Green - Red.
             /// </summary>
             public int GreenRedDifference
             {
                 get
                 {
                     // initial value
-                    int greenRedDifference = Math.Abs(Green - Red);
+                    int greenRedDifference = Green - Red;
                     
                     // return value
                     return greenRedDifference;

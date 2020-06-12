@@ -6,23 +6,23 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "DataJuggler.PixelDatabase/1.0.7": {
+      "DataJuggler.PixelDatabase/1.1.1": {
         "dependencies": {
-          "DataJuggler.UltimateHelper.Core": "1.2.3",
+          "DataJuggler.UltimateHelper.Core": "1.2.4",
           "System.Drawing.Common": "4.7.0"
         },
         "runtime": {
           "DataJuggler.PixelDatabase.dll": {}
         }
       },
-      "DataJuggler.UltimateHelper.Core/1.2.3": {
+      "DataJuggler.UltimateHelper.Core/1.2.4": {
         "dependencies": {
           "System.Data.SqlClient": "4.8.0"
         },
         "runtime": {
           "lib/netcoreapp3.1/DataJuggler.UltimateHelper.Core.dll": {
-            "assemblyVersion": "1.2.2.0",
-            "fileVersion": "1.2.2.0"
+            "assemblyVersion": "1.2.4.0",
+            "fileVersion": "1.2.4.0"
           }
         }
       },
@@ -149,17 +149,17 @@
     }
   },
   "libraries": {
-    "DataJuggler.PixelDatabase/1.0.7": {
+    "DataJuggler.PixelDatabase/1.1.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "DataJuggler.UltimateHelper.Core/1.2.3": {
+    "DataJuggler.UltimateHelper.Core/1.2.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-BFK/WP//oOCvCEvIWLP/vanzibz+YWCUasdYKSG6CySw22pl/EcnNqXeW0T+TtPOkmtyh1HcoUTQRUO2kDCb6A==",
-      "path": "datajuggler.ultimatehelper.core/1.2.3",
-      "hashPath": "datajuggler.ultimatehelper.core.1.2.3.nupkg.sha512"
+      "sha512": "sha512-WXFUsPy0zp3G2boschSac27WDR8oxq8gSvRNVj38iIaCpY9/Mq9HDznT85WYZxrVIQrSEro4ScCOOnZtZoyyxw==",
+      "path": "datajuggler.ultimatehelper.core/1.2.4",
+      "hashPath": "datajuggler.ultimatehelper.core.1.2.4.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/3.1.0": {
       "type": "package",
