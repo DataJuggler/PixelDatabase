@@ -3,10 +3,16 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netcoreapp3.1;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project called PixelDatabase.Net https://pixeldatabase.net (will be live by April 15 2020).
+    <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>1.1.3: I removed Absolute value from BlueRedDifference, BlueGreenDifference and GreenRedDifference.
+    <PackageReleaseNotes>1.1.6: Added a new method CreateSubImage. Tested and it works, but not tested very thoroughly
+
+1.1.5: I added a new method ApplyPixel, which was added to the .Net Framework version so I can call this from a Paint.Net plug-in
+
+1.1.4: I had to update DataJuggler.UltimateHelper.Core.IsNumeric method to support negative numbers.
+
+1.1.3: I removed Absolute value from BlueRedDifference, BlueGreenDifference and GreenRedDifference.
 After working with these values for a few weeks, I discovered there is a difference between blue - red and red - blue, sometimes. 
 
 1.1.2: I fixed a bug that has been bugging me for days. Now you apply a color:
@@ -77,7 +83,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>1.1.3</Version>
+    <Version>1.1.6</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -91,7 +97,7 @@ First release, i will update the rest of the info if it gets past proof of conce
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.4" />
+    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.5" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 

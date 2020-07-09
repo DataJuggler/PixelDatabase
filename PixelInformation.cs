@@ -27,7 +27,6 @@ namespace DataJuggler.PixelDatabase
         private int x;
         private int y;
         private bool isMask;
-        private Guid updateId;
         #endregion
 
         #region Constructors

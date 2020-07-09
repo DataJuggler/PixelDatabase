@@ -7,7 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using DataJuggler.PixelDatabase.Enumerations;
-using System.Linq;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 #endregion
 
@@ -31,7 +32,7 @@ namespace DataJuggler.PixelDatabase
         private List<Layer> layers;
         private PixelQuery pixelQuery;
         private string resetPath;
-        private string undoPath;
+        private string undoPath;        
         #endregion
 
         #region Constructor
@@ -232,7 +233,7 @@ namespace DataJuggler.PixelDatabase
                 if ((NullHelper.Exists(pixelQuery)) && (pixelQuery.IsValid) && (HasDirectBitmap))
                 {  
                     // calculate the range of pixels in the DirectBitmap to iterate
-                    QueryRange range = CreateQueryRange(pixelQuery.Criteria);
+                    QueryRange range = CreateQueryRange();
 
                     // if the PixelQuery does not contain a LastUpdate criteria item
                     if ((pixelQuery.ContainsLastUpdateCriteria) && (HasLastUpdate) && (LastUpdate.Available))
@@ -280,31 +281,8 @@ namespace DataJuggler.PixelDatabase
                             // if the value for shouldThisPixelBeUpdated is true
                             if (shouldThisPixelBeUpdated)
                             {
-                                // if SwapColors
-                                if (pixelQuery.SwapColors)
-                                {
-                                    // Set color2
-                                    newColor = SwapColor(color, pixelQuery);
-                                }
-                                else if (pixelQuery.AdjustColor)
-                                {
-                                    newColor = AdjustColor(color, pixelQuery);
-                                }
-                                else if (pixelQuery.SetColor)
-                                {
-                                    // Set the color from here
-                                    newColor = pixelQuery.Color;
-                                }
-                                else if (pixelQuery.ActionType == ActionTypeEnum.HidePixels)
-                                {
-                                    // set to transparent
-                                    newColor = Color.FromArgb(0, color);
-                                }
-                                else if (pixelQuery.ActionType == ActionTypeEnum.ShowPixels)
-                                {
-                                    // set to visible
-                                    newColor = Color.FromArgb(255, color);
-                                }
+                                // apply the pixel
+                                newColor = ApplyPixel(color, pixelQuery);
 
                                 // Increment the value for count
                                 count++;
@@ -388,6 +366,47 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region ApplyPixel(Color color, PixelQuery pixelQuery)
+            /// <summary>
+            /// This method expects you to have called ShouldPixelBeUpdated first.
+            /// This method determines the new color for the color passed in and the criteria.
+            /// </summary>
+            public Color ApplyPixel(Color color, PixelQuery pixelQuery)
+            {
+                // initial value
+                Color newColor = color;
+
+                // if SwapColors
+                if (pixelQuery.SwapColors)
+                {
+                    // Set color2
+                    newColor = SwapColor(color, pixelQuery);
+                }
+                else if (pixelQuery.AdjustColor)
+                {
+                    newColor = AdjustColor(color, pixelQuery);
+                }
+                else if (pixelQuery.SetColor)
+                {
+                    // Set the color from here
+                    newColor = pixelQuery.Color;
+                }
+                else if (pixelQuery.ActionType == ActionTypeEnum.HidePixels)
+                {
+                    // set to transparent
+                    newColor = Color.FromArgb(0, color);
+                }
+                else if (pixelQuery.ActionType == ActionTypeEnum.ShowPixels)
+                {
+                    // set to visible
+                    newColor = Color.FromArgb(255, color);
+                }
+                
+                // return value
+                return newColor;
+            }
+            #endregion
+            
             #region ApplyQuery(string queryText)
             /// <summary>
             /// This method parses and applies the queryText passed in.
@@ -479,6 +498,19 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region ApplyBatchQuery(string queryText, StatusUpdate status)
+            /// <summary>
+            /// This method is used to apply multiple batches, split on the word go
+            /// </summary>
+            /// <param name="queryText"></param>
+            /// <param name="status"></param>
+            /// <returns></returns>
+            public void ApplyBatchQuery(string queryText, StatusUpdate status)
+            {
+                         
+            }
+            #endregion
+
             #region ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
             /// This method Apply Pixels
@@ -505,7 +537,7 @@ namespace DataJuggler.PixelDatabase
 
                         // if this pixel is not part of any active masks
                         if ((pixelQuery.AdjustColor) || (pixelQuery.SwapColors) || (pixelQuery.SetColor))
-                        {  
+                        {
                             // if adjust color is true
                             if (pixelQuery.AdjustColor)
                             {
@@ -1423,11 +1455,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region CreateQueryRange(List<PixelCriteria> criterias)
+            #region CreateQueryRange()
             /// <summary>
             /// This method returns the Query Range
             /// </summary>
-            public QueryRange CreateQueryRange(List<PixelCriteria> criterias)
+            public QueryRange CreateQueryRange()
             {
                 // initial value
                 QueryRange range = new QueryRange();
@@ -1471,6 +1503,106 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region CreateSubImage()
+            /// <summary>
+            /// This method returns a Sub Image
+            /// </summary>
+            public Bitmap CreateSubImage(Point topLeft, Rectangle size)
+            {
+                // initial value
+                Bitmap subImage = null;
+
+                try
+                {
+                    // for debugging only
+                    int originalX = topLeft.X;
+                    int originalY = topLeft.Y;
+
+                    // locals
+                    int endX = 0;
+                    int endY = 0;
+                    int a = 0;
+                    int b = 0;
+                    PixelInformation pixel = null;
+
+                    // if the DirectBitmap.Bitmap exists
+                    if ((HasDirectBitmap) && (DirectBitmap.Bitmap != null))
+                    {
+                        // get a reference to the source image
+                        Bitmap source = DirectBitmap.Bitmap;
+
+                        // if if the sub image is not bigger than the source
+                        if ((size.Width < source.Width) && (size.Height < source.Height))
+                        {
+                            // if the X is further right than the full width, the width is shortened
+                            if (topLeft.X > (source.Width - topLeft.X))
+                            {
+                                // reset the Width
+                                size.Width = source.Width - topLeft.X;
+                            }
+
+                            // if the Y is further right than the full width, the width is shortened
+                            if (topLeft.Y > (source.Height - topLeft.Y))
+                            {
+                                // reset the Height
+                                size.Height = source.Height - topLeft.Y;
+                            }
+
+                            // set the endX value
+                            endX = topLeft.X + size.Width -1;
+                            endY = topLeft.Y + size.Height -1;
+
+                            // create a subimage
+                            subImage = new Bitmap(size.Width, size.Height);
+
+                            // Code To Lockbits
+                            BitmapData bitmapData = subImage.LockBits(new Rectangle(0, 0, size.Width, size.Height), ImageLockMode.ReadWrite, source.PixelFormat);
+                            IntPtr pointer = bitmapData.Scan0;
+                            int imageSize = Math.Abs(bitmapData.Stride) * size.Height;
+                            byte[] pixels = new byte[imageSize];
+                            Marshal.Copy(pointer, pixels, 0, imageSize);
+
+                            // Unlock the bits
+                            subImage.UnlockBits(bitmapData);
+
+                            // End Code To Lockbits
+
+                            // iterate the x pixels
+                            for(int x = topLeft.X; x < endX; x++)
+                            {
+                                // reset b every x position
+                                b = 0;
+
+                                // iterate the y pixels
+                                for (int y = topLeft.Y; y < endY; y++)
+                                {
+                                    // get the pixel
+                                    pixel = GetPixel(x, y);
+
+                                    // Set the Pixel
+                                    subImage.SetPixel(a, b, pixel.Color);    
+                            
+                                    // Increment the value for b
+                                    b++;
+                                }
+                            
+                                // Increment the value for a
+                                a++;   
+                            }
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    // For debugging only for now
+                    DebugHelper.WriteDebugError("CreateSubImage", "PixelDatabase", error);
+                }
+                
+                // return value
+                return subImage;
+            }
+            #endregion
+            
             #region Dispose()
             /// <summary>
             /// method Dispose

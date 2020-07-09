@@ -1,9 +1,0 @@
-C:\Projects\GitHub\PixelDatabase\bin\Debug\netstandard2.1\DataJuggler.PixelDatabase.deps.json
-C:\Projects\GitHub\PixelDatabase\bin\Debug\netstandard2.1\DataJuggler.PixelDatabase.dll
-C:\Projects\GitHub\PixelDatabase\bin\Debug\netstandard2.1\DataJuggler.PixelDatabase.pdb
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.csprojAssemblyReference.cache
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.csproj.CoreCompileInputs.cache
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.AssemblyInfoInputs.cache
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.AssemblyInfo.cs
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.dll
-C:\Projects\GitHub\PixelDatabase\obj\Debug\netstandard2.1\DataJuggler.PixelDatabase.pdb

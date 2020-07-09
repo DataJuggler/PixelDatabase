@@ -426,7 +426,7 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    bool hasPixelsUpdated = (this.PixelsUpdated != null);
+                    bool hasPixelsUpdated = (this.PixelsUpdated > 0);
                     
                     // return value
                     return hasPixelsUpdated;
