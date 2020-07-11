@@ -27,6 +27,7 @@ namespace DataJuggler.PixelDatabase
         private int x;
         private int y;
         private bool isMask;
+        private long score;
         #endregion
 
         #region Constructors
@@ -555,6 +556,17 @@ namespace DataJuggler.PixelDatabase
                     // return value
                     return redMinDifference;
                 }
+            }
+            #endregion
+            
+            #region Score
+            /// <summary>
+            /// This property gets or sets the value for 'Score'.
+            /// </summary>
+            public long Score
+            {
+                get { return score; }
+                set { score = value; }
             }
             #endregion
             

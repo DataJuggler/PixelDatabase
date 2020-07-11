@@ -249,8 +249,12 @@ namespace DataJuggler.PixelDatabase
                     }
                     else if ((pixelQuery.ContainsLastUpdateCriteria) && ((!HasLastUpdate) || (!LastUpdate.Available)))
                     {
-                        // Show a query
-                        status("Last Update Is Not Available", 0);
+                        // if the Status object exists
+                        if (NullHelper.Exists(status))
+                        {
+                            // Show a message
+                            status("Last Update Is Not Available", 0);
+                        }
                     }
                     else
                     {
@@ -304,8 +308,12 @@ namespace DataJuggler.PixelDatabase
                                         // set the message
                                         string message = "Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", range.Size);
 
-                                        // notify the caller
-                                        status(message, count);    
+                                        // if the status object exists
+                                        if (NullHelper.Exists(status))
+                                        {
+                                            // notify the caller
+                                            status(message, count);
+                                        }
                                     }
                                 }
 
@@ -2056,18 +2064,94 @@ namespace DataJuggler.PixelDatabase
                 // initial value
                 PixelInformation pixel = null;
 
-                // get the color
-                Color color = DirectBitmap.GetPixel(x, y);
+                try
+                {
+                     // get the color
+                    Color color = DirectBitmap.GetPixel(x, y);
 
-                // Create a new instance of a 'PixelInformation' object.
-                pixel = new PixelInformation();
+                    // Create a new instance of a 'PixelInformation' object.
+                    pixel = new PixelInformation();
 
-                pixel.Color = color;
-                pixel.X = x;
-                pixel.Y = y;
+                    // Set the color
+                    pixel.Color = color;
+                    pixel.X = x;
+                    pixel.Y = y;
+                }
+                catch (Exception error)
+                {
+                    // Set the error
+                    DebugHelper.WriteDebugError("GetPixel", "PixelDatabase.cs", error);
+                }
 
                 // return value
                 return pixel;
+            }
+            #endregion
+
+            #region GetPixels(int x, int y, int height, int width, int count)
+            /// <summary>
+            /// This method returns a list of Pixels up to the count of pixels
+            /// </summary>
+            public List<PixelInformation> GetPixels(int x, int y, int height, int width, int count)
+            {
+                // initial value
+                List<PixelInformation> pixels = null;
+
+                // local
+                int tempCount = 0;
+                bool done = false;    
+
+                // if the value for HasDirectBitmap is true
+                if (HasDirectBitmap)
+                {
+                    // Create a new collection of 'PixelInformation' objects.
+                    pixels = new List<PixelInformation>();
+
+                    // iterate the x pixels
+                    for (int a = x; a < this.DirectBitmap.Bitmap.Width;a++)
+                    {
+                        // if the value for done is true
+                        if (done)
+                        {
+                            // exit
+                            break;
+                        }
+
+                        // iterate the y pixels
+                        for (int b = y; b < this.DirectBitmap.Bitmap.Height;b++)
+                        {  
+                            // Increment the value for tempCount
+                            tempCount++;
+
+                            // get the color at this coordinate
+                            Color tempColor = this.DirectBitmap.Bitmap.GetPixel(a, b);
+   
+                            // Create a new instance of a 'PixelInformation' object.
+                            PixelInformation pixel = new PixelInformation();
+
+                            // set the properties
+                            pixel.X = a;
+                            pixel.Y = b;
+                            pixel.Color = tempColor;
+
+                            // Add this item
+                            pixels.Add(pixel);
+
+                            // if we have reached the count
+                            if (tempCount >= count)
+                            { 
+                                // we have to exit the outer loop
+                                done = true;
+
+                                // break out of the loop
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return pixels;
             }
             #endregion
             
@@ -2271,7 +2355,184 @@ namespace DataJuggler.PixelDatabase
                 return pixelCriteria;
             }
             #endregion
+            
+            #region ScorePixel(PixelInformation source, PixelInformation target)
+            /// <summary>
+            /// This method returns the Pixel
+            /// </summary>
+            public SearchResult ScorePixel(PixelInformation source, PixelInformation target)
+            {
+                // initial value
+                SearchResult result = new SearchResult();
+  
+                // if botht the tempDB and the pixel exist                
+                if (NullHelper.Exists(source, target))
+                {
+                    // Score Red, Green, Blue and Alpha
+                    result.Score += Math.Abs(source.Red - target.Red);
+                    result.Score += Math.Abs(source.Green - target.Green);
+                    result.Score += Math.Abs(source.Blue - target.Blue);
+                    result.Score += Math.Abs(source.Alpha - target.Alpha);
+                }
 
+                // return value
+                return result;
+            }
+            #endregion
+            
+            #region ScorePixels(List<PixelInformation> source, List<PixelInformation> target)
+            /// <summary>
+            /// This method returns the Pixels
+            /// </summary>
+            public SearchResult ScorePixels(List<PixelInformation> source, List<PixelInformation> target)
+            {
+                // initial value
+                SearchResult result = new SearchResult();
+
+                // verify both lists exists                
+                if (ListHelper.HasOneOrMoreItems(source, target))
+                {
+                    // if the same number of items do not exist
+                    if (source.Count != target.Count)
+                    {
+                        // Set the Score to 1 billion -2
+                        result.Score = 9999999998;
+                    }
+                    else
+                    {
+                        // iterate the count
+                        for (int x = 0; x < source.Count; x++)
+                        {
+                            // get the tempResult
+                            SearchResult tempResult = ScorePixel(source[x], target[x]);
+
+                            // Add this score
+                            result.Score += tempResult.Score;
+                        }
+                    }
+                }
+                else
+                {
+                    // Set the Score to 1 billion -1
+                    result.Score = 999999999;
+                }
+                
+                // return value
+                return result;
+            }
+            #endregion
+            
+            #region SearchForSubImage(Bitmap bitmap, int searchDepth = 10)
+            /// <summary>
+            /// This method returns the For Sub Image
+            /// </summary>
+            public SearchResult SearchForSubImage(Bitmap bitmap, int searchDepth = 10)
+            {
+                // initial value
+                SearchResult result = null;
+
+                // locals
+                PixelDatabase tempDB = null;
+                PixelInformation lowestPixel = null;
+                PixelInformation tempPixel = null;
+                Rectangle rectangle;
+                List<PixelInformation> searchPixels = null;
+                List<PixelInformation> targetPixels = null;
+                bool done = false;
+            
+                try
+                {
+                    // load the tempDB
+                    tempDB = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+
+                    // If the tempDB object exists
+                    if (NullHelper.Exists(tempDB))
+                    {
+                        // Create a new instance of a 'Rectangle' object.
+                        rectangle = new Rectangle();
+                        rectangle.Width = tempDB.Width;
+                        rectangle.Height = tempDB.Height;
+
+                        // get the searchPixels
+                        searchPixels = tempDB.GetPixels(0, 0, rectangle.Height, rectangle.Width, searchDepth);
+    
+                        // search all pixels in this database
+                        for (int x = 0; x < Width; x++)
+                        {  
+                            // break out
+                            if (done)
+                            { 
+                                // break out of this loop
+                                break;
+                            }
+
+                            for (int y = 0; y < Height; y++)
+                            {
+                                // Get the pixel at this location
+                                tempPixel = GetPixel(x, y);
+
+                                // if the tempPixel exists
+                                if (NullHelper.Exists(tempPixel))
+                                {
+                                    // get the targetPixels
+                                    targetPixels = GetPixels(x, y, rectangle.Height, rectangle.Width, searchDepth);
+
+                                    // Score these pixels
+                                    SearchResult score = ScorePixels(searchPixels, targetPixels);
+
+                                    // Score this pixel
+                                    tempPixel.Score = score.Score;
+    
+                                    // if the lowestPixel has not been set yet
+                                    if (NullHelper.IsNull(lowestPixel))
+                                    {
+                                        // set the lowestPixel
+                                        lowestPixel = tempPixel;
+                                    }
+                                    else if (tempPixel.Score < lowestPixel.Score)
+                                    {
+                                        // Set the new lowestPixel
+                                        lowestPixel = tempPixel;
+
+                                        // break out
+                                        if (tempPixel.Score == 0)
+                                        { 
+                                            // set done to true
+                                            done = true;
+
+                                            // break out of the loop
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // if the lowetPixel exists
+                    if (NullHelper.Exists(lowestPixel))
+                    {
+                        // Create a new instance of a 'SearchResult' object.
+                        result = new SearchResult();
+
+                        // set the result
+                        result.Point = new Point(lowestPixel.X, lowestPixel.Y);
+
+                        // Set the Score
+                        result.Score = lowestPixel.Score;
+                    }
+                }
+                catch (Exception error)
+                {
+                    // For debugging only
+                    DebugHelper.WriteDebugError("SearchForSubImage", "PixelDatabase.cs", error);
+                }
+                
+                // return value
+                return result;
+            }
+            #endregion
+            
             #region SetAlpha(ActionTypeEnum actionType, PixelQuery pixelQuery = null)
             /// <summary>
             /// This method returns the Alpha
@@ -2673,6 +2934,30 @@ namespace DataJuggler.PixelDatabase
                 }
             }
             #endregion
+
+            #region Height
+            /// <summary>
+            /// This read only property returns the Height of the DirectBitmap.Bitmap.
+            /// </summary>
+            public int Height
+            {
+                get
+                {
+                    // initial value
+                    int height = 0;
+
+                    // if the DirectBitmap.Bitmap exists
+                    if ((HasDirectBitmap) && (DirectBitmap.Bitmap != null))
+                    {   
+                        // set the return value
+                        height = DirectBitmap.Bitmap.Height;
+                    }
+
+                    // return value
+                    return height;
+                }                
+            }
+            #endregion
             
             #region LastUpdate
             /// <summary>
@@ -2759,6 +3044,30 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return undoPath; }
                 set { undoPath = value; }
+            }
+            #endregion
+
+            #region Width
+            /// <summary>
+            /// This read only property returns the Width of the DirectBitmap.Bitmap.
+            /// </summary>
+            public int Width
+            {
+                get
+                {
+                    // initial value
+                    int width = 0;
+
+                    // if the DirectBitmap.Bitmap exists
+                    if ((HasDirectBitmap) && (DirectBitmap.Bitmap != null))
+                    {   
+                        // set the return value
+                        width = DirectBitmap.Bitmap.Width;
+                    }
+
+                    // return value
+                    return width;
+                }                
             }
             #endregion
             
