@@ -51,6 +51,18 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion
 
+    #region NormalizeDirectionEnum
+    /// <summary>
+    /// This enum is used to determine if a pixel is above or below the Min Max difference
+    /// </summary>
+    public enum NormalizeDirectionEnum : int
+    {
+        Unknown = 0,
+        Decreasing = -1,
+        Increasing = 1
+    }
+    #endregion
+
     #region PixelTypeEnum : int
     /// <summary>
     /// This is the type of pixel a PixelCriteria will apply to.

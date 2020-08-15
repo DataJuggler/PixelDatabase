@@ -2,6 +2,7 @@
 
 #region using statements
 
+using DataJuggler.RandomShuffler.Core;
 using DataJuggler.UltimateHelper.Core;
 using System;
 using System.Collections.Generic;
@@ -166,7 +167,7 @@ namespace DataJuggler.PixelDatabase
                             // required
                             break;
 
-                            case RGBColor.BlueRed:
+                        case RGBColor.BlueRed:
 
                             // get the adjust color (guarunteed to be in range)
                             adjustedValue = AdjustValue(previousColor.R, pixelQuery.Adjustment);
@@ -211,6 +212,35 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region AdjustColorValue(int value, int adjustment
+            /// <summary>
+            /// This method returns the new integer value after the adjustment.
+            /// Regardless of what is passed in, the value will return 0
+            /// </summary>
+            public int AdjustColorValue(int value, int adjustment)
+            {
+                // initial value
+                int adjustedColorValue = value + adjustment;
+
+                // if less than zero
+                if (adjustedColorValue < 0)
+                {
+                    // set to zero
+                    adjustedColorValue = 0;
+                }
+
+                // if higher than 255
+                if (adjustedColorValue > 255)
+                {
+                    // set to max
+                    adjustedColorValue = 255;
+                }
+                
+                // return value
+                return adjustedColorValue;
+            }
+            #endregion
+            
             #region ApplyCriteria(PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
             /// This method applies the changes in the PixelQuery to the DirectBitmap.
@@ -228,10 +258,14 @@ namespace DataJuggler.PixelDatabase
                 bool addToLastUpdate = true;
                 int startIndex = -1;
                 int endIndex = -1;
+                List<PixelCriteria> criteria = null;
                 
                 // if the pixels exist and the pixelQuery exists and is valid
                 if ((NullHelper.Exists(pixelQuery)) && (pixelQuery.IsValid) && (HasDirectBitmap))
-                {  
+                {
+                    // Set the criteria
+                    criteria = pixelQuery.Criteria;
+
                     // calculate the range of pixels in the DirectBitmap to iterate
                     QueryRange range = CreateQueryRange();
 
@@ -262,11 +296,15 @@ namespace DataJuggler.PixelDatabase
                         LastUpdate = new LastUpdate();
                     }
 
+                    // iterate the y pixels
                     for (int y = range.StartY; y <= range.EndY; y++)
                     {
-                        // iterate the pixels in each row and each column
+                        // iterate the x pixels
                         for (int x = range.StartX; x <= range.EndX; x++)
                         {
+                            // Increment the value for count
+                            count++;
+
                             // Reset
                             newColor = Color.Empty;
 
@@ -279,8 +317,8 @@ namespace DataJuggler.PixelDatabase
                             // set the Index
                             pixel.Index = x + (y * DirectBitmap.Width);
 
-                            // Should this pixel be updated
-                            shouldThisPixelBeUpdated = ShouldBeUpdated(pixel, pixelQuery.Criteria);
+                            // Should this pixel be updated (in such situations like Scatter and Normalize, this actually updates)
+                            shouldThisPixelBeUpdated = ShouldBeUpdated(pixel, pixelQuery, ref pixelsUpdated, range, count, status);
 
                             // if the value for shouldThisPixelBeUpdated is true
                             if (shouldThisPixelBeUpdated)
@@ -288,52 +326,15 @@ namespace DataJuggler.PixelDatabase
                                 // apply the pixel
                                 newColor = ApplyPixel(color, pixelQuery);
 
-                                // Increment the value for count
-                                count++;
-
-                                // refresh every 500,000 in case this is a long query
-                                if (count % 500000 == 0)
-                                {
-                                    // if abort is true
-                                    if (Abort)
-                                    {
-                                        // Show the user a message
-                                        status("Operation Aborted.", 0);
-
-                                        // break out of the loop
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // set the message
-                                        string message = "Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", range.Size);
-
-                                        // if the status object exists
-                                        if (NullHelper.Exists(status))
-                                        {
-                                            // notify the caller
-                                            status(message, count);
-                                        }
-                                    }
-                                }
-
-                                // if the newColor exists
-                                if (newColor != Color.Empty)
-                                {
-                                    // Set the newColor
-                                    DirectBitmap.SetPixel(x, y, newColor);
-
-                                    // Only add this pixel if it is still available
-                                    if ((HasLastUpdate) && (LastUpdate.Available) && (addToLastUpdate))
-                                    {
-                                        // Add this index to the LastUpdate
-                                        LastUpdate.AddIndex(pixel.Index);                                    
-                                    }
-                                }
+                                // Set Pixel Color
+                                SetPixelColor(x, y, newColor, addToLastUpdate, pixel.Index);
 
                                 // increase pixelsUpdated
-                                pixelsUpdated++;
+                                pixelsUpdated++;   
                             }
+                            
+                            // Update the graph
+                            HandleGraph(count, pixelsUpdated, status, range);
                         }
                     }
 
@@ -443,7 +444,7 @@ namespace DataJuggler.PixelDatabase
                         // if SetBackColor is the action type, and there is exactly 1 Criteria object
                         if ((pixelQuery.ActionType == ActionTypeEnum.SetBackColor) && (pixelQuery.HasCriteria) && (pixelQuery.Criteria.Count == 1))
                         {
-                            // this is TransparencyMaker specific
+                            // this is TransparencyMaker specific so far
 
                             // If RemoveBackColor is true
                             if (pixelQuery.Criteria[0].RemoveBackColor)
@@ -2201,7 +2202,7 @@ namespace DataJuggler.PixelDatabase
                 return pixels;
             }
             #endregion
-
+    
             #region HandleDrawLine(PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
             /// This method Handle Draw Line
@@ -2258,6 +2259,28 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region HandleGraph(int count, int pixelsUpdated, StatusUpdate status, QueryRange range)
+            /// <summary>
+            /// This method Handle Graph
+            /// </summary>
+            public void HandleGraph(int count, int pixelsUpdated, StatusUpdate status, QueryRange range)
+            {
+                // refresh every 500,000 in case this is a long query
+                if (count % 500000 == 0)
+                {  
+                    // set the message
+                    string message = "Updated " + String.Format("{0:n0}", pixelsUpdated) + " of " +  String.Format("{0:n0}", range.Size);
+
+                    // if the status object exists
+                    if (NullHelper.Exists(status))
+                    {
+                        // notify the caller
+                        status(message, count);
+                    }                    
+                }
+            }
+            #endregion
+            
             #region HandleHideFrom(PixelQuery pixelQuery)
             /// <summary>
             /// This method Handle Hide From
@@ -2273,6 +2296,224 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region HandleNormalization(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            /// <summary>
+            /// This method Handle Normalization
+            /// </summary>
+            public void HandleNormalization(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            {
+                // if there is a NormalizeColor set, then only 1 channel is updated
+                if (pixelQuery.HasNormalizeColor)
+                {
+                    // if color red is only pixel updated
+                    if (pixelQuery.NormalizeColor == Color.Red)
+                    {
+                        // Handle only the Red pixels
+                        HandleNormalizationRed(pixel, pixelQuery, ref pixelsUpdated, range);
+                    }    
+                    else if (pixelQuery.NormalizeColor == Color.Green)
+                    {
+                        // Handle only the Green pixels
+                        HandleNormalizationGreen(pixel, pixelQuery, ref pixelsUpdated, range);
+                    }    
+                    else if (pixelQuery.NormalizeColor == Color.Blue)
+                    {
+                        // Handle only the Blue pixels
+                        HandleNormalizationBlue(pixel, pixelQuery, ref pixelsUpdated, range);
+                    }    
+                }
+            }
+            #endregion
+
+            #region HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            /// <summary>
+            /// This method Handle Blue Normalization
+            /// </summary>
+            public void HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            {
+                // locals
+                int blue = 0;
+                Color newColor = Color.Empty;
+                int adjustment = 0;
+                NormalizeDirectionEnum direction = NormalizeDirectionEnum.Unknown;
+
+                // first check if below min
+                if ((pixel.Blue < pixelQuery.Min) || (pixel.Blue > pixelQuery.Max))
+                {
+                    // Determine the direction, meaning will be increasing or decreasing for this pixel
+                    direction = SetDirection(pixel, pixelQuery);
+
+                    do
+                    {
+                        // if this pixel is below the min
+                        if (direction == NormalizeDirectionEnum.Increasing)
+                        {
+                            // set the adjustment
+                            adjustment += pixelQuery.Step;
+
+                            // if we have gone above the max value
+                            if ((pixel.Blue + adjustment) > pixelQuery.Min)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+                        else if (direction == NormalizeDirectionEnum.Decreasing)
+                        {
+                            // set the adjustment
+                            adjustment -= pixelQuery.Step;
+
+                            // This may look strange to Add a negative number, but the adjustment needs to be a negative value
+                            if ((pixel.Blue + adjustment) < pixelQuery.Max)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+
+                    } while (true);
+
+                    // get the new values for Blue, green and blue
+                    blue = AdjustColorValue(pixel.Blue, adjustment);
+                    
+                    // Get the new color
+                    newColor = Color.FromArgb(pixel.Alpha, pixel.Red, pixel.Green, blue);
+
+                    // Set the new PixelColor
+                    SetPixelColor(pixel.X, pixel.Y, newColor, false, pixel.Index);
+
+                    // Increment the value for pixelsUpdated
+                    pixelsUpdated++;
+                }
+            }
+            #endregion
+
+            #region HandleNormalizationGreen(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            /// <summary>
+            /// This method Handle Green Normalization
+            /// </summary>
+            public void HandleNormalizationGreen(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            {
+                // locals
+                int green = 0;
+                Color newColor = Color.Empty;
+                int adjustment = 0;
+                NormalizeDirectionEnum direction = NormalizeDirectionEnum.Unknown;
+
+                // first check if below min
+                if ((pixel.Green < pixelQuery.Min) || (pixel.Green > pixelQuery.Max))
+                {
+                    // Determine the direction, meaning will be increasing or decreasing for this pixel
+                    direction = SetDirection(pixel, pixelQuery);
+
+                    do
+                    {
+                        // if this pixel is below the min
+                        if (direction == NormalizeDirectionEnum.Increasing)
+                        {
+                            // set the adjustment
+                            adjustment += pixelQuery.Step;
+
+                            // if we have gone above the max value
+                            if ((pixel.Green + adjustment) > pixelQuery.Min)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+                        else if (direction == NormalizeDirectionEnum.Decreasing)
+                        {
+                            // set the adjustment
+                            adjustment -= pixelQuery.Step;
+
+                            // This may look strange to Add a negative number, but the adjustment needs to be a negative value
+                            if ((pixel.Green + adjustment) < pixelQuery.Max)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+
+                    } while (true);
+
+                    // get the new values for Green, green and blue
+                    green = AdjustColorValue(pixel.Green, adjustment);
+                    
+                    // Get the new color
+                    newColor = Color.FromArgb(pixel.Alpha, pixel.Red, green, pixel.Blue);
+
+                    // Set the new PixelColor
+                    SetPixelColor(pixel.X, pixel.Y, newColor, false, pixel.Index);
+
+                    // Increment the value for pixelsUpdated
+                    pixelsUpdated++;
+                }
+            }
+            #endregion
+            
+            #region HandleNormalizationRed(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            /// <summary>
+            /// This method Handle Red Normalization
+            /// </summary>
+            public void HandleNormalizationRed(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            {
+                // locals
+                int red = 0;
+                Color newColor = Color.Empty;
+                int adjustment = 0;
+                NormalizeDirectionEnum direction = NormalizeDirectionEnum.Unknown;
+
+                // first check if below min
+                if ((pixel.Red < pixelQuery.Min) || (pixel.Red > pixelQuery.Max))
+                {
+                    // Determine the direction, meaning will be increasing or decreasing for this pixel
+                    direction = SetDirection(pixel, pixelQuery);
+
+                    do
+                    {
+                        // if this pixel is below the min
+                        if (direction == NormalizeDirectionEnum.Increasing)
+                        {
+                            // set the adjustment
+                            adjustment += pixelQuery.Step;
+
+                            // if we have gone above the max value
+                            if ((pixel.Red + adjustment) > pixelQuery.Min)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+                        else if (direction == NormalizeDirectionEnum.Decreasing)
+                        {
+                            // set the adjustment
+                            adjustment -= pixelQuery.Step;
+
+                            // This may look strange to Add a negative number, but the adjustment needs to be a negative value
+                            if ((pixel.Red + adjustment) < pixelQuery.Max)
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+
+                    } while (true);
+
+                    // get the new values for red, green and blue
+                    red = AdjustColorValue(pixel.Red, adjustment);
+                    
+                    // Get the new color
+                    newColor = Color.FromArgb(pixel.Alpha, red, pixel.Green, pixel.Blue);
+
+                    // Set the new PixelColor
+                    SetPixelColor(pixel.X, pixel.Y, newColor, false, pixel.Index);
+
+                    // Increment the value for pixelsUpdated
+                    pixelsUpdated++;
+                }
+            }
+            #endregion
+            
             #region Init()
             /// <summary>
             /// This method  This method performs initializations for this object.
@@ -2568,6 +2809,85 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region SetDirection(PixelInformation pixel, PixelQuery pixelQuery)
+            /// <summary>
+            /// This method returns the Direction
+            /// </summary>
+            public static NormalizeDirectionEnum SetDirection(PixelInformation pixel, PixelQuery pixelQuery)
+            {
+                // initial value
+                NormalizeDirectionEnum direction = NormalizeDirectionEnum.Unknown;
+
+                // If the pixelQuery object exists
+                if (NullHelper.Exists(pixel, pixelQuery))
+                {
+                    // if the NormalizeColor is red
+                    if (pixelQuery.NormalizeColor == Color.Red)
+                    {
+                        // if this Green is below the min
+                        if (pixel.Red < pixelQuery.Min)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Increasing;
+                        }
+                        else if (pixel.Red > pixelQuery.Max)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Decreasing;
+                        }
+                    }
+                    // if Green
+                    else  if (pixelQuery.NormalizeColor == Color.Green)
+                    {
+                        // if this Green is below the min
+                        if (pixel.Green < pixelQuery.Min)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Increasing;
+                        }
+                        else if (pixel.Green > pixelQuery.Max)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Decreasing;
+                        }
+                    }
+                    else if (pixelQuery.NormalizeColor == Color.Blue)
+                    {
+                        // if this pixel is below the min
+                        if (pixel.Blue < pixelQuery.Min)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Increasing;
+                        }
+                        else if (pixel.Blue > pixelQuery.Max)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Decreasing;
+                        }
+                    }
+                    else
+                    {
+                        // defaults to adjusting Total
+
+                        // if this pixel is below the min
+                        if (pixel.Total < pixelQuery.Min)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Increasing;
+                        }
+                        else if (pixel.Total > pixelQuery.Max)
+                        {
+                            // this is a decreasing query
+                            direction = NormalizeDirectionEnum.Decreasing;
+                        }
+                    }
+                }
+                
+                // return value
+                return direction;
+            }
+            #endregion
+            
             #region SetLineColor()
             /// <summary>
             /// This method returns the Line Color
@@ -2626,6 +2946,28 @@ namespace DataJuggler.PixelDatabase
                 
                 // return value
                 return lineColor;
+            }
+            #endregion
+            
+            #region SetPixelColor(int x, int y, Color color, bool addToLastUpdate, int pixelIndex)
+            /// <summary>
+            /// This method Set Pixel Color
+            /// </summary>
+            public void SetPixelColor(int x, int y, Color color, bool addToLastUpdate, int pixelIndex)
+            {
+                // if the newColor exists
+                if (color != Color.Empty)
+                {
+                    // Set the newColor
+                    DirectBitmap.SetPixel(x, y, color);
+
+                    // Only add this pixel if it is still available
+                    if ((HasLastUpdate) && (LastUpdate.Available) && (addToLastUpdate))
+                    {
+                        // Add this index to the LastUpdate
+                        LastUpdate.AddIndex(pixelIndex);                                 
+                    }
+                }
             }
             #endregion
             
@@ -2701,45 +3043,89 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region ShouldBeUpdated(PixelInformation pixel, List<PixelCriteria> criteriaList)
+            #region ShouldBeUpdated(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range, int count, StatusUpdate status)
             /// <summary>
             /// This method returns the If Pixel Should Be Updated
             /// </summary>
-            public bool ShouldBeUpdated(PixelInformation pixel, List<PixelCriteria> criteriaList)
+            public bool ShouldBeUpdated(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range, int count, StatusUpdate status)
             {
                 // initial value
                 bool shouldPixelBeUpdated = false;
-
-                // locals
-                int expectedCount = 0;
-                int actualCount = 0;
-                bool pixelMatchesThisCriteria = false;
-                
-                // Set the expected count
-                expectedCount = criteriaList.Count;
-
-                // Iterate the collection of PixelCriteria objects
-                foreach (PixelCriteria criteria in criteriaList)
+            
+                try
                 {
-                    // Check if the pixel matches this criteria
-                    pixelMatchesThisCriteria = DoesPixelMatchThisCriteria(pixel, criteria);
+                    // locals
+                    int expectedCount = 0;
+                    int actualCount = 0;
+                    bool pixelMatchesThisCriteria = false;
+                    List<PixelCriteria> criteriaList = null;
+                    
+                    // If the pixelQuery object exists
+                    if (NullHelper.Exists(pixelQuery))
+                    {
+                        // set the value for criteriaList
+                        criteriaList = pixelQuery.Criteria;
+                
+                        // Set the expected count
+                        expectedCount = criteriaList.Count;
+   
+                        // Iterate the collection of PixelCriteria objects
+                        foreach (PixelCriteria criteria in criteriaList)
+                        {
+                            // Check if the pixel matches this criteria
+                            pixelMatchesThisCriteria = DoesPixelMatchThisCriteria(pixel, criteria);
 
-                    // if the value for pixelMatchesThisCriteria is true
-                    if (pixelMatchesThisCriteria)
-                    {
-                        // Increment the value for actualTrueCount
-                        actualCount++;
-                    }
-                    else
-                    {
-                        // break out of the loop
-                        break;
+                            // if the value for pixelMatchesThisCriteria is true
+                            if (pixelMatchesThisCriteria)
+                            {
+                                // Increment the value for actualTrueCount
+                                actualCount++;
+                            }
+                            else
+                            {
+                                // break out of the loop
+                                break;
+                            }
+                        }
+
+                        // set to true if the expected count matches the actual count
+                        shouldPixelBeUpdated = (expectedCount == actualCount);
+
+                        // if the value for shouldPixelBeUpdated is true
+                        if ((shouldPixelBeUpdated) && (pixelQuery.Scatter) && (pixelQuery.HasShuffler))
+                        {
+                            // get a value
+                            int rawRandomValue = 0;
+                            double randomValue = 0;
+                        
+                            // get the next value. Times .01 because the shuffler is set to 1 to 10,000, but the values are 0.01 to 99.99
+                            rawRandomValue = pixelQuery.Shuffler.PullNumber();
+    
+                            // lower the value
+                            randomValue = (rawRandomValue * .01);
+                            
+                            // if the randomValue is higher than the ScatterPercent
+                            shouldPixelBeUpdated = (randomValue <= pixelQuery.ScatterPercent);
+                        }
+                        else if ((shouldPixelBeUpdated) && (pixelQuery.Normalize))
+                        {
+                            // Handle the Normalizaiton code
+                            HandleNormalization(pixel, pixelQuery, ref pixelsUpdated, range);
+
+                            // Handle the graph
+                            HandleGraph(count, pixelsUpdated, status, range);
+                        
+                            // this pixel was already updated
+                            shouldPixelBeUpdated = false;
+                        }
                     }
                 }
+                catch (Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("ShouldBeUpdated", "PixelDatabase", error);
+                }
 
-                // set to true if the expected count matches the actual count
-                shouldPixelBeUpdated = (expectedCount == actualCount); 
-                
                 // return value
                 return shouldPixelBeUpdated;
             }

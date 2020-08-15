@@ -32,6 +32,10 @@ namespace DataJuggler.PixelDatabase
         private bool adjustColor;
         private bool swapColors;
         private bool setColor;
+        private bool scatter;
+        private double scatterPercent;
+        private int scatterModX;
+        private int scatterModY;
         private SwapTypeEnum swapType;
         private int adjustment;
         private Mask mask;
@@ -41,6 +45,12 @@ namespace DataJuggler.PixelDatabase
         private RGBColor assignToColor;
         private string queryText;
         private int pixelsUpdated;
+        private bool normalize;
+        private int min;
+        private int max;
+        private int step;
+        private Color normalizeColor;
+        private DataJuggler.RandomShuffler.Core.LargeNumberShuffler shuffler;
         #endregion
 
         #region Constructor
@@ -417,6 +427,57 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region HasMax
+            /// <summary>
+            /// This property returns true if the 'Max' is set.
+            /// </summary>
+            public bool HasMax
+            {
+                get
+                {
+                    // initial value
+                    bool hasMax = (this.Max > 0);
+                    
+                    // return value
+                    return hasMax;
+                }
+            }
+            #endregion
+            
+            #region HasMin
+            /// <summary>
+            /// This property returns true if the 'Min' is set.
+            /// </summary>
+            public bool HasMin
+            {
+                get
+                {
+                    // initial value
+                    bool hasMin = (this.Min > 0);
+                    
+                    // return value
+                    return hasMin;
+                }
+            }
+            #endregion
+            
+            #region HasNormalizeColor
+            /// <summary>
+            /// This property returns true if this object has a 'NormalizeColor'.
+            /// </summary>
+            public bool HasNormalizeColor
+            {
+                get
+                {
+                    // initial value
+                    bool hasNormalizeColor = (this.NormalizeColor != Color.Empty);
+                    
+                    // return value
+                    return hasNormalizeColor;
+                }
+            }
+            #endregion
+            
             #region HasPixelsUpdated
             /// <summary>
             /// This property returns true if this object has a 'PixelsUpdated'.
@@ -430,6 +491,40 @@ namespace DataJuggler.PixelDatabase
                     
                     // return value
                     return hasPixelsUpdated;
+                }
+            }
+            #endregion
+            
+            #region HasShuffler
+            /// <summary>
+            /// This property returns true if this object has a 'Shuffler'.
+            /// </summary>
+            public bool HasShuffler
+            {
+                get
+                {
+                    // initial value
+                    bool hasShuffler = (this.Shuffler != null);
+                    
+                    // return value
+                    return hasShuffler;
+                }
+            }
+            #endregion
+            
+            #region HasStep
+            /// <summary>
+            /// This property returns true if the 'Step' is set.
+            /// </summary>
+            public bool HasStep
+            {
+                get
+                {
+                    // initial value
+                    bool hasStep = (this.Step > 0);
+                    
+                    // return value
+                    return hasStep;
                 }
             }
             #endregion
@@ -494,6 +589,24 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region IsValidNormalizeQuery
+            /// <summary>
+            /// This read only property returns true if a Normalize is true, and the Min, Max and Step are set.
+            /// This query can be extrememely slow on large images
+            /// </summary>
+            public bool IsValidNormalizeQuery
+            {
+                get
+                {
+                    // initial value
+                    bool isValid = (Normalize && HasMin && HasMax && HasStep);
+
+                    // return value
+                    return isValid;
+                }
+            }
+            #endregion
+
             #region Mask
             /// <summary>
             /// This property gets or sets the value for 'Mask'.
@@ -502,6 +615,50 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return mask; }
                 set { mask = value; }
+            }
+            #endregion
+            
+            #region Max
+            /// <summary>
+            /// This property gets or sets the value for 'Max'.
+            /// </summary>
+            public int Max
+            {
+                get { return max; }
+                set { max = value; }
+            }
+            #endregion
+            
+            #region Min
+            /// <summary>
+            /// This property gets or sets the value for 'Min'.
+            /// </summary>
+            public int Min
+            {
+                get { return min; }
+                set { min = value; }
+            }
+            #endregion
+            
+            #region Normalize
+            /// <summary>
+            /// This property gets or sets the value for 'Normalize'.
+            /// </summary>
+            public bool Normalize
+            {
+                get { return normalize; }
+                set { normalize = value; }
+            }
+            #endregion
+            
+            #region NormalizeColor
+            /// <summary>
+            /// This property gets or sets the value for 'NormalizeColor'.
+            /// </summary>
+            public Color NormalizeColor
+            {
+                get { return normalizeColor; }
+                set { normalizeColor = value; }
             }
             #endregion
             
@@ -538,6 +695,50 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
            
+            #region Scatter
+            /// <summary>
+            /// This property gets or sets the value for 'Scatter'.
+            /// </summary>
+            public bool Scatter
+            {
+                get { return scatter; }
+                set { scatter = value; }
+            }
+            #endregion
+            
+            #region ScatterModX
+            /// <summary>
+            /// This property gets or sets the value for 'ScatterModX'.
+            /// </summary>
+            public int ScatterModX
+            {
+                get { return scatterModX; }
+                set { scatterModX = value; }
+            }
+            #endregion
+            
+            #region ScatterModY
+            /// <summary>
+            /// This property gets or sets the value for 'ScatterModY'.
+            /// </summary>
+            public int ScatterModY
+            {
+                get { return scatterModY; }
+                set { scatterModY = value; }
+            }
+            #endregion
+            
+            #region ScatterPercent
+            /// <summary>
+            /// This property gets or sets the value for 'ScatterPercent'.
+            /// </summary>
+            public double ScatterPercent
+            {
+                get { return scatterPercent; }
+                set { scatterPercent = value; }
+            }
+            #endregion
+            
             #region SetColor
             /// <summary>
             /// This property gets or sets the value for 'SetColor'.
@@ -568,6 +769,28 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return setMaskcolorName; }
                 set { setMaskcolorName = value; }
+            }
+            #endregion
+            
+            #region LargeNumberShuffler
+            /// <summary>
+            /// This property gets or sets the value for 'Shuffler'.
+            /// </summary>
+            public DataJuggler.RandomShuffler.Core.LargeNumberShuffler Shuffler
+            {
+                get { return shuffler; }
+                set { shuffler = value; }
+            }
+            #endregion
+            
+            #region Step
+            /// <summary>
+            /// This property gets or sets the value for 'Step'.
+            /// </summary>
+            public int Step
+            {
+                get { return step; }
+                set { step = value; }
             }
             #endregion
             

@@ -73,6 +73,145 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region CheckForNormalize(List<TextLine> lines)
+            /// <summary>
+            /// This method returns the For Normalize
+            /// </summary>
+            public static NormalizeSettings CheckForNormalize(List<TextLine> lines)
+            {
+                // initial value
+                NormalizeSettings normalizeSettings = new NormalizeSettings();
+    
+                // If the lines collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                    // Iterate the collection of TextLine objects
+                    foreach (TextLine line in lines)
+                    {
+                        // if the line starts with Normalize                        
+                        if (line.Text.ToLower().StartsWith("normalize "))
+                        {
+                            // get the words
+                            List<Word> words = WordParser.GetWords(line.Text);
+
+                            // if there are exactly 4 or more words
+                            if (ListHelper.HasXOrMoreItems(words, 4))
+                            {
+                                // Set the value for the property 'Normalize' to true
+                                normalizeSettings.Normalize = true;
+
+                                // Set the Min
+                                normalizeSettings.Min = NumericHelper.ParseInteger(words[1].Text, 0, -1);
+
+                                // Set the Max
+                                normalizeSettings.Max = NumericHelper.ParseInteger(words[2].Text, 0, -1);
+
+                                // Set the Step
+                                normalizeSettings.Step = NumericHelper.ParseInteger(words[3].Text, 0, -1);
+
+                                // if there are 5 or more words
+                                if (ListHelper.HasXOrMoreItems(words, 5))
+                                {
+                                    // Attempt to parse the color
+                                    normalizeSettings.Color = ParseColor(words[4].Text);
+                                }
+
+                                // !f not valid
+                                if (!normalizeSettings.IsValidNormalizeQuery)
+                                {
+                                    // do not Normalize
+                                    normalizeSettings.Normalize = false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Add this line
+                            normalizeSettings.Lines.Add(line);
+                        }
+                    }
+                }
+                
+                // return value
+                return normalizeSettings;
+            }
+            #endregion
+            
+            #region CheckForScatter(List<TextLine> lines)
+            /// <summary>
+            /// This method returns the For Scatter
+            /// </summary>
+            public static ScatterSettings CheckForScatter(List<TextLine> lines)
+            {
+                // initial value
+                ScatterSettings settings = new ScatterSettings();
+
+                // locals
+                char[] delimiters = new char[]{ ' ' };
+                double scatterValue = 0;
+
+                try
+                {
+                    // If the lines collection exists and has one or more items
+                    if (ListHelper.HasOneOrMoreItems(lines))
+                    {
+                        // Iterate the collection of TextLine objects
+                        foreach (TextLine line in lines)
+                        {
+                            // if this is a scatter line
+                            if (line.Text.ToLower().StartsWith("scatter"))
+                            {
+                                // Get the words
+                                List<Word> words = WordParser.GetWords(line.Text, delimiters);
+
+                                // if there are two or more words
+                                if (words.Count >= 2)
+                                {
+                                    // Parse the scatter value
+                                    scatterValue = NumericHelper.ParseDouble(words[1].Text, 0, -1);
+
+                                    // if the scatter value is in range
+                                    if ((scatterValue >= .0001) && (scatterValue <= 99.9999))
+                                    {
+                                        // create the se
+                                        settings.Scatter = true;
+                                        settings.ScatterPercent = scatterValue;
+                                    }
+                                }
+
+                                // if there are 3 or more words
+                                if (words.Count >= 3)
+                                {  
+                                    // Parse ModX
+                                    settings.ModX = NumericHelper.ParseInteger(words[2].Text, 0, -1);
+                                }
+
+                                // if there are 4 words
+                                if (words.Count == 4)
+                                {
+                                    // Parse ModY
+                                    settings.ModY = NumericHelper.ParseInteger(words[3].Text, 0, -1);
+                                }
+                            }
+                            else
+                            {
+                                // Add this line
+                                settings.TextLines.Add(line);
+                            }
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("CheckForScatter", "PixelQueryParser", error);
+                }
+                
+                // return value
+                return settings;
+            }
+            #endregion
+            
             #region CreatePixelCriteria(string text, ActionTypeEnum actionType, int lineNumber, PixelCriteria existingCriteria = null)
             /// <summary>
             /// This method returns the Pixel Criteria
@@ -191,7 +330,7 @@ namespace DataJuggler.PixelDatabase
                             }
                         }
                     }
-                    else if (lineNumber > 1)
+                    else if (!text.StartsWith("where"))
                     {
                         // Create a new instance of a 'PixelCriteria' object.
                         pixelCriteria = new PixelCriteria();
@@ -207,57 +346,57 @@ namespace DataJuggler.PixelDatabase
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.Y;
                         }
-                        else if (text.Contains("bluegreendifference"))
+                        else if (text.Contains("bluegreendiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueGreenDifference;
                         }
-                        else if (text.Contains("bluemindifference"))
+                        else if (text.Contains("bluemindiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueMinDifference;
                         }
-                        else if (text.Contains("bluemaxdifference"))
+                        else if (text.Contains("bluemaxdiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueMaxDifference;
                         }
-                        else if (text.Contains("blueaveragedifference"))
+                        else if (text.Contains("blueaveragediff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueAverageDifference;
                         }
-                        else if (text.Contains("greenaveragedifference"))
+                        else if (text.Contains("greenaveragediff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenAverageDifference;
                         }
-                        else if (text.Contains("greenmindifference"))
+                        else if (text.Contains("greenmindiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenMinDifference;
                         }
-                        else if (text.Contains("greenmaxdifference"))
+                        else if (text.Contains("greenmaxdiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenMaxDifference;
                         }
-                        else if (text.Contains("redaveragedifference"))
+                        else if (text.Contains("redaveragediff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.RedAverageDifference;
                         }
-                        else if (text.Contains("redmindifference"))
+                        else if (text.Contains("redmindiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.RedMinDifference;
                         }
-                        else if (text.Contains("redmaxdifference"))
+                        else if (text.Contains("redmaxdiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.RedMaxDifference;
                         }
-                        else if (text.Contains("blueaveragedifference"))
+                        else if (text.Contains("blueaveragediff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueAverageDifference;
@@ -267,35 +406,32 @@ namespace DataJuggler.PixelDatabase
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueGreen;
                         }
-                        // if this text contains bluered
-                        else if (text.Contains("bluereddifference"))
+                        else if (text.Contains("bluereddiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueRedDifference;
                         }
-                        // if this text contains bluered
                         else if (text.Contains("bluered"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.BlueRed;
                         }
-                        // if this text contains greenred
-                        else if (text.Contains("greenreddifference"))
+                        else if (text.Contains("greenreddiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenRedDifference;
                         }
-                        // if this text contains greenred
                         else if (text.Contains("greenred"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.GreenRed;
                         }
-                        else if (text.Contains("minmaxdifference"))
+                        else if (text.Contains("minmaxdiff"))
                         {
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.MinMaxDifference;
                         }
+                        // if this text contains min
                         else if (text.Contains("min"))
                         {
                             // Set the PixelType
@@ -346,6 +482,85 @@ namespace DataJuggler.PixelDatabase
                 
                 // return value
                 return pixelCriteria;
+            }
+            #endregion
+            
+            #region GetLinesAfterFirstLine(List<TextLine> sourceLines)
+            /// <summary>
+            /// This method returns a list of Lines After First Line
+            /// </summary>
+            public static List<TextLine> GetLinesAfterFirstLine(List<TextLine> sourceLines)
+            {
+                // initial value
+                List<TextLine> lines = null;
+
+                // local 
+                int count = 0;
+
+                // if there are two or more lines
+                if (ListHelper.HasXOrMoreItems(sourceLines, 2))
+                {
+                    // create the return value
+                    lines = new List<TextLine>();
+
+                    // Iterate the collection of TextLine objects
+                    foreach (TextLine line in sourceLines)
+                    {
+                        // Increment the value for count
+                        count++;
+
+                        // if not the first line
+                        if (count > 1)
+                        {
+                            // add this line
+                            lines.Add(line);
+                        }
+                    }
+                }
+
+                // return value
+                return lines;
+            }
+            #endregion
+            
+            #region GetLinesAfterWhere(List<TextLine> lines)
+            /// <summary>
+            /// This method returns a list of Lines After Where
+            /// </summary>
+            public static List<TextLine> GetLinesAfterWhere(List<TextLine> lines)
+            {
+                // initial value
+                List<TextLine> returnLines = new List<TextLine>();
+
+                // local
+                bool whereFound = false;
+
+                // If the lines collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                    // Iterate the collection of TextLine objects
+                    foreach (TextLine line in lines)
+                    {
+                        // if where was found
+                        if (whereFound)
+                        {
+                             // Add this line
+                            returnLines.Add(line);   
+                        }
+                        else
+                        {
+                            // if this line is the Where line, skip it for now, later I may get rid of that requirement
+                            if (line.Text.ToLower().Contains("where"))
+                            {
+                                // where has been found
+                                whereFound = true;
+                            }                        
+                        }
+                    }
+                }
+
+                // return value
+                return returnLines;
             }
             #endregion
             
@@ -471,11 +686,40 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region ParseCriteria(string queryText, ActionTypeEnum actionType)
+            #region ParseColor(string colorName)
+            /// <summary>
+            /// This method returns the Color
+            /// </summary>
+            public static Color ParseColor(string colorName)
+            {
+                // initial value
+                Color color = Color.Empty;
+                
+                // If the colorName string exists
+                if (TextHelper.Exists(colorName))
+                {
+                    try
+                    {
+                        // Set the color
+                        color = Color.FromName(colorName);
+                    }
+                    catch (Exception error)
+                    {
+                        // for debugging only
+                        DebugHelper.WriteDebugError("ParseColor", "PixelQueryParser", error);
+                    }
+                }
+
+                // return value
+                return color;
+            }
+            #endregion
+            
+            #region ParseCriteria(List<TextLine> lines, ActionTypeEnum actionType)
             /// <summary>
             /// This method returns a list of Criteria
             /// </summary>
-            public static List<PixelCriteria> ParseCriteria(string queryText, ActionTypeEnum actionType)
+            public static List<PixelCriteria> ParseCriteria(List<TextLine> lines, ActionTypeEnum actionType)
             {
                 // initial value
                 List<PixelCriteria> criteria = null;
@@ -485,75 +729,84 @@ namespace DataJuggler.PixelDatabase
                 string text = "";
                 PixelCriteria pixelCriteria = null;
 
-                // If the queryText string exists
-                if (TextHelper.Exists(queryText))
-                {   
-                    // Get the lines of text
-                    List<TextLine> lines = WordParser.GetTextLines(queryText);
+                // If the lines collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                    // Create a new collection of 'PixelCriteria' objects.
+                    criteria = new List<PixelCriteria>();
 
-                    // If the lines collection exists and has one or more items
-                    if (ListHelper.HasOneOrMoreItems(lines))
+                    // parse the text lines
+                    foreach (TextLine textLine in lines)
                     {
-                        // Create a new collection of 'PixelCriteria' objects.
-                        criteria = new List<PixelCriteria>();
-
-                        // parse the text lines
-                        foreach (TextLine textLine in lines)
-                        {
-                            // Increment the value for count
-                            count++;
+                        // Increment the value for count
+                        count++;
                             
-                            // Get the text
-                            text = textLine.Text.ToLower();
+                        // Get the text
+                        text = textLine.Text.ToLower();
 
-                            // verify the line has text in case the user hit enter at the end of the line
-                            if (TextHelper.Exists(text))
-                            {  
-                                // if this is DrawLine
-                                if ((actionType == ActionTypeEnum.DrawTransparentLine) || (actionType == ActionTypeEnum.DrawLine))
+                        // verify the line has text in case the user hit enter at the end of the line
+                        if (TextHelper.Exists(text))
+                        {  
+                            // if this is DrawLine
+                            if ((actionType == ActionTypeEnum.DrawTransparentLine) || (actionType == ActionTypeEnum.DrawLine))
+                            {
+                                // if this is the first line
+                                if (count == 1)
                                 {
-                                    // if this is the first line
-                                    if (count == 1)
-                                    {
-                                        // Create the pixelCriteria based upon this text
-                                        pixelCriteria = CreatePixelCriteria(text, actionType, count);
-
-                                        // verify the pixelCriteria exists before adding
-                                        if (pixelCriteria != null)
-                                        {
-                                            // Add this criteria
-                                            criteria.Add(pixelCriteria);
-                                        }
-                                    }
-                                    else if (count == 2)
-                                    {
-                                        // Set the ComparisonText
-                                        SetComparisonType(text, ref pixelCriteria);
-                                    }
-                                    else
-                                    {
-                                        // Create the pixelCriteria based upon this text
-                                        pixelCriteria = CreatePixelCriteria(text, actionType, count, pixelCriteria);
-                                    }
-                                }
-                                else
-                                {  
                                     // Create the pixelCriteria based upon this text
                                     pixelCriteria = CreatePixelCriteria(text, actionType, count);
 
                                     // verify the pixelCriteria exists before adding
                                     if (pixelCriteria != null)
                                     {
-                                        // Set the ComparisonText
-                                        SetComparisonType(text, ref pixelCriteria);
-
                                         // Add this criteria
                                         criteria.Add(pixelCriteria);
                                     }
                                 }
+                                else if (count == 2)
+                                {
+                                    // Set the ComparisonText
+                                    SetComparisonType(text, ref pixelCriteria);
+                                }
+                                else
+                                {
+                                    // Create the pixelCriteria based upon this text
+                                    pixelCriteria = CreatePixelCriteria(text, actionType, count, pixelCriteria);
+                                }
+                            }
+                            else
+                            {  
+                                // Create the pixelCriteria based upon this text
+                                pixelCriteria = CreatePixelCriteria(text, actionType, count);
+
+                                // verify the pixelCriteria exists before adding
+                                if (pixelCriteria != null)
+                                {
+                                    // Set the ComparisonText
+                                    SetComparisonType(text, ref pixelCriteria);
+
+                                    // Add this criteria
+                                    criteria.Add(pixelCriteria);
+                                }
                             }
                         }
                     }
+
+                    // if there is not any criteria, we need to add one for Alpha > 0
+                    if (!ListHelper.HasOneOrMoreItems(criteria))
+                    {
+                        // create default pixel criteria
+                        pixelCriteria = new PixelCriteria();
+
+                        // Set the Properties on the criteria
+                        pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
+                        pixelCriteria.PixelType = PixelTypeEnum.Alpha;
+                        pixelCriteria.MinValue = 1;
+
+                         // Create Default Criteria
+                        criteria = new List<PixelCriteria>();
+                        criteria.Add(pixelCriteria);
+                    } 
                 }
                 
                 // return value
@@ -756,8 +1009,6 @@ namespace DataJuggler.PixelDatabase
                 pixelQuery.QueryText = queryText;
 
                 // locals
-                int count = 0;
-                StringBuilder sb = null;
                 string criteriaText = String.Empty;
                 string updateText = String.Empty;
 
@@ -790,46 +1041,67 @@ namespace DataJuggler.PixelDatabase
                         // for an update query, the second line sets the color values to update to
                         // and the third line starts the where clause.
 
+                        // New feature 7.19.2020: 
+                        // A Scatter query is created like this:
+                        // Update
+                        // Set Color Red
+                        // Scatter 30
+                        // Where
+                        // Rest of where criteria goes here
+
+                        // Set the updateText
+                        updateText = SetUpdateText(lines);
+
+                        // The way scatter works is the lines are tested to contains a Scatter line before the Where clause.
+                        // If a Scatter line exists and has a valid double value between 0.0001 and 99.9999, scatter returns true
+                        //  and the line for the scatter is removed, so the rest of the code funcations as it is.
+                        ScatterSettings settings = CheckForScatter(lines);
+
+                        // If the value for the property settings.Scatter is true
+                        if (settings.Scatter)
+                        {
+                            // Set the ScatterPercent
+                            pixelQuery.Scatter = true;
+                            pixelQuery.ScatterPercent = settings.ScatterPercent;
+                            pixelQuery.ScatterModX = settings.ModX;
+                            pixelQuery.ScatterModY = settings.ModY;
+                            lines = settings.TextLines;
+
+                            // Create the RandomShuffler
+                            pixelQuery.Shuffler = new RandomShuffler.Core.LargeNumberShuffler(4, 1, 9999, RandomShuffler.Core.Enumerations.NumberOutOfRangeOptionEnum.ReturnModulus);
+                        }
+                        
+                        // Check to see if a Normalize query is present
+                        NormalizeSettings normalizeSettings = CheckForNormalize(lines);
+
+                        // If the value for the property normalizeSettings.Normalize is true
+                        if (normalizeSettings.Normalize)
+                        {
+                            pixelQuery.Normalize = true;
+                            pixelQuery.Min = normalizeSettings.Min;
+                            pixelQuery.Max = normalizeSettings.Max;
+                            pixelQuery.Step = normalizeSettings.Step;
+                            pixelQuery.NormalizeColor = normalizeSettings.Color;
+                            lines = normalizeSettings.Lines;
+                        }
+
+                        // Get the lines after the where clause
+                        lines = GetLinesAfterWhere(lines);
+
                         // If the lines collection exists and has one or more items
                         if (ListHelper.HasOneOrMoreItems(lines))
                         {
-                            // Create a string builder
-                            sb = new StringBuilder();
-
-                            // Iterate the collection of TextLine objects
-                            foreach (TextLine line in lines)
-                            {
-                                // Increment the value for count
-                                count++;
-
-                                // skip the first line, as it is not needed
-                                if (count > 2)
-                                {
-                                    // Add this lines test
-                                    sb.Append(line.Text + Environment.NewLine);
-                                }
-
-                                // if the value of count equals 2
-                                if (count == 2)
-                                {
-                                    // Set the UpdateText
-                                    updateText = line.Text;
-                                }
-                            }
-
-                            // Set the criteria text
-                            criteriaText = sb.ToString();
-
                             // Parse the Criteria (this is the matching part)
-                            pixelQuery.Criteria = ParseCriteria(criteriaText, pixelQuery.ActionType);
-
-                            // If the updateText string exists
-                            if (TextHelper.Exists(updateText))
-                            {
-                                // Set the update values
-                                SetUpdateParameters(updateText, ref pixelQuery);
-                            }
+                            pixelQuery.Criteria = ParseCriteria(lines, pixelQuery.ActionType);
                         }
+
+                        // If the updateText string exists
+                        if (TextHelper.Exists(updateText))
+                        {
+                            // Set the update values
+                            SetUpdateParameters(updateText, ref pixelQuery);
+                        }
+
                     }
                     else if (pixelQuery.ActionType == ActionTypeEnum.HideFrom)
                     {
@@ -847,13 +1119,18 @@ namespace DataJuggler.PixelDatabase
                             pixelQuery.Directions = ParseDirections(directionsText);
                         }
                     }
-                    else
+                    else if ((pixelQuery.ActionType == ActionTypeEnum.HidePixels) || (pixelQuery.ActionType == ActionTypeEnum.ShowPixels))
                     {
-                        // This is a Hide or Show Query or DrawLine
-                        // and the second line starts the where clause.
+                        // if there are two or more lines
+                        if (ListHelper.HasXOrMoreItems(lines, 2))
+                        {
+                            // This is a Hide or Show Query
+                            // and the second line starts the where clause.
+                            lines = GetLinesAfterFirstLine(lines);
 
-                        // Parse the Criteria (this is the matching part)
-                        pixelQuery.Criteria = ParseCriteria(queryText, pixelQuery.ActionType);
+                            // Parse the Criteria (this is the matching part)
+                            pixelQuery.Criteria = ParseCriteria(lines, pixelQuery.ActionType);
+                        }
                     }
                 }
 
@@ -1310,6 +1587,38 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
                 }
+            }
+            #endregion
+            
+            #region SetUpdateText(List<TextLine> lines)
+            /// <summary>
+            /// This method returns the Update Text
+            /// </summary>
+            public static string SetUpdateText(List<TextLine> lines)
+            {
+                // initial value
+                string updateText = "";
+
+                // if there are one or more lines
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                    // Iterate the collection of TextLine objects
+                    foreach (TextLine line in lines)
+                    {
+                        // if this is the Set line
+                        if (line.Text.ToLower().StartsWith("set "))
+                        {
+                            // set the return value
+                            updateText = line.Text;
+
+                            // break out of the loop
+                            break;
+                        }
+                    }
+                }
+                
+                // return value
+                return updateText;
             }
             #endregion
             
