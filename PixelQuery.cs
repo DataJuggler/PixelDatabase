@@ -2,7 +2,7 @@
 
 #region using statements
 
-using DataJuggler.UltimateHelper.Core;
+using DataJuggler.UltimateHelper;
 using System.Collections.Generic;
 using System.Drawing;
 using DataJuggler.PixelDatabase.Enumerations;
@@ -50,7 +50,7 @@ namespace DataJuggler.PixelDatabase
         private int max;
         private int step;
         private Color normalizeColor;
-        private DataJuggler.RandomShuffler.Core.LargeNumberShuffler shuffler;
+        private DataJuggler.RandomShuffler.LargeNumberShuffler shuffler;
         #endregion
 
         #region Constructor
@@ -776,7 +776,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This property gets or sets the value for 'Shuffler'.
             /// </summary>
-            public DataJuggler.RandomShuffler.Core.LargeNumberShuffler Shuffler
+            public DataJuggler.RandomShuffler.LargeNumberShuffler Shuffler
             {
                 get { return shuffler; }
                 set { shuffler = value; }

@@ -2,11 +2,18 @@
 
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>1.2.2: I fixed the way the PixelQueryParser works, and in theory I made it better. 
+    <PackageReleaseNotes>1.5.0.1: My CreateSubImage method had a bug. Hopefully this is fixed.
+
+1.3.1: After I published 1.3.0 I realized System.Graphics.Common was updated from 
+4.7 to 5.0, so I updated that library.
+
+1.3.0: This version was converted to .Net5. No other code changes were made at this time.
+
+1.2.2: I fixed the way the PixelQueryParser works, and in theory I made it better. 
 I also added short cuts so you you can now type MinMaxDiff instead of MinMaxDifference - 6 less pixels, and much easier to spell. This applies to all the Differences: BlueGreenDiff, BlueRedDiff, GreenRedDiff, and MinMaxDiff.
 
 1.2.1: I removed .Net Standard 2.1, since the only purpose for .Net Standard was to allow .Net Framework and .Net Core to work together, but in 3.1 .Net Framework and .Net Core parted for good. If anyone needs it I can put it back.
@@ -34,7 +41,7 @@ useful yet, but I might expand it over time.
 
 1.1.5: I added a new method ApplyPixel, which was added to the .Net Framework version so I can call this from a Paint.Net plug-in
 
-1.1.4: I had to update DataJuggler.UltimateHelper.Core.IsNumeric method to support negative numbers.
+1.1.4: I had to update DataJuggler.UltimateHelper.IsNumeric method to support negative numbers.
 
 1.1.3: I removed Absolute value from BlueRedDifference, BlueGreenDifference and GreenRedDifference.
 After working with these values for a few weeks, I discovered there is a difference between blue - red and red - blue, sometimes. 
@@ -57,30 +64,32 @@ This version includes many new properties on a PixelInformation object, such as:
 1. Min
 2. Max
 3. Average
-4. MinMaxDifference
-5. RedMinDifference
-6. RedMaxDifference
-7. RedAverageDifference
-8. GreenMinDifference
-9. GreenMaxDifference
-10. GreenAverageDifference
-11. BlueMinDifference
-12. BlueMaxDifference
-13. BlueAverageDifference
+4. MinMaxDiff
+5. RedMinDiff
+6. RedMaxDiff
+7. RedAverageDiff
+8. GreenMinDiff
+9. GreenMaxDiff
+10. GreenAverageDiff
+11. BlueMinDiff
+12. BlueMaxDiff
+13. BlueAverageDiff
 
 These should all work for queries such as:
 
 Hide Pixels Where
-MinMaxDifference &gt; 25
+MinMaxDiff &gt; 25
 
 Or
 
 Update
 Set Swap Blue Red
 Where
-RedMinDifference &lt; 10
+RedMinDiff &lt; 10
 
 
+Diff is a shortcut for Difference. Previous docs may use Difference, and I am trying 
+to replace them as I see them.
 
 
 
@@ -107,7 +116,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>1.2.2</Version>
+    <Version>1.5.0.1</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -121,9 +130,9 @@ First release, i will update the rest of the info if it gets past proof of conce
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataJuggler.RandomShuffler.Core" Version="1.2.6" />
-    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.6" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="DataJuggler.RandomShuffler" Version="1.3.0" />
+    <PackageReference Include="DataJuggler.UltimateHelper" Version="1.5.5" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

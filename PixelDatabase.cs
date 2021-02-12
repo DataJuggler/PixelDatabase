@@ -2,8 +2,8 @@
 
 #region using statements
 
-using DataJuggler.RandomShuffler.Core;
-using DataJuggler.UltimateHelper.Core;
+using DataJuggler.RandomShuffler;
+using DataJuggler.UltimateHelper;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -1543,18 +1543,19 @@ namespace DataJuggler.PixelDatabase
                         // if if the sub image is not bigger than the source
                         if ((size.Width < source.Width) && (size.Height < source.Height))
                         {
-                            // if the X is further right than the full width, the width is shortened
+                            // if the X is further right than the full width, the x is moved
                             if (topLeft.X > (source.Width - topLeft.X))
                             {
                                 // reset the Width
-                                size.Width = source.Width - topLeft.X;
+                                int left = source.Width - size.Width;
+                                size = new Rectangle(left, size.Y, size.Width, size.Height);
                             }
 
                             // if the Y is further right than the full width, the width is shortened
                             if (topLeft.Y > (source.Height - topLeft.Y))
                             {
-                                // reset the Height
-                                size.Height = source.Height - topLeft.Y;
+                                int top = source.Height - size.Height;
+                                size = new Rectangle(size.X, top, size.Width, size.Height);
                             }
 
                             // set the endX value

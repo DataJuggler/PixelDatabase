@@ -2,8 +2,8 @@
 
 #region using statements
 
-using DataJuggler.UltimateHelper.Core;
-using DataJuggler.UltimateHelper.Core.Objects;
+using DataJuggler.UltimateHelper;
+using DataJuggler.UltimateHelper.Objects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -1068,7 +1068,7 @@ namespace DataJuggler.PixelDatabase
                             lines = settings.TextLines;
 
                             // Create the RandomShuffler
-                            pixelQuery.Shuffler = new RandomShuffler.Core.LargeNumberShuffler(4, 1, 9999, RandomShuffler.Core.Enumerations.NumberOutOfRangeOptionEnum.ReturnModulus);
+                            pixelQuery.Shuffler = new RandomShuffler.LargeNumberShuffler(4, 1, 9999, RandomShuffler.Enumerations.NumberOutOfRangeOptionEnum.ReturnModulus);
                         }
                         
                         // Check to see if a Normalize query is present

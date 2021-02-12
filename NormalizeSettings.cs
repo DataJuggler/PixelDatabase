@@ -5,8 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DataJuggler.UltimateHelper.Core;
-using DataJuggler.UltimateHelper.Core.Objects;
+using DataJuggler.UltimateHelper;
+using DataJuggler.UltimateHelper.Objects;
 using System.Drawing;
 
 #endregion
