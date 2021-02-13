@@ -1559,8 +1559,8 @@ namespace DataJuggler.PixelDatabase
                             }
 
                             // set the endX value
-                            endX = topLeft.X + size.Width -1;
-                            endY = topLeft.Y + size.Height -1;
+                            endX = topLeft.X + size.Width;
+                            endY = topLeft.Y + size.Height;
 
                             // create a subimage
                             subImage = new Bitmap(size.Width, size.Height);
