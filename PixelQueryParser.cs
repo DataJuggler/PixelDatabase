@@ -212,6 +212,77 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region CheckForSplitImage(List<TextLine> lines)
+            /// <summary>
+            /// This method returns the For Split Image
+            /// </summary>
+            public static SplitImageSettings CheckForSplitImage(List<TextLine> lines)
+            {
+                // initial value
+                SplitImageSettings splitImageSettings = null;
+
+                // If the lines collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                    // Iterate the collection of TextLine objects
+                    foreach (TextLine line in lines)
+                    {
+                        // if splitimage exists in this line
+                        if (line.Text.ToLower().Contains("splitimage"))
+                        {
+                            // Create a new instance of a 'SplitImageSettings' object.
+                            splitImageSettings = new SplitImageSettings();
+
+                            // create the delimiter
+                            char[] delimiter = new char[] { ' ' };
+
+                            // Get the words
+                            List<Word> words = WordParser.GetWords(line.Text, delimiter);
+
+                            // If the words collection exists and has one or more items
+                            if (ListHelper.HasOneOrMoreItems(words))
+                            {
+                                // Iterate the collection of Word objects
+                                foreach (Word word in words)
+                                {
+                                    // if this is the split image
+                                    if (word.Text.ToLower() == "splitimage")
+                                    {
+                                        // do nothiing
+                                    }
+                                    else if (word.Text.ToLower() == "takeleft")
+                                    {
+                                        // Set to TakeLeft
+                                        splitImageSettings.Direction = SplitImageDirectionEnum.TakeLeft;
+                                    }
+                                    else if (word.Text.ToLower() == "takeright")
+                                    {
+                                        // Set to TakeLeft
+                                        splitImageSettings.Direction = SplitImageDirectionEnum.TakeRight;
+                                    }
+                                    else
+                                    {
+                                        // get the value for X
+                                        int x = NumericHelper.ParseInteger(word.Text, 0, -1);
+
+                                        // If the value for x is greater than zero
+                                        if (x > 0)
+                                        {
+                                            // Set the value for X
+                                            splitImageSettings.SplitX = x; 
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return splitImageSettings;
+            }
+            #endregion
+            
             #region CreatePixelCriteria(string text, ActionTypeEnum actionType, int lineNumber, PixelCriteria existingCriteria = null)
             /// <summary>
             /// This method returns the Pixel Criteria
@@ -1083,6 +1154,16 @@ namespace DataJuggler.PixelDatabase
                             pixelQuery.Step = normalizeSettings.Step;
                             pixelQuery.NormalizeColor = normalizeSettings.Color;
                             lines = normalizeSettings.Lines;
+                        }
+
+                        // Check if the SplitImage is set, and if yes take the properties for Direction and SplitX
+                        SplitImageSettings splitImageSettings = CheckForSplitImage(lines);
+
+                        // If the splitImageSettings object exists
+                        if (NullHelper.Exists(splitImageSettings))
+                        {
+                            // Set the settings
+                            pixelQuery.SplitImageSettings = splitImageSettings;
                         }
 
                         // Get the lines after the where clause

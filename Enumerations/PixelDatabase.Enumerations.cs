@@ -132,6 +132,17 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion
 
+    #region SplitImageDirectionEnum
+    /// <summary>
+    /// This is used to set which side needs to be the one to copy from..
+    /// </summary>
+    public enum SplitImageDirectionEnum : int
+    {
+        TakeLeft = 0,
+        TakeRight = 1
+    }
+    #endregion
+
     #region SwapTypeEnum : int
     /// <summary>
     /// The SwapType is used to designate which colors

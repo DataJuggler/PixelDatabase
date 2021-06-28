@@ -197,15 +197,6 @@ You can combine criteria to further narrow down the pixels that are manipulated
 
 # Important: Each criteria must be on its own line.
 
-# Coupound Examples:
-
-Show<br/>
-X > 200<br/>
-Y Between 112 140<br/>
-Total = 765<br/>
-
-All pixels with X coordinate of 200 or higher and a Y value of 112 - 140 and a Total of 765 (White).
-
 # Update Queries
 Update queries are very similar to Hide queries, except that you must include a Color attribute
 

@@ -31,6 +31,8 @@ namespace DataJuggler.PixelDatabase
         private bool colorSet;
         private bool adjustColor;
         private bool swapColors;
+        private bool splitFace;
+        private int splitFaceX;
         private bool setColor;
         private bool scatter;
         private double scatterPercent;
@@ -51,6 +53,7 @@ namespace DataJuggler.PixelDatabase
         private int step;
         private Color normalizeColor;
         private DataJuggler.RandomShuffler.LargeNumberShuffler shuffler;
+        private SplitImageSettings splitImageSettings;
         #endregion
 
         #region Constructor
@@ -512,6 +515,23 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region HasSplitImageSettings
+            /// <summary>
+            /// This property returns true if this object has a 'SplitImageSettings'.
+            /// </summary>
+            public bool HasSplitImageSettings
+            {
+                get
+                {
+                    // initial value
+                    bool hasSplitImageSettings = (this.SplitImageSettings != null);
+                    
+                    // return value
+                    return hasSplitImageSettings;
+                }
+            }
+            #endregion
+            
             #region HasStep
             /// <summary>
             /// This property returns true if the 'Step' is set.
@@ -780,6 +800,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return shuffler; }
                 set { shuffler = value; }
+            }
+            #endregion
+            
+            #region SplitImageSettings
+            /// <summary>
+            /// This property gets or sets the value for 'SplitImageSettings'.
+            /// </summary>
+            public SplitImageSettings SplitImageSettings
+            {
+                get { return splitImageSettings; }
+                set { splitImageSettings = value; }
             }
             #endregion
             

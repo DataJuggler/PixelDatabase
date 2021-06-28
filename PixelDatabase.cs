@@ -296,45 +296,57 @@ namespace DataJuggler.PixelDatabase
                         LastUpdate = new LastUpdate();
                     }
 
-                    // iterate the y pixels
-                    for (int y = range.StartY; y <= range.EndY; y++)
+                    // If the value for the property pixelQuery.HasSplitImageSettings is true
+                    if (pixelQuery.HasSplitImageSettings)
                     {
-                        // iterate the x pixels
-                        for (int x = range.StartX; x <= range.EndX; x++)
+                        // Perform the split image
+                        pixelsUpdated = SplitImage(pixelQuery.SplitImageSettings, status);
+                    }
+                    else
+                    {
+                        // This is for all paths except for SplitImage. Spli Image is special
+                        // as there is no reason to get the current color for the pixels updated.
+
+                        // iterate the y pixels
+                        for (int y = range.StartY; y <= range.EndY; y++)
                         {
-                            // Increment the value for count
-                            count++;
-
-                            // Reset
-                            newColor = Color.Empty;
-
-                            // set the color
-                            color = DirectBitmap.GetPixel(x, y);
-
-                            // Create a new PixelInformation object
-                            PixelInformation pixel = new PixelInformation(x, y, color);
-
-                            // set the Index
-                            pixel.Index = x + (y * DirectBitmap.Width);
-
-                            // Should this pixel be updated (in such situations like Scatter and Normalize, this actually updates)
-                            shouldThisPixelBeUpdated = ShouldBeUpdated(pixel, pixelQuery, ref pixelsUpdated, range, count, status);
-
-                            // if the value for shouldThisPixelBeUpdated is true
-                            if (shouldThisPixelBeUpdated)
+                            // iterate the x pixels
+                            for (int x = range.StartX; x <= range.EndX; x++)
                             {
-                                // apply the pixel
-                                newColor = ApplyPixel(color, pixelQuery);
+                                // Increment the value for count
+                                count++;
 
-                                // Set Pixel Color
-                                SetPixelColor(x, y, newColor, addToLastUpdate, pixel.Index);
+                                // Reset
+                                newColor = Color.Empty;
 
-                                // increase pixelsUpdated
-                                pixelsUpdated++;   
-                            }
+                                // set the color
+                                color = DirectBitmap.GetPixel(x, y);
+
+                                // Create a new PixelInformation object
+                                PixelInformation pixel = new PixelInformation(x, y, color);
+
+                                // set the Index
+                                pixel.Index = x + (y * DirectBitmap.Width);
+
+                                // Should this pixel be updated (in such situations like Scatter and Normalize, this actually updates)
+                                shouldThisPixelBeUpdated = ShouldBeUpdated(pixel, pixelQuery, ref pixelsUpdated, range, count, status);
+
+                                // if the value for shouldThisPixelBeUpdated is true
+                                if (shouldThisPixelBeUpdated)
+                                {
+                                    // apply the pixel
+                                    newColor = ApplyPixel(color, pixelQuery, x, y);
+
+                                    // Set Pixel Color
+                                    SetPixelColor(x, y, newColor, addToLastUpdate, pixel.Index);
+
+                                    // increase pixelsUpdated
+                                    pixelsUpdated++;   
+                                }
                             
-                            // Update the graph
-                            HandleGraph(count, pixelsUpdated, status, range);
+                                // Update the graph
+                                HandleGraph(count, pixelsUpdated, status, range);
+                            }
                         }
                     }
 
@@ -375,18 +387,22 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region ApplyPixel(Color color, PixelQuery pixelQuery)
+            #region ApplyPixel(Color color, PixelQuery pixelQuery, int x, int y)
             /// <summary>
             /// This method expects you to have called ShouldPixelBeUpdated first.
             /// This method determines the new color for the color passed in and the criteria.
             /// </summary>
-            public Color ApplyPixel(Color color, PixelQuery pixelQuery)
+            public Color ApplyPixel(Color color, PixelQuery pixelQuery, int x, int y)
             {
                 // initial value
                 Color newColor = color;
 
                 // if SwapColors
-                if (pixelQuery.SwapColors)
+                if (pixelQuery.HasSplitImageSettings)
+                {
+                    
+                }
+                else if (pixelQuery.SwapColors)
                 {
                     // Set color2
                     newColor = SwapColor(color, pixelQuery);
@@ -424,9 +440,7 @@ namespace DataJuggler.PixelDatabase
             public PixelQuery ApplyQuery(string queryText, StatusUpdate status)
             {
                 // locals
-                int alpha = 0;
-                Bitmap bmp = new Bitmap(200, 100);
-                Graphics g = Graphics.FromImage(bmp);
+                int alpha = 0;               
                 int pixelsUpdated = 0;
                 
                 // if the queryText exists
@@ -475,7 +489,6 @@ namespace DataJuggler.PixelDatabase
                                 // Recreate the MaskManager
                                 this.MaskManager = new MaskManager();
                             }
-
                             // Find the pixels that match the Criteria given
                             pixelsUpdated = ApplyCriteria(pixelQuery, status);
 
@@ -2057,6 +2070,114 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
+            /// <summary>
+            /// This method returns a list of Modified Pixels
+            /// </summary>
+            public List<PixelInformation> FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
+            {
+                // initial value
+                List<PixelInformation> modifiedPixels = null;
+
+                // verify the compareDatabase exists
+                if (NullHelper.Exists(compareDatabase))
+                {
+                    // if the dimensions are the same
+                    if ((this.Width == compareDatabase.Width) && (this.Height == compareDatabase.Height))
+                    {
+                        // Create a new collection of 'PixelInformation' objects.
+                        modifiedPixels = new List<PixelInformation>();
+                                                
+                        // Get the total search area
+                        int searchWidth = endX - startX;
+                        int searchHeight = endY - startY;
+                        double totalSearchArea = searchWidth * searchHeight;
+                        int searched = 0;
+
+                        // If the statusUpdate object exists
+                        if (NullHelper.Exists(statusUpdate))
+                        {
+                            // notify the caller to setup the graph
+                            statusUpdate("SetupGraph: totalSearchArea", (int) totalSearchArea);
+                        }
+
+                        // iterate
+                        for (int x = startX; x < endX; x++)
+                        {
+                            // iterate the y pixels
+                            for (int y = startY; y < endY; y++)
+                            {
+                                // Get this color in both databases
+                                Color color = this.GetColor(x, y);
+                                Color color2 = compareDatabase.GetColor(x, y);
+
+                                // if this pixel has been modifiied
+                                if (!IsSameColor(color, color2))
+                                {
+                                    // Create this pixel
+                                    PixelInformation pixel = new PixelInformation(x, y, color2);
+
+                                    // Add this pixel (from the image being changed)
+                                    modifiedPixels.Add(pixel);
+                                }
+
+                                // Increment the value for searched
+                                searched++;
+
+                                // Send an update status message every 1,000
+                                if ((searched % 1000 == 0) && (NullHelper.Exists(statusUpdate)))
+                                {
+                                    // Notify the caller
+                                    statusUpdate("UpdateGraph: Searched", searched);
+                                }
+                            }
+                        }
+
+                        // Notify the caller
+                        statusUpdate("Modified Pixels Found: " + String.Format("{0:n0}", modifiedPixels.Count), modifiedPixels.Count);
+                    }
+                    else
+                    {
+                        // Show a message
+                        throw new Exception("The two images are not equal in size");
+                    }
+                }
+                else
+                {
+                    // Show a message
+                    throw new Exception("Both databases most exist to use this feature.");
+                }
+                
+                // return value
+                return modifiedPixels;
+            }
+            #endregion
+
+            #region GetColor(int x, int y)
+            /// <summary>
+            /// This method returns the Color at the x, y given.
+            /// </summary>
+            public Color GetColor(int x, int y)
+            {
+                // initial value
+                Color color = Color.Empty;
+
+                try
+                {
+                    // get the color
+                    color = DirectBitmap.GetPixel(x, y);
+                }
+                catch (Exception error)
+                {
+                    // Set the error
+                    DebugHelper.WriteDebugError("GetColor", "PixelDatabase.cs", error);
+                }
+
+                // return value
+                return color;
+            }
+            #endregion
+            
             #region GetPixel(int x, int y)
             /// <summary>
             /// This method returns the Pixel
@@ -2090,11 +2211,12 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region GetPixels(int x, int y, int height, int width, int count)
+            #region GetPixels(int x, int y, int height, int width, int max)
             /// <summary>
-            /// This method returns a list of Pixels up to the count of pixels
+            /// This method returns a list of Pixels, either all pixels if maxPixels = 0up to the count of pixels
+            /// <paramref name="max">This parameter is the maximum pixels to return. If max == 0, all matches are returned </paramref>
             /// </summary>
-            public List<PixelInformation> GetPixels(int x, int y, int height, int width, int count)
+            public List<PixelInformation> GetPixels(int x, int y, int height, int width, int max = 0)
             {
                 // initial value
                 List<PixelInformation> pixels = null;
@@ -2140,7 +2262,7 @@ namespace DataJuggler.PixelDatabase
                             pixels.Add(pixel);
 
                             // if we have reached the count
-                            if (tempCount >= count)
+                            if ((max > 0) && (tempCount >= max))
                             { 
                                 // we have to exit the outer loop
                                 done = true;
@@ -2151,6 +2273,21 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
                 }
+                
+                // return value
+                return pixels;
+            }
+            #endregion
+
+            #region GetPixels(int max = 0)
+            /// <summary>
+            /// This method returns a list of Pixels, either all pixels if max = 0, else up to the count of max
+            /// <paramref name="max">This parameter is the maximum pixels to return. If max == 0, all matches are returned </paramref>
+            /// </summary>
+            public List<PixelInformation> GetPixels(int max = 0)
+            {
+                // initial value
+                List<PixelInformation> pixels = GetPixels(0, 0, this.Height, this.Width, max);
                 
                 // return value
                 return pixels;
@@ -2181,8 +2318,8 @@ namespace DataJuggler.PixelDatabase
                             // get the color at this coordinate
                             Color tempColor = this.DirectBitmap.Bitmap.GetPixel(x, y);
 
-                            // if this is the color being sought
-                            if (tempColor == color)
+                            // if this is the color being sought. Change to compare by values, not color because names #ffffff does not equal white, example
+                            if ((tempColor.R == color.R) && (tempColor.G == color.G) && (tempColor.B == color.B) && (tempColor.A == color.A))
                             {
                                 // Create a new instance of a 'PixelInformation' object.
                                 PixelInformation pixel = new PixelInformation();
@@ -2535,6 +2672,20 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region IsSameColor(Color color, Color color2)
+            /// <summary>
+            /// This method returns the Same Color
+            /// </summary>
+            public static bool IsSameColor(Color color, Color color2)
+            {
+                // Set the return value to true if all 4 ARGB values match
+                bool isSameColor = ((color.R == color2.R) && (color.G == color2.G) && (color.B == color2.B) && (color.A == color2.A));
+                
+                // return value
+                return isSameColor;
+            }
+            #endregion
+            
             #region MoveLine(PixelCriteria pixelCriteria)
             /// <summary>
             /// This method returns the Line
@@ -2696,7 +2847,7 @@ namespace DataJuggler.PixelDatabase
                         rectangle.Height = tempDB.Height;
 
                         // get the searchPixels
-                        searchPixels = tempDB.GetPixels(0, 0, rectangle.Height, rectangle.Width, searchDepth);
+                        searchPixels = tempDB.GetPixels(0, 0, rectangle.Height, rectangle.Width);
     
                         // search all pixels in this database
                         for (int x = 0; x < Width; x++)
@@ -2717,7 +2868,7 @@ namespace DataJuggler.PixelDatabase
                                 if (NullHelper.Exists(tempPixel))
                                 {
                                     // get the targetPixels
-                                    targetPixels = GetPixels(x, y, rectangle.Height, rectangle.Width, searchDepth);
+                                    targetPixels = GetPixels(x, y, rectangle.Height, rectangle.Width);
 
                                     // Score these pixels
                                     SearchResult score = ScorePixels(searchPixels, targetPixels);
@@ -3114,7 +3265,7 @@ namespace DataJuggler.PixelDatabase
                             HandleNormalization(pixel, pixelQuery, ref pixelsUpdated, range);
 
                             // Handle the graph
-                            HandleGraph(count, pixelsUpdated, status, range);
+                            HandleGraph(count, pixelsUpdated, status, range);    
                         
                             // this pixel was already updated
                             shouldPixelBeUpdated = false;
@@ -3129,6 +3280,115 @@ namespace DataJuggler.PixelDatabase
 
                 // return value
                 return shouldPixelBeUpdated;
+            }
+            #endregion
+            
+            #region SplitImage(SplitImageSettings splitImageSettings, StatusUpdate status)
+            /// <summary>
+            /// This method Splits Image
+            /// </summary>
+            public int SplitImage(SplitImageSettings splitImageSettings, StatusUpdate status)
+            {
+                // local
+                int pixelsUpdated = 0;
+                Color color = Color.Empty;
+                Color newColor = Color.Empty;
+                int inverseX = 0;
+                int splitX = 0;
+                int x = 0;
+                int y = 0;
+                
+                try
+                {
+                    // If the splitImageSettings object exists
+                    if (NullHelper.Exists(splitImageSettings))
+                    {
+                        // If SplitX is not set
+                        if ((splitImageSettings.SplitX == 0) && (this.Width > 2))
+                        {
+                            // Set SplitX to half way
+                            splitImageSettings.SplitX = this.Width / 2;
+                        }
+
+                        // get a local copy for shorter typing
+                        splitX = splitImageSettings.SplitX;
+
+                        // Create a new instance of a 'QueryRange' object.
+                        QueryRange range = new QueryRange();
+
+                        // y is the same for both directions
+                        range.StartY = 0;
+                        range.EndY = this.directBitmap.Height -1;
+
+                        if (splitImageSettings.Direction == SplitImageDirectionEnum.TakeRight)
+                        {   
+                            range.StartX = 0;
+                            range.EndX = splitX - 1;                            
+                        }
+                        else
+                        {
+                            range.StartX = splitX + 1;
+                            range.EndX = range.StartX + splitImageSettings.SplitX - 1;
+                        }
+
+                        // iterate the y pixels
+                        for (y = range.StartY; y <= range.EndY; y++)
+                        {
+                            // Update the Graph every y
+                            HandleGraph(pixelsUpdated, pixelsUpdated, status, range);
+
+                            // iterate the x pixels
+                            for (x = range.StartX; x <= range.EndX; x++)
+                            {
+                                // Increment the value for count
+                                pixelsUpdated++;
+
+                                // we must get the color from the inverse of this pixel.
+                                // Example: In a 256 x 256 iimage, SplitX is 128.
+                                // Pixel at 129, 0 comes from 127, 0.
+                                // Pixel at 130, 0 comes from 126, 0.
+                                // down to
+                                // Pixel at 256, 256 comes from 0, 256.
+
+                                if (splitImageSettings.Direction == SplitImageDirectionEnum.TakeRight)
+                                {
+                                   inverseX = splitX + splitX - x + 1;
+                                }
+                                else
+                                {  
+                                    // get the inverse amount
+                                    inverseX = splitX - (x - splitX);
+                                }
+
+                                // Safeguard
+                                if ((inverseX >= 0) && (inverseX < this.Width -1) && (x < this.Width))
+                                {
+                                    try
+                                    {
+                                        // set the color
+                                        color = directBitmap.GetPixel(inverseX, y);
+
+                                        // Now apply the color to the new pixel
+                                        this.DirectBitmap.SetPixel(x, y, color);
+                                    }
+                                    catch (Exception error)
+                                    {
+                                        // trap the error
+                                        DebugHelper.WriteDebugError("SplitImage 2", "PixelDatabase", error);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("SplitImage", "PixelDatabase", error);
+                }
+
+                // return value
+                return pixelsUpdated;
             }
             #endregion
             
