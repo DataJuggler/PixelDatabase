@@ -240,6 +240,34 @@ namespace DataJuggler.PixelDatabase
                 return adjustedColorValue;
             }
             #endregion
+
+            #region AdjustValue(int originalValue, int adjustment)
+            /// <summary>
+            /// This method returns the Value
+            /// </summary>
+            public int AdjustValue(int originalValue, int adjustment)
+            {
+                // Set the return value (adjustment may be negative)
+                int adjustValue = originalValue + adjustment;
+
+                // if too low
+                if (adjustValue < 0)
+                {
+                    // cannot be lower than zero
+                    adjustValue = 0;
+                }
+
+                 // if too high
+                if (adjustValue > 255)
+                {
+                    // cannot be higher than 255
+                    adjustValue = 255;
+                }
+                
+                // return value
+                return adjustValue;
+            }
+            #endregion
             
             #region ApplyCriteria(PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
@@ -302,9 +330,14 @@ namespace DataJuggler.PixelDatabase
                         // Perform the split image
                         pixelsUpdated = SplitImage(pixelQuery.SplitImageSettings, status);
                     }
+                    else if (pixelQuery.HasGradient)
+                    {
+                        // Apply the Gradient
+                        pixelsUpdated = ApplyGradient(pixelQuery.Gradient);
+                    }
                     else
                     {
-                        // This is for all paths except for SplitImage. Spli Image is special
+                        // This is for all paths except for SplitImage. SplitImage is special
                         // as there is no reason to get the current color for the pixels updated.
 
                         // iterate the y pixels
@@ -358,35 +391,49 @@ namespace DataJuggler.PixelDatabase
                 return pixelsUpdated;
             }
             #endregion
-
-            #region AdjustValue(int originalValue, int adjustment)
+                        
+            #region ApplyGradient(Gradient gradient)
             /// <summary>
-            /// This method returns the Value
+            /// This method Apply Gradient
             /// </summary>
-            public int AdjustValue(int originalValue, int adjustment)
+            public int ApplyGradient(Gradient gradient)
             {
-                // Set the return value (adjustment may be negative)
-                int adjustValue = originalValue + adjustment;
+                // initial value
+                int pixelsUpdated = 0;
 
-                // if too low
-                if (adjustValue < 0)
+                try
                 {
-                    // cannot be lower than zero
-                    adjustValue = 0;
+                    // Create the gradient
+                    gradient.ImageHeight = Height;
+                    gradient.ImageWidth = Width;
+
+                    // iterate the pixels
+                    for(int x = 0; x < this.Width; x++)
+                    {
+                        for (int y = 0; y < this.Height; y++)
+                        {
+                            // Get the pixel at this x, y
+                            PixelInformation pixel = gradient.GetPixelInfo(x, y);
+
+                            // Set this color
+                            DirectBitmap.SetPixel(x, y, pixel.Color);
+
+                            // Increment the value for pixelsUpdated
+                            pixelsUpdated++;
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only for now
+                    DebugHelper.WriteDebugError("ApplyGradient", "PixelDatabase", error);
                 }
 
-                 // if too high
-                if (adjustValue > 255)
-                {
-                    // cannot be higher than 255
-                    adjustValue = 255;
-                }
-                
                 // return value
-                return adjustValue;
+                return pixelsUpdated;
             }
             #endregion
-
+            
             #region ApplyPixel(Color color, PixelQuery pixelQuery, int x, int y)
             /// <summary>
             /// This method expects you to have called ShouldPixelBeUpdated first.

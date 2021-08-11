@@ -51,6 +51,19 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion
 
+    #region NextLineExpectationEnum
+    /// <summary>
+    /// NextLineExpectationEnum is used by PixelQueryParser
+    /// to parse Gradients.
+    /// </summary>
+    public enum NextLineExpectationEnum : int
+    {
+        Unknown = 0,
+        SetColor1 = 1,
+        SetColor2 = 2
+    }
+    #endregion
+
     #region NormalizeDirectionEnum
     /// <summary>
     /// This enum is used to determine if a pixel is above or below the Min Max difference

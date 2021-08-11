@@ -73,6 +73,66 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region CheckForGraident(List<TextLine> lines)
+            /// <summary>
+            /// This method returns the For Graident
+            /// </summary>
+            public static Gradient CheckForGraident(List<TextLine> lines)
+            {
+                // initial value
+                Gradient gradient = null;
+
+                // create the expectation to control which line should be parsed
+                NextLineExpectationEnum expectation = NextLineExpectationEnum.Unknown;
+
+                // Get the words
+                List<Word> words = null;
+                char[] delimiter = new char[] { ' ' };
+
+                if (ListHelper.HasOneOrMoreItems(lines))
+                {
+                     // Iterate the collection of TextLine objects
+                    foreach (TextLine line in lines)
+                    {
+                        if (expectation == NextLineExpectationEnum.Unknown)
+                        {
+                            // if the line starts with Normalize                        
+                            if (line.Text.ToLower().StartsWith("create gradient"))
+                            {
+                                // Create an emptyGradient
+                                gradient = new Gradient();
+
+                                // change the expectation
+                                expectation = NextLineExpectationEnum.SetColor1;
+                            }
+                        }
+                        else if (expectation == NextLineExpectationEnum.SetColor1)
+                        {
+                            // Get the words of this line
+                            words = TextHelper.GetWords(line.Text, delimiter);
+
+                            // Create the color from these words
+                            gradient.Color1 = ParseGradientColor(words);
+
+                            // change the expectation
+                            expectation = NextLineExpectationEnum.SetColor2;
+                        }
+                        else if (expectation == NextLineExpectationEnum.SetColor2)
+                        {
+                            // Get the words of this line
+                            words = TextHelper.GetWords(line.Text, delimiter);
+
+                            // Create the color from these words
+                            gradient.Color2 = ParseGradientColor(words);
+                        }
+                    }
+                }
+                
+                // return value
+                return gradient;
+            }
+            #endregion
+            
             #region CheckForNormalize(List<TextLine> lines)
             /// <summary>
             /// This method returns the For Normalize
@@ -92,7 +152,7 @@ namespace DataJuggler.PixelDatabase
                         if (line.Text.ToLower().StartsWith("normalize "))
                         {
                             // get the words
-                            List<Word> words = WordParser.GetWords(line.Text);
+                            List<Word> words = TextHelper.GetWords(line.Text);
 
                             // if there are exactly 4 or more words
                             if (ListHelper.HasXOrMoreItems(words, 4))
@@ -162,7 +222,7 @@ namespace DataJuggler.PixelDatabase
                             if (line.Text.ToLower().StartsWith("scatter"))
                             {
                                 // Get the words
-                                List<Word> words = WordParser.GetWords(line.Text, delimiters);
+                                List<Word> words = TextHelper.GetWords(line.Text, delimiters);
 
                                 // if there are two or more words
                                 if (words.Count >= 2)
@@ -237,7 +297,7 @@ namespace DataJuggler.PixelDatabase
                             char[] delimiter = new char[] { ' ' };
 
                             // Get the words
-                            List<Word> words = WordParser.GetWords(line.Text, delimiter);
+                            List<Word> words = TextHelper.GetWords(line.Text, delimiter);
 
                             // If the words collection exists and has one or more items
                             if (ListHelper.HasOneOrMoreItems(words))
@@ -305,7 +365,7 @@ namespace DataJuggler.PixelDatabase
                         pixelCriteria = new PixelCriteria();
 
                         // Get the words
-                        List<Word> words = WordParser.GetWords(text, delimiterChars);
+                        List<Word> words = TextHelper.GetWords(text, delimiterChars);
 
                         // If the words collection exists and has one or more items
                         if (ListHelper.HasOneOrMoreItems(words))
@@ -322,7 +382,7 @@ namespace DataJuggler.PixelDatabase
                                 else
                                 {
                                     // Set the BackColor
-                                    pixelCriteria.BackColor = Color.FromName(words[2].Text);
+                                    pixelCriteria.BackColor = ParseColor(words[2].Text);  
                                 }
                             }
                             else if (words.Count == 5)
@@ -363,7 +423,7 @@ namespace DataJuggler.PixelDatabase
                         if (lineNumber == 1)
                         {
                             // Get the words
-                            List<Word> words = WordParser.GetWords(text, delimiterChars);
+                            List<Word> words = TextHelper.GetWords(text, delimiterChars);
 
                             // If the words collection exists and has three or more items
                             if (ListHelper.HasXOrMoreItems(words, 3))
@@ -387,7 +447,7 @@ namespace DataJuggler.PixelDatabase
                                 string repeatText = GetRepeatText(text, pixelCriteria.RepeatType);
 
                                 // get the words
-                                List<Word> words = WordParser.GetWords(repeatText);
+                                List<Word> words = TextHelper.GetWords(repeatText);
 
                                 // if there are exactly two words
                                 if ((ListHelper.HasOneOrMoreItems(words)) && (words.Count == 2))
@@ -697,7 +757,7 @@ namespace DataJuggler.PixelDatabase
                     else if (queryText.Contains("draw line"))
                     {
                         // get the textLines
-                        List<TextLine> textLines = WordParser.GetTextLines(queryText);
+                        List<TextLine> textLines = TextHelper.GetTextLines(queryText);
 
                         // If the textLines collection exists and has one or more items
                         if (ListHelper.HasOneOrMoreItems(textLines))
@@ -706,7 +766,7 @@ namespace DataJuggler.PixelDatabase
                             TextLine topLine = textLines[0];
 
                             // get the words
-                            List<Word> words = WordParser.GetWords(topLine.Text);
+                            List<Word> words = TextHelper.GetWords(topLine.Text);
 
                             if (words.Count == 3)
                             {
@@ -780,6 +840,25 @@ namespace DataJuggler.PixelDatabase
                         DebugHelper.WriteDebugError("ParseColor", "PixelQueryParser", error);
                     }
                 }
+
+                // return value
+                return color;
+            }
+            #endregion
+
+            #region ParseColor(int red, int green, int blue)
+            /// <summary>
+            /// This method returns the Color
+            /// </summary>
+            public static Color ParseColor(int red, int green, int blue)
+            {  
+                // Ensure the values are in range
+                red = NumericHelper.EnsureInRange(red, 0, 255);
+                green = NumericHelper.EnsureInRange(green, 0, 255);
+                blue = NumericHelper.EnsureInRange(blue, 0, 255);
+                    
+                // Set the color
+                Color color = Color.FromArgb(red, green, blue);
 
                 // return value
                 return color;
@@ -904,7 +983,7 @@ namespace DataJuggler.PixelDatabase
                     char[] delimiterChars = { ' ' };
 
                     // if the words exists
-                    List<Word> words = WordParser.GetWords(directionsText, delimiterChars);
+                    List<Word> words = TextHelper.GetWords(directionsText, delimiterChars);
 
                     // If the words collection exists and has one or more items
                     if (ListHelper.HasOneOrMoreItems(words))
@@ -965,6 +1044,77 @@ namespace DataJuggler.PixelDatabase
                 return directions;
             }
             #endregion
+
+            #region ParseGradientColor(List<Word> words)
+            /// <summary>
+            /// This method returns the Color. This is used by Gradient, but could
+            /// be used by anything. The syntax expected is:
+            /// Set Color1 Red Green Blue X Y
+            /// Or
+            /// Set Color2 Orange X Y
+            /// </summary>
+            public static PixelInformation ParseGradientColor(List<Word> words)
+            {
+                // initial value
+                PixelInformation pixel = new PixelInformation();
+
+                // locals
+                int x = 0;
+                int y = 0;
+                Color color = Color.Empty;
+                
+                // If the words collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(words))
+                {
+                    // If there are exactly 7 words
+                    if (words.Count == 7)
+                    {
+                        // set the value for Red, Green & Blue
+                        int red = NumericHelper.ParseInteger(words[2].Text, -1, -1);
+                        int green = NumericHelper.ParseInteger(words[3].Text, -1, -1);
+                        int blue = NumericHelper.ParseInteger(words[4].Text, -1, -1);
+                        x = NumericHelper.ParseInteger(words[5].Text, -1, -1);
+                        y = NumericHelper.ParseInteger(words[6].Text, -1, -1);
+
+                        // convert the integers to a List
+                        List<int> numbers = new List<int>();
+                        numbers.Add(red);
+                        numbers.Add(green);
+                        numbers.Add(blue);
+
+                        // if all the values are in range
+                        if ((NumericHelper.IsInRange(numbers, 0, 255)) && (x >= 0) && (y >= 0))
+                        {
+                            // Create the color
+                            color = Color.FromArgb(red, green, blue);
+
+                            // Create the PixelInformation object
+                            pixel = new PixelInformation(x, y, color);
+                        }
+                    }
+                    // if there are exactly 5 words
+                    else if (words.Count == 5)
+                    {
+                        // set the x and y values
+                        x = NumericHelper.ParseInteger(words[3].Text, -1, -1);
+                        y = NumericHelper.ParseInteger(words[4].Text, -1, -1);
+
+                        // Parse out the color text
+                        color = ParseColor(words[2].Text);
+
+                        // if valid
+                        if  ((!color.IsEmpty) && (x >= 0) && (y >= 0))
+                        {
+                            // Create a new instance of a 'PixelInformation' object.
+                            pixel = new PixelInformation(x, y, color);
+                        }
+                    }
+                }
+
+                // return value
+                return pixel;
+            }
+            #endregion
             
             #region ParseNumbers(string text, ref int number1, ref int number2)
             /// <summary>
@@ -979,7 +1129,7 @@ namespace DataJuggler.PixelDatabase
                 char[] delimiterChars = { ' '};
 
                 // if the words exists
-                List<Word> words = WordParser.GetWords(text, delimiterChars);
+                List<Word> words = TextHelper.GetWords(text, delimiterChars);
 
                 // If the words collection exists and has one or more items
                 if (ListHelper.HasOneOrMoreItems(words))
@@ -1026,7 +1176,7 @@ namespace DataJuggler.PixelDatabase
                 char[] delimiterChars = { ' ' };
 
                 // if the words exists
-                List<Word> words = WordParser.GetWords(text, delimiterChars);
+                List<Word> words = TextHelper.GetWords(text, delimiterChars);
 
                 // If the words collection exists and has one or more items
                 if (ListHelper.HasOneOrMoreItems(words))
@@ -1101,7 +1251,7 @@ namespace DataJuggler.PixelDatabase
                     queryText = queryText.ToLower().Trim();
 
                     // Get the text lines
-                    List<TextLine> lines = WordParser.GetTextLines(queryText);
+                    List<TextLine> lines = TextHelper.GetTextLines(queryText);
 
                     // parse the ActionType (Show Pixels, Hide Pixels, Draw Line, Update)
                     pixelQuery.ActionType = ParseActionType(queryText, ref pixelQuery);
@@ -1165,6 +1315,9 @@ namespace DataJuggler.PixelDatabase
                             // Set the settings
                             pixelQuery.SplitImageSettings = splitImageSettings;
                         }
+
+                        // Check for Gradient
+                        pixelQuery.Gradient = CheckForGraident(lines);
 
                         // Get the lines after the where clause
                         lines = GetLinesAfterWhere(lines);
@@ -1553,7 +1706,7 @@ namespace DataJuggler.PixelDatabase
                         char[] delimiterChars = { ' ' };
 
                         // Get a list of words from this text
-                        List<Word> words = WordParser.GetWords(updateText, delimiterChars);
+                        List<Word> words = TextHelper.GetWords(updateText, delimiterChars);
 
                         // If the words collection exists and has one or more items
                         if (ListHelper.HasOneOrMoreItems(words))

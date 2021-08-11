@@ -33,6 +33,7 @@ namespace DataJuggler.PixelDatabase
         private bool swapColors;
         private bool splitFace;
         private int splitFaceX;
+        private Gradient gradient;
         private bool setColor;
         private bool scatter;
         private double scatterPercent;
@@ -351,6 +352,17 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region Gradient
+            /// <summary>
+            /// This property gets or sets the value for 'Gradient'.
+            /// </summary>
+            public Gradient Gradient
+            {
+                get { return gradient; }
+                set { gradient = value; }
+            }
+            #endregion
+            
             #region Green
             /// <summary>
             /// This property gets or sets the value for 'Green'.
@@ -409,6 +421,23 @@ namespace DataJuggler.PixelDatabase
                     
                     // return value
                     return hasDirections;
+                }
+            }
+            #endregion
+            
+            #region HasGradient
+            /// <summary>
+            /// This property returns true if this object has a 'Gradient'.
+            /// </summary>
+            public bool HasGradient
+            {
+                get
+                {
+                    // initial value
+                    bool hasGradient = (this.Gradient != null);
+                    
+                    // return value
+                    return hasGradient;
                 }
             }
             #endregion
@@ -581,11 +610,17 @@ namespace DataJuggler.PixelDatabase
                     // if currently valid
                     if ((isValid) && (actionType == ActionTypeEnum.Update))
                     {  
-                        // if any of the values are out of range
-                        if ((red < 0) || (green < 0) || (blue < 0) || (alpha < 0) || (red > 255) || (green > 255) || (blue > 255) || (alpha > 255))
+                        if (HasGradient)
                         {
-                            // set to false
-                            isValid = false;
+                        }
+                        else
+                        {
+                            // if any of the values are out of range
+                            if ((red < 0) || (green < 0) || (blue < 0) || (alpha < 0) || (red > 255) || (green > 255) || (blue > 255) || (alpha > 255))
+                            {
+                                // set to false
+                                isValid = false;
+                            }
                         }
                     }
 
