@@ -1623,7 +1623,7 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region CreateSubImage()
+            #region CreateSubImage(Point topLeft, Rectangle size)
             /// <summary>
             /// This method returns a Sub Image
             /// </summary>
@@ -1652,7 +1652,7 @@ namespace DataJuggler.PixelDatabase
                         Bitmap source = DirectBitmap.Bitmap;
 
                         // if if the sub image is not bigger than the source
-                        if ((size.Width < source.Width) && (size.Height < source.Height))
+                        if ((size.Width <= source.Width) && (size.Height <= source.Height))
                         {
                             // if the X is further right than the full width, the x is moved
                             if (topLeft.X > (source.Width - topLeft.X))
