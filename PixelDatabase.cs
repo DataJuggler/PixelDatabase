@@ -10,6 +10,7 @@ using System.Drawing;
 using DataJuggler.PixelDatabase.Enumerations;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.IO;
 
 #endregion
 
@@ -1524,6 +1525,56 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region CopySubImage(PixelDatabase subImage, Point start, Rectangle size)
+            /// <summary>
+            /// This method Copies the pixels from the Sub Image into the current database
+            /// </summary>
+            public void CopySubImage(PixelDatabase subImage, Point start, Rectangle size)
+            {
+                // locals
+                PixelInformation pixel = null;
+                int localX = 0;
+                int localY = 0;
+
+                // If the subImage object exists
+                if (NullHelper.Exists(subImage))
+                {
+                    try
+                    {
+                        // iterate the bounds of the subImage
+                        for (int x = 0; x < subImage.Width; x++)
+                        {
+                            for (int y = 0; y < subImage.Height; y++)
+                            {
+                                // Get this pixel
+                                pixel = subImage.GetPixel(x, y);
+
+                                // If the pixel object exists
+                                if (NullHelper.Exists(pixel))
+                                {
+                                    // now convert the subImage pixel to this pixel x and y
+                                    localX = start.X + x;
+                                    localY = start.Y + y;
+
+                                    // if the localX and localY is in range
+                                    if ((NumericHelper.IsInRange(localX, 0, Width - 1)) && (NumericHelper.IsInRange(localY, 0, Height - 1)))
+                                    {
+                                        // Now update the pixel
+                                        SetPixelColor(localX, localY, pixel.Color, false, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        // For debugging for now
+                        DebugHelper.WriteDebugError("CopySubImage", "PixelDatabase.cs", error);
+                    }
+                }
+            }
+            #endregion
+            
             #region CreateQueryRange()
             /// <summary>
             /// This method returns the Query Range
@@ -2795,6 +2846,34 @@ namespace DataJuggler.PixelDatabase
                 return pixelCriteria;
             }
             #endregion
+
+            #region SaveAs(string path)
+            /// <summary>
+            /// This method returns the As
+            /// </summary>
+            public bool SaveAs(string path)
+            {
+                // initial value
+                bool saved = false;
+
+                try
+                {
+                    // perform the save
+                    DirectBitmap.Bitmap.Save(path);
+
+                    // set the return value
+                    saved = File.Exists(path);
+                }
+                catch (Exception error)
+                {
+                    // Write Debug Error
+                    DebugHelper.WriteDebugError("SaveAs", "PixelDatabase.cs", error);
+                }
+                
+                // return value
+                return saved;
+            }
+            #endregion
             
             #region ScorePixel(PixelInformation source, PixelInformation target)
             /// <summary>
@@ -3154,9 +3233,8 @@ namespace DataJuggler.PixelDatabase
             /// </summary>
             public void SetPixelColor(int x, int y, Color color, bool addToLastUpdate, int pixelIndex)
             {
-                // if the newColor exists
-                if (color != Color.Empty)
-                {
+                try
+                {  
                     // Set the newColor
                     DirectBitmap.SetPixel(x, y, color);
 
@@ -3166,6 +3244,11 @@ namespace DataJuggler.PixelDatabase
                         // Add this index to the LastUpdate
                         LastUpdate.AddIndex(pixelIndex);                                 
                     }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("SetPixelColor", "PixelDatabase.cs", error);
                 }
             }
             #endregion
