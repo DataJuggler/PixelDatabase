@@ -2847,6 +2847,49 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region ResizeImage(System.Drawing.Image imgToResize, Size size)  
+            /// <summary>
+            /// This method will resize the image. Credit for this is given to Ish Bandhu and this C# Corner article
+            /// https://www.c-sharpcorner.com/UploadFile/ishbandhu2009/resize-an-image-in-C-Sharp/
+            /// </summary>
+            /// <param name="imgToResize"></param>
+            /// <param name="size"></param>
+            /// <returns></returns>
+            private static System.Drawing.Image ResizeImage(System.Drawing.Image imgToResize, Size size)  
+            {  
+                //Get the image current width  
+                int sourceWidth = imgToResize.Width;  
+                //Get the image current height  
+                int sourceHeight = imgToResize.Height;  
+                float nPercent = 0;  
+                float nPercentW = 0;  
+                float nPercentH = 0;  
+                //Calulate  width with new desired size  
+                nPercentW = ((float)size.Width / (float)sourceWidth);  
+                //Calculate height with new desired size  
+                nPercentH = ((float)size.Height / (float)sourceHeight);  
+                if (nPercentH < nPercentW)  
+                    nPercent = nPercentH;  
+                else  
+                 nPercent = nPercentW;  
+
+                 //New Width  and Height
+                 int destWidth = (int)(sourceWidth * nPercent);                   
+                 int destHeight = (int)(sourceHeight * nPercent);  
+
+                 // Create a new bitmap
+                 Bitmap bitmap = new Bitmap(destWidth, destHeight);  
+                 Graphics g = Graphics.FromImage((System.Drawing.Image)bitmap);  
+                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;  
+                 // Draw image with new width and height  
+                 g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);  
+                 g.Dispose();  
+
+                 // return value
+                 return (System.Drawing.Image)bitmap;  
+            }
+            #endregion
+
             #region SaveAs(string path)
             /// <summary>
             /// This method returns the As
