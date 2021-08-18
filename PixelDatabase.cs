@@ -2855,7 +2855,7 @@ namespace DataJuggler.PixelDatabase
             /// <param name="imgToResize"></param>
             /// <param name="size"></param>
             /// <returns></returns>
-            private static System.Drawing.Image ResizeImage(System.Drawing.Image imgToResize, Size size)  
+            public static System.Drawing.Image ResizeImage(System.Drawing.Image imgToResize, Size size)  
             {  
                 //Get the image current width  
                 int sourceWidth = imgToResize.Width;  
