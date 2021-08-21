@@ -31,8 +31,6 @@ namespace DataJuggler.PixelDatabase
         private bool colorSet;
         private bool adjustColor;
         private bool swapColors;
-        private bool splitFace;
-        private int splitFaceX;
         private Gradient gradient;
         private bool setColor;
         private bool scatter;

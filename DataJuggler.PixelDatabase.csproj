@@ -6,7 +6,11 @@
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>5.1.4: Turned out the resize image I copied was private. I changed it to public. Sorry about that.
+    <PackageReleaseNotes>5.1.5: I added a new Sort feature, you can sort an entire directory of images by color with one line of code.
+
+ImageClassifier.Sort(sourceFolder, outputFolder, UpdateStatus);
+
+5.1.4: Turned out the resize image I copied was private. I changed it to public. Sorry about that.
 
 5.1.3: I added a resize image function.
 
@@ -140,7 +144,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>5.1.4</Version>
+    <Version>5.1.5</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>

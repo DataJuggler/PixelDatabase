@@ -130,7 +130,7 @@ namespace DataJuggler.PixelDatabase.Enumerations
 
     #region RGBColor : int
     /// <summary>
-    /// This enumeration is used to select Red, Green or Blue.
+    /// This enumeration is used to select Red, Green or Blue or combinations of such
     /// </summary>
     public enum RGBColor : int
     {
@@ -142,6 +142,19 @@ namespace DataJuggler.PixelDatabase.Enumerations
         BlueRed = 5,
         BlueGreen = 6,
         All = 7
+    }
+    #endregion
+
+    #region PrimaryColorEnum : int
+    /// <summary>
+    /// This enumeration is used to select Red, Green or Blue.
+    /// </summary>
+    public enum PrimaryColorEnum : int
+    {
+        NotSet = 0,
+        Red = 1,
+        Green = 2,
+        Blue = 3
     }
     #endregion
 
