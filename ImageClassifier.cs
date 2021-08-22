@@ -25,13 +25,13 @@ namespace DataJuggler.PixelDatabase
        
         #region Methods
             
-            #region Classify(PixelDatabase pixelDatabase)
+            #region Classify(PixelDatabase pixelDatabase, int fastSortFactor = 0)
             /// <summary>
             /// Classify the current image that was passed in
             /// </summary>
             /// <param name="pixelDatabase"></param>
             /// <returns></returns>
-            public static ImageClassification Classify(PixelDatabase pixelDatabase)
+            public static ImageClassification Classify(PixelDatabase pixelDatabase, int fastSortFactor = 0)
             {
                 // Create a new instance of an 'ImageClassification' object.
                 ImageClassification classification = new ImageClassification();
@@ -42,6 +42,9 @@ namespace DataJuggler.PixelDatabase
                 long totalBlue = 0;
                 PixelInformation pixel = null;
                 int totalPixels = 0;
+                int pixelNumber = 0;
+                int pixelsInspected = 0;
+                bool inspectPixel = true;
 
                 // If the pixelDatabase object exists
                 if (NullHelper.Exists(pixelDatabase))
@@ -54,12 +57,31 @@ namespace DataJuggler.PixelDatabase
                     {
                         for (int y = 0; y < pixelDatabase.Height; y++)
                         {
-                            // Get the current pixel
-                            pixel = pixelDatabase.GetPixel(x, y);
+                            // Increment the value for pixelNumber
+                            pixelNumber++;
 
-                            totalRed += pixel.Red;
-                            totalGreen += pixel.Green;
-                            totalBlue += pixel.Blue;
+                            // If the value for fastSortFactor is greater than zero
+                            if (fastSortFactor > 0)
+                            {
+                                // inspect this pixel every time we get a zero for a remainder.
+                                // Higher fastSpeedFactor is faster.
+                                inspectPixel = ((pixelNumber % fastSortFactor) == 0);
+                            }
+
+                            // if the value for inspectPixel is true
+                            if (inspectPixel)
+                            {
+                                // Get the current pixel
+                                pixel = pixelDatabase.GetPixel(x, y);
+
+                                // increment the values
+                                totalRed += pixel.Red;
+                                totalGreen += pixel.Green;
+                                totalBlue += pixel.Blue;
+
+                                // Increment the value for pixelsInspected
+                                pixelsInspected++;
+                            }
                         }
                     }
 
@@ -67,7 +89,7 @@ namespace DataJuggler.PixelDatabase
                     if (totalRed > 0)
                     {
                         // set the averageRed
-                        classification.AverageRed = totalRed / totalPixels;
+                        classification.AverageRed = totalRed / pixelsInspected;
                     }
                     else
                     {
@@ -79,7 +101,7 @@ namespace DataJuggler.PixelDatabase
                     if (totalGreen > 0)
                     {
                         // set the averageGreen
-                        classification.AverageGreen = totalGreen / totalPixels;
+                        classification.AverageGreen = totalGreen / pixelsInspected;
                     }
                     else
                     {
@@ -91,7 +113,7 @@ namespace DataJuggler.PixelDatabase
                     if (totalBlue > 0)
                     {
                         // set the averageBlue
-                        classification.AverageBlue = totalBlue / totalPixels;
+                        classification.AverageBlue = totalBlue / pixelsInspected;
                     }
                     else
                     {
@@ -619,14 +641,14 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate)
+            #region Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate, int fastSortFactor = 0)
             /// <summary>
             /// This method sorts the images in the source directory, if the extension is in the extensions list
             /// </summary>
             /// <param name="sourceDirectory"></param>
             /// <param name="outputDirectory"></param>
             /// <param name="extensions"></param>
-            public static void Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate)
+            public static void Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate, int fastSortFactor = 0)
             {
                 // locals
                 List<string> files = GetFiles(sourceDirectory, extensions);
@@ -658,7 +680,7 @@ namespace DataJuggler.PixelDatabase
                         PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(path, null);
 
                         // Classify this image
-                        ImageClassification classification = ImageClassifier.Classify(pixelDatabase);
+                        ImageClassification classification = ImageClassifier.Classify(pixelDatabase, fastSortFactor);
                         classification.FileName = path;
 
                         // Set the classification
@@ -724,14 +746,14 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate)
+            #region Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate, int fastSortFactor = 0)
             /// <summary>
             /// This method sorts the images in the source directory, if the extension is in the extensions list
             /// </summary>
             /// <param name="sourceDirectory"></param>
             /// <param name="outputDirectory"></param>
             /// <param name="extensions"></param>
-            public static void Sort(string sourceDirectory, string outputDirectory, string extension, StatusUpdate statusUpdate)
+            public static void Sort(string sourceDirectory, string outputDirectory, string extension, StatusUpdate statusUpdate, int fastSortFactor = 0)
             {
                 // if there are extensions listed
                 if (TextHelper.Exists(extension))
@@ -743,19 +765,19 @@ namespace DataJuggler.PixelDatabase
                     extensions.Add(extension);
 
                     // Call Sort override
-                    Sort(sourceDirectory, outputDirectory, extensions, statusUpdate);
+                    Sort(sourceDirectory, outputDirectory, extensions, statusUpdate, fastSortFactor);
                 }
             }
             #endregion
 
-            #region Sort(string sourceDirectory, string outputDirectory, StatusUpdate statusUpdate)
+            #region Sort(string sourceDirectory, string outputDirectory, StatusUpdate statusUpdate, int fastSortFactor = 0)
             /// <summary>
             /// This method sorts the images in the source directory, if the extension is in the extensions list
             /// </summary>
             /// <param name="sourceDirectory"></param>
             /// <param name="outputDirectory"></param>
             /// <param name="extensions"></param>
-            public static void Sort(string sourceDirectory, string outputDirectory, StatusUpdate statusUpdate)
+            public static void Sort(string sourceDirectory, string outputDirectory, StatusUpdate statusUpdate, int fastSortFactor = 0)
             {  
                 // Create the list to call
                 List<string> extensions = new List<string>();
@@ -765,7 +787,7 @@ namespace DataJuggler.PixelDatabase
                 extensions.Add(".png");
 
                 // Call Sort override
-                Sort(sourceDirectory, outputDirectory, extensions, statusUpdate);
+                Sort(sourceDirectory, outputDirectory, extensions, statusUpdate, fastSortFactor);
             }
             #endregion
             
