@@ -746,7 +746,7 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region Sort(string sourceDirectory, string outputDirectory, List<string> extensions, StatusUpdate statusUpdate, int fastSortFactor = 0)
+            #region Sort(string sourceDirectory, string outputDirectory, string extension, StatusUpdate statusUpdate, int fastSortFactor = 0)
             /// <summary>
             /// This method sorts the images in the source directory, if the extension is in the extensions list
             /// </summary>
