@@ -2196,259 +2196,6 @@ namespace DataJuggler.PixelDatabase
                 }
             }
             #endregion
-            
-            #region DrawRiverLeftToRight(Color color)
-            /// <summary>
-            /// This method Draw River Left To Right
-            /// </summary>
-            private void DrawRiverLeftToRight(Color color)
-            {
-                // locals
-                int x = 0;
-                int y = 0;
-                int nextDirection = 0;
-                int index = -1;
-
-                // create the shuffler
-                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
-                y = shuffler.PullNextItem();
-                SetPixelColor(x, y, color, false, 0);
-
-                // recreate for 5
-                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
-
-                do
-                {
-                    nextDirection = shuffler.PullNextItem();
-
-                    switch (nextDirection)
-                    {
-                        case 1:
-
-                            // move up
-                            y--;
-
-                            // required
-                            break;
-
-                            case 2:
-
-                            // move up and over
-                            y--;
-                            x++;
-
-                            // required
-                            break;
-
-                        case 3:
-
-                            // move over                                
-                            x++;
-
-                            // required
-                            break;
-
-                            case 4:
-
-                            // move down and over
-
-                            // move up and over
-                            y++;
-                            x++;
-
-                            // required
-                            break;
-
-                            case 5:
-
-                            // move down
-                            y++;
-
-                            // required
-                            break;
-                    }
-
-                    // ensure in range
-                    x = NumericHelper.EnsureInRange(x, 0, 255);
-                    y = NumericHelper.EnsureInRange(x, 0, 255);
-
-                    // Increment the value for index
-                    index++;
-
-                    // Set currentColor
-                    SetPixelColor(x, y, color, false, index);
-
-                } while (x < this.Width);
-            }
-            #endregion
-            
-            #region DrawRiverRightToLeft(Color color)
-            /// <summary>
-            /// This method Draw River Right To Left
-            /// </summary>
-            private void DrawRiverRightToLeft(Color color)
-            {
-                // locals
-                int x = 0;
-                int y = 0;
-                int nextDirection = 0;
-                int index = -1;
-
-                // create the shuffler
-                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
-                y = shuffler.PullNextItem();
-                SetPixelColor(x, y, color, false, 0);
-
-                // recreate for 5
-                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
-
-                do
-                {
-                    nextDirection = shuffler.PullNextItem();
-
-                    switch (nextDirection)
-                    {
-
-                        case 1:
-
-                            // move up
-                            y--;
-
-                            // required
-                            break;
-
-                        case 2:
-
-                            // move up and over
-                            y--;
-                            x--;
-
-                            // required
-                            break;
-
-                        case 3:
-
-                            // move over                                
-                            x--;
-
-                            // required
-                            break;
-
-                        case 4:
-
-                            // move down and over
-                            y++;
-                            x--;
-
-                            // required
-                            break;
-
-                        case 5:
-
-                            // move down
-                            y++;
-
-                            // required
-                            break;
-                    }
-
-                    // ensure in range
-                    x = NumericHelper.EnsureInRange(x, 0, 255);
-                    y = NumericHelper.EnsureInRange(x, 0, 255);
-
-                    // Increment the value for index
-                    index++;
-
-                    // Set currentColor
-                    SetPixelColor(x, y, color, false, index);
-
-                } while (x > 0);
-            }
-            #endregion
-            
-            #region DrawRiverTopToBottom(Color color)
-            /// <summary>
-            /// This method Draw River Top To Bottom
-            /// </summary>
-            private void DrawRiverTopToBottom(Color color)
-            {
-                 // locals
-                int x = 0;
-                int y = 0;
-                int nextDirection = 0;
-                int index = -1;
-
-                // create the shuffler
-                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
-                y = shuffler.PullNextItem();
-                SetPixelColor(x, y, color, false, 0);
-
-                // recreate for 5
-                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
-
-                do
-                {
-                    nextDirection = shuffler.PullNextItem();
-
-                    switch (nextDirection)
-                    {
-
-                        case 1:
-
-                            // move left
-                            x--;
-
-                            // required
-                            break;
-
-                        case 2:
-
-                            // move down and left
-                            y++;
-                            x--;
-
-                            // required
-                            break;
-
-                        case 3:
-
-                            // move down                                
-                            y++;
-
-                            // required
-                            break;
-
-                        case 4:
-
-                            // move down and right
-                            y++;
-                            x++;
-
-                            // required
-                            break;
-
-                        case 5:
-
-                            // move right
-                            x++;
-
-                            // required
-                            break;
-                    }
-
-                    // ensure in range
-                    x = NumericHelper.EnsureInRange(x, 0, 255);
-                    y = NumericHelper.EnsureInRange(x, 0, 255);
-
-                    // Increment the value for index
-                    index++;
-
-                    // Set currentColor
-                    SetPixelColor(x, y, color, false, index);
-
-                } while (x > 0);
-            }
-            #endregion
 
             #region DrawRiverBottomToTop(Color color)
             /// <summary>
@@ -2458,13 +2205,13 @@ namespace DataJuggler.PixelDatabase
             {
                  // locals
                 int x = 0;
-                int y = 0;
+                int y = this.Height;
                 int nextDirection = 0;
                 int index = -1;
 
                 // create the shuffler
                 RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
-                y = shuffler.PullNextItem();
+                x = shuffler.PullNextItem();
                 SetPixelColor(x, y, color, false, 0);
 
                 // recreate for 5
@@ -2521,8 +2268,8 @@ namespace DataJuggler.PixelDatabase
                     }
 
                     // ensure in range
-                    x = NumericHelper.EnsureInRange(x, 0, 255);
-                    y = NumericHelper.EnsureInRange(x, 0, 255);
+                    x = NumericHelper.EnsureInRange(x, 0, this.Width);
+                    y = NumericHelper.EnsureInRange(x, 0, this.Height);
 
                     // Increment the value for index
                     index++;
@@ -2534,6 +2281,259 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region DrawRiverLeftToRight(Color color)
+            /// <summary>
+            /// This method Draw River Left To Right
+            /// </summary>
+            private void DrawRiverLeftToRight(Color color)
+            {
+                // locals
+                int x = 0;
+                int y = 0;
+                int nextDirection = 0;
+                int index = -1;
+
+                // create the shuffler
+                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
+                y = shuffler.PullNextItem();
+                SetPixelColor(x, y, color, false, 0);
+
+                // recreate for 5
+                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
+
+                do
+                {
+                    nextDirection = shuffler.PullNextItem();
+
+                    switch (nextDirection)
+                    {
+                        case 1:
+
+                            // move up
+                            y--;
+
+                            // required
+                            break;
+
+                        case 2:
+
+                            // move up and over
+                            y--;
+                            x++;
+
+                            // required
+                            break;
+
+                        case 3:
+
+                            // move over                                
+                            x++;
+
+                            // required
+                            break;
+
+                        case 4:
+
+                            // move down and over
+
+                            // move up and over
+                            y++;
+                            x++;
+
+                            // required
+                            break;
+
+                        case 5:
+
+                            // move down
+                            y++;
+
+                            // required
+                            break;
+                    }
+
+                    // ensure in range
+                    x = NumericHelper.EnsureInRange(x, 0, this.Width);
+                    y = NumericHelper.EnsureInRange(x, 0, this.Height);
+
+                    // Increment the value for index
+                    index++;
+
+                    // Set currentColor
+                    SetPixelColor(x, y, color, false, index);
+
+                } while (x < this.Width);
+            }
+            #endregion
+            
+            #region DrawRiverRightToLeft(Color color)
+            /// <summary>
+            /// This method Draw River Right To Left
+            /// </summary>
+            private void DrawRiverRightToLeft(Color color)
+            {
+                // locals
+                int x = this.Width;
+                int y = 0;
+                int nextDirection = 0;
+                int index = -1;
+
+                // create the shuffler
+                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
+                y = shuffler.PullNextItem();
+                SetPixelColor(x, y, color, false, 0);
+
+                // recreate for 5
+                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
+
+                do
+                {
+                    nextDirection = shuffler.PullNextItem();
+
+                    switch (nextDirection)
+                    {
+
+                        case 1:
+
+                            // move up
+                            y--;
+
+                            // required
+                            break;
+
+                        case 2:
+
+                            // move up and over
+                            y--;
+                            x--;
+
+                            // required
+                            break;
+
+                        case 3:
+
+                            // move over                                
+                            x--;
+
+                            // required
+                            break;
+
+                        case 4:
+
+                            // move down and over
+                            y++;
+                            x--;
+
+                            // required
+                            break;
+
+                        case 5:
+
+                            // move down
+                            y++;
+
+                            // required
+                            break;
+                    }
+
+                    // ensure in range
+                    x = NumericHelper.EnsureInRange(x, 0, this.Width);
+                    y = NumericHelper.EnsureInRange(x, 0, this.Height);
+
+                    // Increment the value for index
+                    index++;
+
+                    // Set currentColor
+                    SetPixelColor(x, y, color, false, index);
+
+                } while (x > 0);
+            }
+            #endregion
+            
+            #region DrawRiverTopToBottom(Color color)
+            /// <summary>
+            /// This method Draw River Top To Bottom
+            /// </summary>
+            private void DrawRiverTopToBottom(Color color)
+            {
+                 // locals
+                int x = 0;
+                int y = 0;
+                int nextDirection = 0;
+                int index = -1;
+
+                // create the shuffler
+                RandomShuffler.RandomShuffler shuffler = new RandomShuffler.RandomShuffler(1, this.Height, 100);
+                x = shuffler.PullNextItem();
+                SetPixelColor(x, y, color, false, 0);
+
+                // recreate for 5
+                shuffler = new RandomShuffler.RandomShuffler(1, 5, 100);
+
+                do
+                {
+                    nextDirection = shuffler.PullNextItem();
+
+                    switch (nextDirection)
+                    {
+
+                        case 1:
+
+                            // move left
+                            x--;
+
+                            // required
+                            break;
+
+                        case 2:
+
+                            // move down and left
+                            y++;
+                            x--;
+
+                            // required
+                            break;
+
+                        case 3:
+
+                            // move down                                
+                            y++;
+
+                            // required
+                            break;
+
+                        case 4:
+
+                            // move down and right
+                            y++;
+                            x++;
+
+                            // required
+                            break;
+
+                        case 5:
+
+                            // move right
+                            x++;
+
+                            // required
+                            break;
+                    }
+
+                    // ensure in range
+                    x = NumericHelper.EnsureInRange(x, 0, this.Width);
+                    y = NumericHelper.EnsureInRange(x, 0, this.Height);
+
+                    // Increment the value for index
+                    index++;
+
+                    // Set currentColor
+                    SetPixelColor(x, y, color, false, index);
+
+                } while (x > 0);
+            }
+            #endregion
+
             #region FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
             /// <summary>
             /// This method returns a list of Modified Pixels

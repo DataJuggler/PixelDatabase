@@ -6,7 +6,11 @@
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>5.1.7: I added a new method DrawRiver, and you pass in a color and a direction.
+    <PackageReleaseNotes>5.1.9: DrawRiverLeftToRight had an infinite loop. Fixed.
+
+5.1.8: I had made a couple of mistakes on the 5.1.7 release. DrawRiver might work now.
+
+5.1.7: I added a new method DrawRiver, and you pass in a color and a direction.
 
 5.1.6: I added an optional parameter called FastSoftFactor to ImageClassifier.Sort() methods.
 If FastSortFactor is passed in, the program will compare every 'x' pixel, where x equals fastSortFactor.
@@ -149,7 +153,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>5.1.7</Version>
+    <Version>5.1.9</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
