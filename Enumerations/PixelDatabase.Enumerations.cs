@@ -36,6 +36,20 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion    
 
+    #region DirectionEnum : int
+    /// <summary>
+    /// This enum is used by the DrawRiver method
+    /// </summary>
+    public enum DirectionEnum : int
+    {
+        Random = 0,
+        LeftToRight = 1,
+        TopToBottom = 2,
+        RightToLeft = 3,
+        BottomToTop = 4
+    }
+    #endregion
+
     #region MaskActionEnum
     /// <summary>
     /// MaskActionEnum is used by PixelQuery to turn masks on or off.
