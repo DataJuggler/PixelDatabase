@@ -872,7 +872,7 @@ namespace DataJuggler.PixelDatabase
             public static List<PixelCriteria> ParseCriteria(List<TextLine> lines, ActionTypeEnum actionType)
             {
                 // initial value
-                List<PixelCriteria> criteria = null;
+                List<PixelCriteria> criteriaList = null;
 
                 // locals
                 int count = 0;
@@ -883,7 +883,7 @@ namespace DataJuggler.PixelDatabase
                 if (ListHelper.HasOneOrMoreItems(lines))
                 {
                     // Create a new collection of 'PixelCriteria' objects.
-                    criteria = new List<PixelCriteria>();
+                    criteriaList = new List<PixelCriteria>();
 
                     // parse the text lines
                     foreach (TextLine textLine in lines)
@@ -910,7 +910,7 @@ namespace DataJuggler.PixelDatabase
                                     if (pixelCriteria != null)
                                     {
                                         // Add this criteria
-                                        criteria.Add(pixelCriteria);
+                                        criteriaList.Add(pixelCriteria);
                                     }
                                 }
                                 else if (count == 2)
@@ -936,14 +936,16 @@ namespace DataJuggler.PixelDatabase
                                     SetComparisonType(text, ref pixelCriteria);
 
                                     // Add this criteria
-                                    criteria.Add(pixelCriteria);
+                                    criteriaList.Add(pixelCriteria);
                                 }
                             }
                         }
                     }
 
-                    // if there is not any criteria, we need to add one for Alpha > 0
-                    if (!ListHelper.HasOneOrMoreItems(criteria))
+                    // Update 10.6.2021: If there are not any Alpha settings in the query,
+                    // then the query gets updated to append alpha > 0
+                    // if there is not any alpha criteria, we need to add one for Alpha > 0
+                    if (!ListHelper.HasOneOrMoreItems(criteriaList))
                     {
                         // create default pixel criteria
                         pixelCriteria = new PixelCriteria();
@@ -954,13 +956,47 @@ namespace DataJuggler.PixelDatabase
                         pixelCriteria.MinValue = 1;
 
                          // Create Default Criteria
-                        criteria = new List<PixelCriteria>();
-                        criteria.Add(pixelCriteria);
+                        criteriaList = new List<PixelCriteria>();
+                        criteriaList.Add(pixelCriteria);
                     } 
+                    else
+                    {
+                        // if alpha is set
+                        bool hasAlpha = false;
+
+                        // this is the new code 10.6.2021:
+                        foreach (PixelCriteria criteria in criteriaList)
+                        {
+                            // if this query is a PixelType of Alpha
+                            if (criteria.PixelType == PixelTypeEnum.Alpha)
+                            {
+                                // set to true
+                                hasAlpha = true;
+
+                                // break out of loop
+                                break;
+                            }
+                        }
+
+                        // if the value for hasAlpha is false
+                        if (!hasAlpha)
+                        {
+                            // create default pixel criteria
+                            pixelCriteria = new PixelCriteria();
+
+                            // Set the Properties on the criteria
+                            pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
+                            pixelCriteria.PixelType = PixelTypeEnum.Alpha;
+                            pixelCriteria.MinValue = 1;
+
+                             // Add this criteria
+                            criteriaList.Add(pixelCriteria);
+                        }
+                    }
                 }
                 
                 // return value
-                return criteria;
+                return criteriaList;
             }
             #endregion
             
