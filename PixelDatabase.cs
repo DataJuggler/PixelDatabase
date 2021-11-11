@@ -11,6 +11,7 @@ using DataJuggler.PixelDatabase.Enumerations;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.Versioning;
 
 #endregion
 
@@ -21,6 +22,7 @@ namespace DataJuggler.PixelDatabase
     /// <summary>
     /// This class represents a collection of PixelInformation objects
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class PixelDatabase : IDisposable
     {
 
@@ -54,7 +56,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Adjusted Color
             /// </summary>
-            public Color AdjustColor(Color previousColor, PixelQuery pixelQuery)
+            public static Color AdjustColor(Color previousColor, PixelQuery pixelQuery)
             {
                 // initial value
                 Color color = previousColor;
@@ -218,7 +220,7 @@ namespace DataJuggler.PixelDatabase
             /// This method returns the new integer value after the adjustment.
             /// Regardless of what is passed in, the value will return 0
             /// </summary>
-            public int AdjustColorValue(int value, int adjustment)
+            public static int AdjustColorValue(int value, int adjustment)
             {
                 // initial value
                 int adjustedColorValue = value + adjustment;
@@ -246,7 +248,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Value
             /// </summary>
-            public int AdjustValue(int originalValue, int adjustment)
+            public static int AdjustValue(int originalValue, int adjustment)
             {
                 // Set the return value (adjustment may be negative)
                 int adjustValue = originalValue + adjustment;
@@ -369,7 +371,7 @@ namespace DataJuggler.PixelDatabase
                                 if (shouldThisPixelBeUpdated)
                                 {
                                     // apply the pixel
-                                    newColor = ApplyPixel(color, pixelQuery, x, y);
+                                    newColor = ApplyPixel(color, pixelQuery);
 
                                     // Set Pixel Color
                                     SetPixelColor(x, y, newColor, addToLastUpdate, pixel.Index);
@@ -435,12 +437,12 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region ApplyPixel(Color color, PixelQuery pixelQuery, int x, int y)
+            #region ApplyPixel(Color color, PixelQuery pixelQuery)
             /// <summary>
             /// This method expects you to have called ShouldPixelBeUpdated first.
             /// This method determines the new color for the color passed in and the criteria.
             /// </summary>
-            public Color ApplyPixel(Color color, PixelQuery pixelQuery, int x, int y)
+            public static Color ApplyPixel(Color color, PixelQuery pixelQuery)
             {
                 // initial value
                 Color newColor = color;
@@ -568,19 +570,6 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region ApplyBatchQuery(string queryText, StatusUpdate status)
-            /// <summary>
-            /// This method is used to apply multiple batches, split on the word go
-            /// </summary>
-            /// <param name="queryText"></param>
-            /// <param name="status"></param>
-            /// <returns></returns>
-            public void ApplyBatchQuery(string queryText, StatusUpdate status)
-            {
-                         
-            }
-            #endregion
-
             #region ApplyPixels(List<PixelInformation> pixels, PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
             /// This method Apply Pixels
@@ -665,7 +654,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Alpha
             /// </summary>
-            public bool CheckMatchAlpha(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchAlpha(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -701,7 +690,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Average
             /// </summary>
-            public bool CheckMatchAverage(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchAverage(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -737,7 +726,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Blue
             /// </summary>
-            public bool CheckMatchBlue(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlue(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -773,7 +762,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueAverageDifference
             /// </summary>
-            public bool CheckMatchBlueAverageDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueAverageDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -809,7 +798,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueGreen
             /// </summary>
-            public bool CheckMatchBlueGreen(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueGreen(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -845,7 +834,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueGreenDifference
             /// </summary>
-            public bool CheckMatchBlueGreenDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueGreenDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -881,7 +870,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueMinDifference
             /// </summary>
-            public bool CheckMatchBlueMinDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueMinDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -917,7 +906,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueMaxDifference
             /// </summary>
-            public bool CheckMatchBlueMaxDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueMaxDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -953,7 +942,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueRed
             /// </summary>
-            public bool CheckMatchBlueRed(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueRed(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -989,7 +978,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match BlueRedDifference
             /// </summary>
-            public bool CheckMatchBlueRedDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchBlueRedDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1025,7 +1014,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Green
             /// </summary>
-            public bool CheckMatchGreen(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreen(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1061,7 +1050,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match GreenAverageDifference
             /// </summary>
-            public bool CheckMatchGreenAverageDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreenAverageDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1097,7 +1086,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match GreenMinDifference
             /// </summary>
-            public bool CheckMatchGreenMinDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreenMinDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1133,7 +1122,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match GreenMaxDifference
             /// </summary>
-            public bool CheckMatchGreenMaxDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreenMaxDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1169,7 +1158,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match GreenRed
             /// </summary>
-            public bool CheckMatchGreenRed(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreenRed(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1205,7 +1194,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match GreenRedDifference
             /// </summary>
-            public bool CheckMatchGreenRedDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchGreenRedDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1241,7 +1230,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Max
             /// </summary>
-            public bool CheckMatchMax(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMax(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1277,7 +1266,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Min
             /// </summary>
-            public bool CheckMatchMin(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMin(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1313,7 +1302,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match MinMaxDifference
             /// </summary>
-            public bool CheckMatchMinMaxDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMinMaxDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1349,7 +1338,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Red
             /// </summary>
-            public bool CheckMatchRed(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchRed(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1385,7 +1374,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match RedAverageDifference
             /// </summary>
-            public bool CheckMatchRedAverageDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchRedAverageDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1421,7 +1410,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match RedMinDifference
             /// </summary>
-            public bool CheckMatchRedMinDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchRedMinDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1457,7 +1446,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match RedMaxDifference
             /// </summary>
-            public bool CheckMatchRedMaxDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchRedMaxDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1493,7 +1482,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Match Total
             /// </summary>
-            public bool CheckMatchTotal(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchTotal(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1525,11 +1514,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region CopySubImage(PixelDatabase subImage, Point start, Rectangle size)
+            #region CopySubImage(PixelDatabase subImage, Point start)
             /// <summary>
             /// This method Copies the pixels from the Sub Image into the current database
             /// </summary>
-            public void CopySubImage(PixelDatabase subImage, Point start, Rectangle size)
+            public void CopySubImage(PixelDatabase subImage, Point start)
             {
                 // locals
                 PixelInformation pixel = null;
@@ -1734,6 +1723,9 @@ namespace DataJuggler.PixelDatabase
                 {
                     // Dispose of the child object
                     DirectBitmap.Dispose();
+
+                    // recommend by VS
+                    GC.SuppressFinalize(this);
                 }
             }
             #endregion
@@ -2330,7 +2322,7 @@ namespace DataJuggler.PixelDatabase
                     pixels = new List<PixelInformation>();
 
                     // iterate the x pixels
-                    for (int a = x; a < this.DirectBitmap.Bitmap.Width;a++)
+                    for (int a = x; a < width;a++)
                     {
                         // if the value for done is true
                         if (done)
@@ -2340,7 +2332,7 @@ namespace DataJuggler.PixelDatabase
                         }
 
                         // iterate the y pixels
-                        for (int b = y; b < this.DirectBitmap.Bitmap.Height;b++)
+                        for (int b = y; b < height;b++)
                         {  
                             // Increment the value for tempCount
                             tempCount++;
@@ -2499,7 +2491,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method Handle Graph
             /// </summary>
-            public void HandleGraph(int count, int pixelsUpdated, StatusUpdate status, QueryRange range)
+            public static void HandleGraph(int count, int pixelsUpdated, StatusUpdate status, QueryRange range)
             {
                 // refresh every 500,000 in case this is a long query
                 if (count % 500000 == 0)
@@ -2521,7 +2513,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method Handle Hide From
             /// </summary>
-            public void HandleHideFrom(PixelQuery pixelQuery)
+            public static void HandleHideFrom(PixelQuery pixelQuery)
             {
                 // If the pixelQuery object exists
                 if (NullHelper.Exists(pixelQuery))
@@ -2555,17 +2547,17 @@ namespace DataJuggler.PixelDatabase
                     else if (pixelQuery.NormalizeColor == Color.Blue)
                     {
                         // Handle only the Blue pixels
-                        HandleNormalizationBlue(pixel, pixelQuery, ref pixelsUpdated, range);
+                        HandleNormalizationBlue(pixel, pixelQuery, ref pixelsUpdated);
                     }    
                 }
             }
             #endregion
 
-            #region HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            #region HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated)
             /// <summary>
             /// This method Handle Blue Normalization
             /// </summary>
-            public void HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated, QueryRange range)
+            public void HandleNormalizationBlue(PixelInformation pixel, PixelQuery pixelQuery, ref int pixelsUpdated)
             {
                 // locals
                 int blue = 0;
@@ -2788,7 +2780,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Line
             /// </summary>
-            public PixelCriteria MoveLine(PixelCriteria pixelCriteria)
+            public static PixelCriteria MoveLine(PixelCriteria pixelCriteria)
             {
                 // ensure the PixelCriteria exists
                 if (NullHelper.Exists(pixelCriteria))
@@ -2922,7 +2914,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Pixel
             /// </summary>
-            public SearchResult ScorePixel(PixelInformation source, PixelInformation target)
+            public static SearchResult ScorePixel(PixelInformation source, PixelInformation target)
             {
                 // initial value
                 SearchResult result = new SearchResult();
@@ -2946,7 +2938,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Pixels
             /// </summary>
-            public SearchResult ScorePixels(List<PixelInformation> source, List<PixelInformation> target)
+            public static SearchResult ScorePixels(List<PixelInformation> source, List<PixelInformation> target)
             {
                 // initial value
                 SearchResult result = new SearchResult();
@@ -3099,7 +3091,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Alpha
             /// </summary>
-            public int SetAlpha(ActionTypeEnum actionType, PixelQuery pixelQuery = null)
+            public static int SetAlpha(ActionTypeEnum actionType, PixelQuery pixelQuery = null)
             {
                 // initial value
                 int alpha = 0;
@@ -3300,7 +3292,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method returns the Range X
             /// </summary>
-            public QueryRange SetRangeX(QueryRange range, PixelCriteria xCriteria)
+            public static QueryRange SetRangeX(QueryRange range, PixelCriteria xCriteria)
             {
                 // if the range and xCriteria objects both exist
                 if (NullHelper.Exists(range, xCriteria))
@@ -3336,7 +3328,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method sets the range values for the Y axis
             /// </summary>
-            public QueryRange SetRangeY(QueryRange range, PixelCriteria yCriteria)
+            public static QueryRange SetRangeY(QueryRange range, PixelCriteria yCriteria)
             {
                 // if the range and yCriteria objects both eyist
                 if (NullHelper.Exists(range, yCriteria))
@@ -3569,7 +3561,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method swaps one color with another
             /// </summary>
-            public Color SwapColor(Color previousColor, PixelQuery pixelQuery)
+            public static Color SwapColor(Color previousColor, PixelQuery pixelQuery)
             {
                 // initial value
                 Color color = previousColor;

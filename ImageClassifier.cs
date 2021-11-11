@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataJuggler.UltimateHelper;
 using DataJuggler.PixelDatabase.Enumerations;
+using System.Runtime.Versioning;
 
 #endregion
 
@@ -20,6 +21,7 @@ namespace DataJuggler.PixelDatabase
     /// <summary>
     /// This class is used to classify pixeldatabases by colors.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ImageClassifier
     {  
        
@@ -634,7 +636,7 @@ namespace DataJuggler.PixelDatabase
                 newName = Path.Combine(outputDirectory, sb.ToString());
 
                 // Return the fileName with a partialGuid
-                newName = FileHelper.CreateFileNameWithPartialGuid(newName);
+                newName = FileHelper.CreateFileNameWithPartialGuid(newName, 12);
 
                 // return value
                 return newName;

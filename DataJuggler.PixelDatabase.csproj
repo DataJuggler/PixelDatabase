@@ -2,11 +2,14 @@
 
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>10.6.2021
+    <PackageReleaseNotes>
+		11.10.2021: 6.0 version now targets .Net 6.0. 
+		
+		10.6.2021
 5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
 the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
 that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
@@ -166,7 +169,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>5.1.12</Version>
+    <Version>6.0.0</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -175,14 +178,22 @@ First release, i will update the rest of the info if it gets past proof of conce
     <PackageProjectUrl>https://github.com/DataJuggler/PixelDatabase</PackageProjectUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="PixelInformation2.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.RandomShuffler" Version="1.3.0" />
-    <PackageReference Include="DataJuggler.UltimateHelper" Version="1.6.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="DataJuggler.UltimateHelper" Version="1.7.1" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 #endregion
 
@@ -19,6 +20,7 @@ namespace DataJuggler.PixelDatabase
     /// <summary>
     /// This class is used to load PixelDatabases and their DirectBitmaps
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class PixelDatabaseLoader
     {
 
@@ -163,7 +165,7 @@ namespace DataJuggler.PixelDatabase
                             }
 
                             // Iterating the pixel array, every 4th byte is a new pixel, much faster than GetPixel
-                            for (int a = 0; a < pixels.Length; a = a + 4)
+                            for (int a = 0; a < pixels.Length; a += 4)
                             {
                                 // increment the value for x
                                 x++;

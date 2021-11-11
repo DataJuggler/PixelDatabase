@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 #endregion
@@ -20,6 +21,7 @@ namespace DataJuggler.PixelDatabase
     /// <summary>
     /// This class is used as a faster alternative to GetPixel and SetPixel
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class DirectBitmap : IDisposable
     {
 
@@ -53,6 +55,7 @@ namespace DataJuggler.PixelDatabase
                 Disposed = true;
                 Bitmap.Dispose();
                 BitsHandle.Free();
+                GC.SuppressFinalize(this);
             }
             #endregion
             
