@@ -490,29 +490,11 @@ namespace DataJuggler.PixelDatabase
                     }
                     else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMax)
                     {
-                        // if blue is the max
-                        if ((blue >= red) && (blue >= green))
-                        {
-                            // blue is the max or tied for max, and alphabetically wins all ties
-                            red = color.B;
-                            green = color.B;
-                            blue = color.B;
-                        }
-                        // if green is the max
-                        else if ((green >= red) && (green >= blue))
-                        {
-                            // green is the max or tied for max with Red, and alphabetically wins all ties
-                            red = color.G;
-                            green = color.G;
-                            blue = color.G;
-                        }
-                        else
-                        {
-                            // red is the max
-                            red = color.R;
-                            green = color.R;
-                            blue = color.R;
-                        }
+                         // Get the max color, which is the highest color
+
+                        // Kind of violates the only one entry point and one exit point of a method,
+                        // but in this case speed is needed.
+                        return GetMaxColor(color);
                     }
                     else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMean)
                     {
