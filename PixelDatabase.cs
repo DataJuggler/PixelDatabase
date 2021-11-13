@@ -482,29 +482,11 @@ namespace DataJuggler.PixelDatabase
                     }
                     else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMin)
                     {
-                        // if blue is the min
-                        if ((blue <= red) && (blue <= green))
-                        {
-                            // blue is the min or tied for min, and alphabetically wins all ties
-                            red = color.B;
-                            green = color.B;
-                            blue = color.B;
-                        }
-                        // if green is the min
-                        else if ((green <= red) && (green <= blue))
-                        {
-                            // green is the min or tied for min with Red, and alphabetically wins all ties
-                            red = color.G;
-                            green = color.G;
-                            blue = color.G;
-                        }
-                        else
-                        {
-                            // red is the min
-                            red = color.R;
-                            green = color.R;
-                            blue = color.R;
-                        }
+                        // Get the min color, which is the lowest color
+
+                        // Kind of violates the only one entry point and one exit point of a method,
+                        // but in this case speed is needed.
+                        return GetMinColor(color);
                     }
                     else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMax)
                     {
@@ -2369,7 +2351,71 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region Color(Color color)
+            #region GetMaxColor(Color color)
+            /// <summary>
+            /// This method returns the lowest valued color.
+            /// </summary>
+            /// <param name="color"></param>
+            /// <returns></returns>
+            public static Color GetMaxColor(Color color)
+            {
+                // create the 3 color values
+                ColorValue red = new ColorValue(PrimaryColorEnum.Red, color.R, "R");
+                ColorValue green = new ColorValue(PrimaryColorEnum.Green, color.G, "G");
+                ColorValue blue = new ColorValue(PrimaryColorEnum.Blue, color.B, "B");
+                List<ColorValue> colors = new List<ColorValue>();
+                colors.Add(red);
+                colors.Add(green);
+                colors.Add(blue);
+
+                // sort the colors by value and then alpha
+                colors = colors.OrderBy(x => x.Value).ThenBy(x => x.Alpha).ToList();
+
+                // get the meanValue
+                ColorValue maxValue = colors[2];
+
+                // create the meanColor
+                int value = maxValue.Value;
+                Color maxColor = Color.FromArgb(value, value, value);
+
+                // return value
+                return maxColor;
+            }
+            #endregion
+
+            #region GetMinColor(Color color)
+            /// <summary>
+            /// This method returns the lowest valued color.
+            /// </summary>
+            /// <param name="color"></param>
+            /// <returns></returns>
+            public static Color GetMinColor(Color color)
+            {
+                // create the 3 color values
+                ColorValue red = new ColorValue(PrimaryColorEnum.Red, color.R, "R");
+                ColorValue green = new ColorValue(PrimaryColorEnum.Green, color.G, "G");
+                ColorValue blue = new ColorValue(PrimaryColorEnum.Blue, color.B, "B");
+                List<ColorValue> colors = new List<ColorValue>();
+                colors.Add(red);
+                colors.Add(green);
+                colors.Add(blue);
+
+                // sort the colors by value and then alpha
+                colors = colors.OrderBy(x => x.Value).ThenBy(x => x.Alpha).ToList();
+
+                // get the meanValue
+                ColorValue minValue = colors[0];
+
+                // create the meanColor
+                int value = minValue.Value;
+                Color minColor = Color.FromArgb(value, value, value);
+
+                // return value
+                return minColor;
+            }
+            #endregion
+
+            #region GetMeanColor(Color color)
             /// <summary>
             /// This method returns the middle valued color.
             /// </summary>
