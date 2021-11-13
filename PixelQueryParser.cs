@@ -132,6 +132,68 @@ namespace DataJuggler.PixelDatabase
                 return gradient;
             }
             #endregion
+
+            #region CheckForApplyGrayScale(List<TextLine> lines, ref GrayScaleFormulaEnum grayScaleFormula)
+            /// <summary>
+            /// This method returns true if the second line is Set Grayscale
+            /// </summary>
+            public static bool CheckForApplyGrayScale(List<TextLine> lines, ref GrayScaleFormulaEnum grayScaleFormula)
+            {
+                // initial value
+                bool applyGrayscale = false;
+
+                // if there are two lines
+                if (ListHelper.HasXOrMoreItems(lines, 2))
+                {
+                    // if this is the line
+                    if (lines[1].Text.ToLower().StartsWith("set grayscale"))
+                    {  
+                        // set to true
+                        applyGrayscale = true;
+
+                        // if red
+                        if (lines[1].Text.ToLower().Contains("red"))
+                        {
+                            // set to red
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeRed;
+                        }
+                        else if (lines[1].Text.ToLower().Contains("green"))
+                        {
+                            // set to green
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeGreen;
+                        }
+                        else if (lines[1].Text.ToLower().Contains("blue"))
+                        {
+                            // set to green
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeBlue;
+                        }
+                        else if (lines[1].Text.ToLower().Contains("min"))
+                        {
+                            // set to green
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeMin;
+                        }
+                        else if (lines[1].Text.ToLower().Contains("max"))
+                        {
+                            // set to green
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeMin;
+                        }
+                        else if (lines[1].Text.ToLower().Contains("mean"))
+                        {
+                            // set to green
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeMean;
+                        }
+                        else
+                        {
+                            // set to average
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeAverage;
+                        }
+                    }
+                }
+                
+                // return value
+                return applyGrayscale;
+            }
+            #endregion
             
             #region CheckForNormalize(List<TextLine> lines)
             /// <summary>
@@ -1354,6 +1416,19 @@ namespace DataJuggler.PixelDatabase
 
                         // Check for Gradient
                         pixelQuery.Gradient = CheckForGraident(lines);
+
+                        // get the formula
+                        GrayScaleFormulaEnum grayScaleFormula = GrayScaleFormulaEnum.TakeAverage;
+
+                        // Check for ApplyGrayScale
+                        pixelQuery.ApplyGrayscale = CheckForApplyGrayScale(lines, ref grayScaleFormula);
+
+                        // if ApplyGrayScale is true
+                        if (pixelQuery.ApplyGrayscale)
+                        {
+                            // Set the GrayScaleFormula
+                            pixelQuery.GrayScaleFormula = grayScaleFormula;
+                        }
 
                         // Get the lines after the where clause
                         lines = GetLinesAfterWhere(lines);

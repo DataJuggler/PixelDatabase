@@ -6,10 +6,12 @@
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>
-		11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+    <PackageReleaseNotes>11.13.2021
+Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
+
+11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
 		
-		11.10.2021: 6.0 version now targets .Net 6.0. 
+11.10.2021: 6.0 version now targets .Net 6.0. 
 		
 		10.6.2021
 5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
@@ -171,7 +173,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.0.1</Version>
+    <Version>6.0.2</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -185,7 +187,8 @@ First release, i will update the rest of the info if it gets past proof of conce
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;</NoWarn>
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

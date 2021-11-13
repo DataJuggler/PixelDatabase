@@ -50,6 +50,23 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion
 
+    #region GrayScaleFormulaEnum : int
+    /// <summary>
+    /// This enum is used to determine if a GrayScale should set a pixel to
+    /// the average of Red, Green or Blue or use the value of Red, Green or Blue.
+    /// </summary>
+    public enum GrayScaleFormulaEnum : int
+    {
+        TakeAverage = 0,
+        TakeRed = 1,
+        TakeGreen = 2,
+        TakeBlue = 3,
+        TakeMin = 4,
+        TakeMax = 5,
+        TakeMean = 6
+    }
+    #endregion
+
     #region MaskActionEnum
     /// <summary>
     /// MaskActionEnum is used by PixelQuery to turn masks on or off.

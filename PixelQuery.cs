@@ -47,6 +47,8 @@ namespace DataJuggler.PixelDatabase
         private string queryText;
         private int pixelsUpdated;
         private bool normalize;
+        private bool applyGrayscale;
+        private GrayScaleFormulaEnum grayScaleFormula;
         private int min;
         private int max;
         private int step;
@@ -228,8 +230,19 @@ namespace DataJuggler.PixelDatabase
                 get { return alpha; }
                 set { alpha = value; }
             }
+        #endregion
+
+            #region ApplyGrayscale
+            /// <summary>
+            /// This property gets or sets the value for 'ApplyGrayscale'.
+            /// </summary>
+            public bool ApplyGrayscale
+            {
+                get { return applyGrayscale; }
+                set { applyGrayscale = value; }
+            }
             #endregion
-            
+
             #region AssignToColor
             /// <summary>
             /// This property gets or sets the value for 'AssignToColor'.
@@ -358,6 +371,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return gradient; }
                 set { gradient = value; }
+            }
+            #endregion
+
+            #region GrayScaleFormula
+            /// <summary>
+            /// This property gets or sets the value for 'GrayScaleFormula'.
+            /// </summary>
+            public GrayScaleFormulaEnum GrayScaleFormula
+            {
+                get { return grayScaleFormula; }
+                set { grayScaleFormula = value; }
             }
             #endregion
             

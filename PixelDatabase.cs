@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using DataJuggler.PixelDatabase.Enumerations;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
@@ -340,7 +341,7 @@ namespace DataJuggler.PixelDatabase
                     }
                     else
                     {
-                        // This is for all paths except for SplitImage. SplitImage is special
+                        // This is for all paths except for SplitImage and Create Gradient, which are special
                         // as there is no reason to get the current color for the pixels updated.
 
                         // iterate the y pixels
@@ -451,6 +452,106 @@ namespace DataJuggler.PixelDatabase
                 if (pixelQuery.HasSplitImageSettings)
                 {
                     
+                }
+                else if (pixelQuery.ApplyGrayscale)
+                {
+                    int red = 0;
+                    int green = 0;
+                    int blue = 0;
+
+                    if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeBlue)
+                    {
+                        // set the values
+                        red = color.B;
+                        green = color.B;
+                        blue = color.B;
+                    }
+                    else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeGreen)
+                    {
+                        // set the values
+                        red = color.G;
+                        green = color.G;
+                        blue = color.G;
+                    }
+                    else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeRed)
+                    {
+                        // set the values
+                        red = color.R;
+                        green = color.R;
+                        blue = color.R;
+                    }
+                    else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMin)
+                    {
+                        // if blue is the min
+                        if ((blue <= red) && (blue <= green))
+                        {
+                            // blue is the min or tied for min, and alphabetically wins all ties
+                            red = color.B;
+                            green = color.B;
+                            blue = color.B;
+                        }
+                        // if green is the min
+                        else if ((green <= red) && (green <= blue))
+                        {
+                            // green is the min or tied for min with Red, and alphabetically wins all ties
+                            red = color.G;
+                            green = color.G;
+                            blue = color.G;
+                        }
+                        else
+                        {
+                            // red is the min
+                            red = color.R;
+                            green = color.R;
+                            blue = color.R;
+                        }
+                    }
+                    else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMax)
+                    {
+                        // if blue is the max
+                        if ((blue >= red) && (blue >= green))
+                        {
+                            // blue is the max or tied for max, and alphabetically wins all ties
+                            red = color.B;
+                            green = color.B;
+                            blue = color.B;
+                        }
+                        // if green is the max
+                        else if ((green >= red) && (green >= blue))
+                        {
+                            // green is the max or tied for max with Red, and alphabetically wins all ties
+                            red = color.G;
+                            green = color.G;
+                            blue = color.G;
+                        }
+                        else
+                        {
+                            // red is the max
+                            red = color.R;
+                            green = color.R;
+                            blue = color.R;
+                        }
+                    }
+                    else if (pixelQuery.GrayScaleFormula == GrayScaleFormulaEnum.TakeMean)
+                    {
+                        // Get the mean color, which is the middle color
+
+                        // Kind of violates the only one entry point and one exit point of a method,
+                        // but in this case speed is needed.
+                        return GetMeanColor(color);
+                    }
+                    else
+                    {
+                        // average
+                        int average = (int) (color.R + color.G + color.B) / 3;
+
+                        red = average;
+                        green = average;
+                        blue = average;
+                    }
+
+                    // create the newColor
+                    newColor = Color.FromArgb(color.A, red, green, blue);
                 }
                 else if (pixelQuery.SwapColors)
                 {
@@ -2265,6 +2366,38 @@ namespace DataJuggler.PixelDatabase
 
                 // return value
                 return color;
+            }
+            #endregion
+
+            #region Color(Color color)
+            /// <summary>
+            /// This method returns the middle valued color.
+            /// </summary>
+            /// <param name="color"></param>
+            /// <returns></returns>
+            public static Color GetMeanColor(Color color)
+            {
+                // create the 3 color values
+                ColorValue red = new ColorValue(PrimaryColorEnum.Red, color.R, "R");
+                ColorValue green = new ColorValue(PrimaryColorEnum.Green, color.G, "G");
+                ColorValue blue = new ColorValue(PrimaryColorEnum.Blue, color.B, "B");
+                List<ColorValue> colors = new List<ColorValue>();
+                colors.Add(red);
+                colors.Add(green);
+                colors.Add(blue);
+
+                // sort the colors by value and then alpha
+                colors = colors.OrderBy(x => x.Value).ThenBy(x => x.Alpha).ToList();
+
+                // get the meanValue
+                ColorValue meanValue = colors[1];
+
+                // create the meanColor
+                int value = meanValue.Value;
+                Color meanColor = Color.FromArgb(value, value, value);
+
+                // return value
+                return meanColor;
             }
             #endregion
             
