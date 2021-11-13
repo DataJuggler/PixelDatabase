@@ -175,7 +175,7 @@ namespace DataJuggler.PixelDatabase
                         else if (lines[1].Text.ToLower().Contains("max"))
                         {
                             // set to green
-                            grayScaleFormula = GrayScaleFormulaEnum.TakeMin;
+                            grayScaleFormula = GrayScaleFormulaEnum.TakeMax;
                         }
                         else if (lines[1].Text.ToLower().Contains("mean"))
                         {

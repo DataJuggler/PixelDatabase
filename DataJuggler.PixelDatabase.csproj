@@ -6,7 +6,11 @@
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>11.13.2021 (Take Four)
+    <PackageReleaseNotes>11.13.2021 (Take Five)
+Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
+copied code that set TakeMax to TakeMin. Fixed.
+
+11.13.2021 (Take Four)
 Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
 
 11.13.2021 (Take Three)
@@ -183,7 +187,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.0.5</Version>
+    <Version>6.0.6</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
