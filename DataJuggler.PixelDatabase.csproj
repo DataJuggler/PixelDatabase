@@ -2,40 +2,61 @@
 
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>11.13.2021 (Take Five)
-Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
-copied code that set TakeMax to TakeMin. Fixed.
+    <PackageReleaseNotes>
 
-11.13.2021 (Take Four)
-Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
+		11.17.2021
+		Version 6.0.7: I changed the project to multi-target .Net5 and .Net6. The problem seems to occur in
+		AspNet.Core.Components in my site PixelDatabase.Net.
 
-11.13.2021 (Take Three)
-Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
-
-11.13.2021 (Take Two)
-Version 6.0.3: Putting back to Any CPU. My mouse changed it to 
-x64 and Visual Studio didn't like it.
-
-11.13.2021
-Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
-
-11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+		I made a few semi-breaking changes, which is I changed the calculation for the following properties:
+		BlueAverageDifference
+		BlueMaxDifference
+		GreenAverageDifference
+		GreenMaxDifference
+		RedAverageDifference
+		RedMaxDifference
 		
-11.10.2021: 6.0 version now targets .Net 6.0. 
+		I made this change, because the name is confusing compared to the calculation, and even I got confused so hopefully
+		this simplifies it. The only property that is a little confusing, is MinMaxDifference still takes Max - Min, but I justify
+		this by Abs(Min - Max) is the same as Max - Min.
 		
+		I am testing 6.0 version in an isolated Blazor project, to see if something else of mine is causing the conflict with
+		AspNetCore.Components.
+
+		11.13.2021 (Take Five)
+		Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
+		copied code that set TakeMax to TakeMin. Fixed.
+
+		11.13.2021 (Take Four)
+		Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
+
+		11.13.2021 (Take Three)
+		Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
+
+		11.13.2021 (Take Two)
+		Version 6.0.3: Putting back to Any CPU. My mouse changed it to
+		x64 and Visual Studio didn't like it.
+
+		11.13.2021
+		Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
+
+		11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+
+		11.10.2021: 6.0 version now targets .Net 6.0.
+
 		10.6.2021
-5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
-the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
-that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
+		5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
+		the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
+		that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
 
-A new update to PixelDatabase.Net website is coming now.
+		A new update to PixelDatabase.Net website is coming now.
 
-10.6.2021
-5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
+		10.6.2021
+		5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
 Testing any impact, but I have been adding Alpha &gt; 2 to my queries for a while so this should solve that.
 
 5.1.10: After getting Draw River working, it wasn't worth it, so I took it out. I have a lot of ideas, not all are good.
@@ -187,7 +208,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.0.6</Version>
+    <Version>6.0.7</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>

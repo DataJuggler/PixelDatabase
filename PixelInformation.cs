@@ -147,14 +147,14 @@ namespace DataJuggler.PixelDatabase
             #region BlueAverageDifference
             /// <summary>
             /// This read only property returns the value for BlueAverageDifference'.
-            /// This value is calculated by taking the Average and subtracting the value for Blue.
+            /// This value is calculated by taking the value for Blue and subtracting the Average.
             /// </summary>
             public int BlueAverageDifference
             {
                 get
                 {
                     // initial value
-                    int blueAverageDifference = Average - Blue;
+                    int blueAverageDifference = Blue - Average;
                     
                     // return value
                     return blueAverageDifference;
@@ -165,14 +165,14 @@ namespace DataJuggler.PixelDatabase
             #region BlueMaxDifference
             /// <summary>
             /// This read only property returns the value for 'BlueMaxDifference'.
-            /// This value is calculated by taking the Max and subtracting the value for Blue.
+            /// This value is calculated by taking the value for Blue and subtracting the value for Max.
             /// </summary>
             public int BlueMaxDifference
             {
                 get
                 {
                     // initial value
-                    int blueMaxDifference = Max - Blue;
+                    int blueMaxDifference = Blue - Max;
                     
                     // return value
                     return blueMaxDifference;
@@ -299,14 +299,14 @@ namespace DataJuggler.PixelDatabase
             #region GreenAverageDifference
             /// <summary>
             /// This read only property returns the value for 'GreenAverageDifference'.
-            /// This value is calculated by taking the Average and subtracting the value for Green.
+            /// This value is calculated by taking the Green value and subtracting the Average.
             /// </summary>
             public int GreenAverageDifference
             {
                 get
                 {
                     // initial value
-                    int greenAverageDifference = Average - Green;
+                    int greenAverageDifference = Green - Average;
                     
                     // return value
                     return greenAverageDifference;
@@ -317,14 +317,14 @@ namespace DataJuggler.PixelDatabase
             #region GreenMaxDifference
             /// <summary>
             /// This read only property returns the value for 'GreenMaxDifference'.
-            /// This value is calculated by taking the Max and subtracting the value for Green.
+            /// This value is calculated by taking the Green and subtractring the Max.
             /// </summary>
             public int GreenMaxDifference
             {
                 get
                 {
                     // initial value
-                    int greenMaxDifference = Max - Green;
+                    int greenMaxDifference = Green - Max;
                     
                     // return value
                     return greenMaxDifference;
@@ -508,14 +508,14 @@ namespace DataJuggler.PixelDatabase
             #region RedAverageDifference
             /// <summary>
             /// This read only property returns the value for 'RedAverageDifference'.
-            /// This value is calculated by taking the Average and subtracting the value for Red.
+            /// This value is calculated by taking the Red value and subtracting the Average.
             /// </summary>
             public int RedAverageDifference
             {
                 get
                 {
                     // initial value
-                    int redAverageDifference = Average - Red;
+                    int redAverageDifference = Red - Average;
                     
                     // return value
                     return redAverageDifference;
@@ -526,14 +526,14 @@ namespace DataJuggler.PixelDatabase
             #region RedMaxDifference
             /// <summary>
             /// This read only property returns the value for 'RedMaxDifference'.
-            /// This value is calculated by taking the Max and subtracting the value for Red.
+            /// This value is calculated by taking the Red value and subtracting the Max value.
             /// </summary>
             public int RedMaxDifference
             {
                 get
                 {
                     // initial value
-                    int redMaxDifference = Max - Red;
+                    int redMaxDifference = Red - Max;
                     
                     // return value
                     return redMaxDifference;
