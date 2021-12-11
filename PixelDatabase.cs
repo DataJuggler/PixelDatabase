@@ -2270,6 +2270,28 @@ namespace DataJuggler.PixelDatabase
                 g.Flush();
             }
             #endregion
+
+            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            /// <summary>
+            /// Draw Text
+            /// </summary>
+            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment)
+            {
+                // call the override
+                DrawText(text, font, location, textAlignment, lineAlignment, Brushes.Black);
+            }
+            #endregion
+
+            #region DrawText(string text, Font font, Point location)
+            /// <summary>
+            /// Draw Text using the default values of StringAlignment.Near, StringAlignment.Center and Brushes.Black
+            /// </summary>
+            public void DrawText(string text, Font font, Point location)
+            {
+                // call the override
+                DrawText(text, font, location, StringAlignment.Near, StringAlignment.Center, Brushes.Black);
+            }
+            #endregion
             
             #region FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
             /// <summary>

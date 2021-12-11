@@ -8,6 +8,8 @@
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
     <PackageReleaseNotes>
 		
+		12.11.2021: I added two overrides to the DrawText method to make it a little easier to call.
+		
 		12.10.2021
 		Version 6.1.0: I added a DrawText method.
 
@@ -211,7 +213,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>Eraser.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.1.0</Version>
+    <Version>6.1.1</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
