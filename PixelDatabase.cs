@@ -7,6 +7,8 @@ using DataJuggler.UltimateHelper;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using DataJuggler.PixelDatabase.Enumerations;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -2225,6 +2227,50 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            /// <summary>
+            /// Draw Text
+            /// </summary>
+            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            {
+                // Get a reference to the internal Bitmap
+                Bitmap bitmap = DirectBitmap.Bitmap;
+
+                // Create graphic object that will draw onto the bitmap
+                Graphics g = Graphics.FromImage(bitmap);
+
+                // ------------------------------------------
+                // Ensure the best possible quality rendering
+                // ------------------------------------------
+                // The smoothing mode specifies whether lines, curves, and the edges of filled areas use smoothing (also called antialiasing). 
+                // One exception is that path gradient brushes do not obey the smoothing mode. 
+                // Areas filled using a PathGradientBrush are rendered the same way (aliased) regardless of the SmoothingMode property.
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                // The interpolation mode determines how intermediate values between two endpoints are calculated.
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                // Use this property to specify either higher quality, slower rendering, or lower quality, faster rendering of the contents of this Graphics object.
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                // This one is important
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+                // Create string formatting options (used for alignment)
+                StringFormat format = new StringFormat()
+                {
+                    Alignment = textAlignment,
+                    LineAlignment = lineAlignment                    
+                };
+
+                // Draw the text onto the image
+                g.DrawString(text, font, brush, location.X, location.Y, format);
+
+                // Flush all graphics changes to the bitmap
+                g.Flush();
+            }
+            #endregion
+            
             #region FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
             /// <summary>
             /// This method returns a list of Modified Pixels
