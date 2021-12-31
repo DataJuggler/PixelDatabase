@@ -1729,6 +1729,10 @@ namespace DataJuggler.PixelDatabase
                             endX = topLeft.X + size.Width;
                             endY = topLeft.Y + size.Height;
 
+                            // ensure in range
+                            endX = NumericHelper.EnsureInRange(endX, 0, this.Width -1);
+                            endY = NumericHelper.EnsureInRange(endY, 0, this.Height -1);
+
                             // create a subimage
                             subImage = new Bitmap(size.Width, size.Height);
 
