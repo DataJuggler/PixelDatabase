@@ -32,10 +32,26 @@ namespace DataJuggler.PixelDatabase
         private Color backColor;
         private bool removeBackColor;
         private int index;
+        private string criteriaText;
+        #endregion
+
+        #region Methods
+
+            #region ToString()
+            /// <summary>
+            /// method returns the String
+            /// </summary>
+            public override string ToString()
+            {
+                // Return the criteria text
+                return CriteriaText;
+            }
+            #endregion
+            
         #endregion
 
         #region Properties
-        
+
             #region BackColor
             /// <summary>
             /// This property gets or sets the value for 'BackColor'.
@@ -58,6 +74,17 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region CriteriaText
+            /// <summary>
+            /// This property gets or sets the value for 'CriteriaText'.
+            /// </summary>
+            public string CriteriaText
+            {
+                get { return criteriaText; }
+                set { criteriaText = value; }
+            }
+            #endregion
+            
             #region Distance
             /// <summary>
             /// This property gets or sets the value for 'Distance'.

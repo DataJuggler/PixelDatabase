@@ -671,6 +671,13 @@ namespace DataJuggler.PixelDatabase
                             pixelCriteria.PixelType = PixelTypeEnum.LastUpdate;
                         }
                     }
+
+                    // If the pixelCriteria object exists
+                    if (NullHelper.Exists(pixelCriteria))
+                    {
+                        // store the text as is
+                        pixelCriteria.CriteriaText = text;
+                    }
                 }
                 
                 // return value

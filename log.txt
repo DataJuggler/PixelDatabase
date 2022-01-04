@@ -1,6 +1,0 @@
-2021-12-10 18:11:44.618 -06:00 [INF] Loaded 3 extensions
-2021-12-10 18:11:45.362 -06:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.403\
-2021-12-10 18:11:49.126 -06:00 [INF] Marking package DataJuggler.UltimateHelper for removal because it appears to be a transitive dependency
-2021-12-10 18:11:49.952 -06:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.256001) needs added
-2021-12-10 18:11:51.454 -06:00 [WRN] No version of DataJuggler.UltimateHelper found that supports ["netstandard2.0"]; leaving unchanged
-2021-12-10 18:11:51.462 -06:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.256001) needs added

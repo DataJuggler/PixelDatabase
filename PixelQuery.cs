@@ -618,6 +618,7 @@ namespace DataJuggler.PixelDatabase
                         PixelCriteria pixelCriteria = new PixelCriteria();
 
                         // Set the Properties on the criteria
+                        pixelCriteria.CriteriaText = "Alpha > 0";
                         pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
                         pixelCriteria.PixelType = PixelTypeEnum.Alpha;
                         pixelCriteria.MinValue = 1;

@@ -122,7 +122,7 @@ namespace DataJuggler.PixelDatabase
                         // create a new bitmap
                         using (Bitmap source = new Bitmap(original))
                         {
-                             // Create a new instance of a 'PixelDatabase' object.
+                            // Create a new instance of a 'PixelDatabase' object.
                             pixelDatabase = new PixelDatabase();
 
                             // Create a DirectBitmap
@@ -135,10 +135,12 @@ namespace DataJuggler.PixelDatabase
                             byte[] pixels = new byte[size];
                             Marshal.Copy(pointer, pixels, 0, size);
 
-                            // End Code To Lockbits
-
                             // Marshal.Copy(pixels,0,pointer, size);
                             source.UnlockBits(bitmapData);
+
+                            // End Code To Lockbits
+
+                            
 
                             // locals
                             Color color = Color.FromArgb(0, 0, 0);

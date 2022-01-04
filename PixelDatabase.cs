@@ -606,6 +606,7 @@ namespace DataJuggler.PixelDatabase
                                 // Recreate the MaskManager
                                 this.MaskManager = new MaskManager();
                             }
+                            
                             // Find the pixels that match the Criteria given
                             pixelsUpdated = ApplyCriteria(pixelQuery, status);
 
