@@ -39,7 +39,7 @@ namespace DataJuggler.PixelDatabase
             // Store the arg
             ActionType = actionType;
 
-
+            // Create a new collection of 'PixelCriteria' objects.
             Criteria = new List<PixelCriteria>();
         }
         #endregion
@@ -89,8 +89,6 @@ namespace DataJuggler.PixelDatabase
                     sb.Append(Color.B);
                     sb.Append(Environment.NewLine);
                 }
-
-                
                 
                 // return value
                 return sb.ToString();
