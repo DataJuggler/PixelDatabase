@@ -3127,7 +3127,8 @@ namespace DataJuggler.PixelDatabase
 
                 try
                 {
-                    // perform the save
+                    // Save
+                    DirectBitmap.Bitmap.SetResolution(300, 300);
                     DirectBitmap.Bitmap.Save(path);
 
                     // set the return value

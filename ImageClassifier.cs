@@ -54,6 +54,11 @@ namespace DataJuggler.PixelDatabase
                     // Set the totalPixels
                     totalPixels = pixelDatabase.Width * pixelDatabase.Height;
 
+                    // set all values to 255 for min
+                    classification.MinRed = 255;
+                    classification.MinGreen = 255;
+                    classification.MinBlue = 255;
+
                     // iterate each pixel
                     for (int x = 0; x < pixelDatabase.Width; x++)
                     {
@@ -80,6 +85,42 @@ namespace DataJuggler.PixelDatabase
                                 totalRed += pixel.Red;
                                 totalGreen += pixel.Green;
                                 totalBlue += pixel.Blue;
+
+                                // now test for min and max Red
+                                if (pixel.Red < classification.MinRed)
+                                {
+                                    // new min
+                                    classification.MinRed = pixel.Red;
+                                }
+                                else if (pixel.Red > classification.MaxRed)
+                                {
+                                    // new max
+                                    classification.MaxRed = pixel.Red;
+                                }
+
+                                // now test for min and max Green
+                                if (pixel.Green < classification.MinGreen)
+                                {
+                                    // new min
+                                    classification.MinGreen = pixel.Green;
+                                }
+                                else if (pixel.Green > classification.MaxGreen)
+                                {
+                                    // new max
+                                    classification.MaxGreen = pixel.Green;
+                                }
+
+                                // now test for min and max Blue
+                                if (pixel.Blue < classification.MinBlue)
+                                {
+                                    // new min
+                                    classification.MinBlue = pixel.Blue;
+                                }
+                                else if (pixel.Blue > classification.MaxBlue)
+                                {
+                                    // new max
+                                    classification.MaxBlue = pixel.Blue;
+                                }
 
                                 // Increment the value for pixelsInspected
                                 pixelsInspected++;

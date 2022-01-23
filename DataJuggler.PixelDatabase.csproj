@@ -2,7 +2,7 @@
 
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<TargetFrameworks>net5.0;net6.0;</TargetFrameworks>
+	<TargetFramework>net6.0</TargetFramework>
     <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
@@ -97,7 +97,7 @@ Create Gradient
 Set Color1 Orange X Y
 Set Color2 225 50 120 X Y
 
-1.6.0.0: I added a new feature called SplitImage.
+1.6.0: I added a new feature called SplitImage.
 Update
 SplitImage TakeLeft 2490       
 
@@ -213,9 +213,9 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 1.0.1: Changed TargetFramework netcoreapp3.1 to TargetFrameworks netstandard2.1;netcoreapp3.1
 
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
-    <PackageIcon>Eraser.png</PackageIcon>
+    <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.1.4</Version>
+    <Version>6.1.5</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -249,7 +249,15 @@ First release, i will update the rest of the info if it gets past proof of conce
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RandomShuffler\DataJuggler.RandomShuffler.csproj" />
+    <PackageReference Include="DataJuggler.RandomShuffler" Version="6.0.4" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PixelDatabaseLogoSmall.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
