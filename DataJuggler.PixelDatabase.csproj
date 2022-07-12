@@ -3,7 +3,12 @@
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<TargetFramework>net6.0</TargetFramework>
-    <Description>This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
+    <Description>PixelDatabase.Net is an image processing library that uses Bitmap Query Language (BQL). to manipulate
+images. If you know SQL for databases, you are 90% of the way to BQL.
+
+This version is for .NET6 only.
+
+This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
     <PackageReleaseNotes>
@@ -215,21 +220,22 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.1.5</Version>
+    <Version>6.2.0</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
     <RepositoryType>Git - GitHub</RepositoryType>
     <PackageTags>C#,Imaging,Drawing,Bitmap,Canvas,EditImages,Pixel</PackageTags>
     <PackageProjectUrl>https://github.com/DataJuggler/PixelDatabase</PackageProjectUrl>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;</NoWarn>
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;CA1416;</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;</NoWarn>
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
@@ -250,6 +256,7 @@ First release, i will update the rest of the info if it gets past proof of conce
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.RandomShuffler" Version="6.0.4" />
+    <PackageReference Include="ImageProcessor" Version="2.9.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 

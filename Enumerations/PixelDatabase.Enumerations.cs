@@ -20,6 +20,17 @@ namespace DataJuggler.PixelDatabase.Enumerations
     }
     #endregion
 
+    #region BackgroundObjectDetectionTypeEnum
+    /// <summary>
+    /// This enum is used by the GetRectangle methods
+    /// </summary>
+    public enum BackgroundObjectDetectionTypeEnum : int
+    {
+        ObjectTotalMustBeLessThan = 0,
+        ObjectTotalMustBeMoreThan = 1
+    }
+    #endregion
+
     #region ComparisonTypeEnum : int
     /// <summary>
     /// This is the type of comparison a PixelCriteria will set

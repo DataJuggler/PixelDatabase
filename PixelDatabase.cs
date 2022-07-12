@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
+using ImageProcessor;
 
 #endregion
 
@@ -413,6 +414,8 @@ namespace DataJuggler.PixelDatabase
                     gradient.ImageHeight = Height;
                     gradient.ImageWidth = Width;
 
+                    
+
                     // iterate the pixels
                     for(int x = 0; x < this.Width; x++)
                     {
@@ -718,6 +721,33 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region ApplySaturation(PixelDatabase pixelDatabase, int percent)
+            /// <summary>
+            /// Apply Saturation. This method uses ImageFactory, testing in progress.
+            /// </summary>
+            public PixelDatabase ApplySaturation(PixelDatabase pixelDatabase, int percent)
+            {
+                // if the pixel exists and the number is between negative 100 and 100
+                if ((NullHelper.Exists(pixelDatabase)) && (NumericHelper.IsInRange(percent, -100, 100)))
+                {
+                    using (ImageFactory imageFactory = new ImageFactory(preserveExifData:true))
+                    {
+                        // Load, resize, set the format and quality and save an image.
+                        imageFactory.Load(pixelDatabase.DirectBitmap.Bitmap);
+
+                        // Apply the Saturation
+                        imageFactory.Saturation(percent);
+
+                        // load the pixelDatabse
+                        pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(imageFactory.Image, null);
+                    }
+                }
+
+                // return value
+                return pixelDatabase;
+            }
+            #endregion
+            
             #region CheckMatchAlpha(PixelInformation pixel, PixelCriteria criteria)
             /// <summary>
             /// This method returns the Match Alpha
@@ -2381,6 +2411,142 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region GetBlankVerticalLines(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            /// <summary>
+            /// returns a list of Blank Horizontal (y values) Lines. By blank, it means objects that are less than or greater than the total, depending on the objectDetectionType
+            /// </summary>
+            public static List<int> GetBlankVerticalLines(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            {
+                // initial value
+                List<int> blankVerticalLines = new List<int>();
+
+                // local
+                bool lineIsBlank = false;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the x pixels
+                    for(int x = 0; x < pixelDatabase.Width; x++)
+                    {
+                        // reset
+                        lineIsBlank = true;
+                        
+                        // iterate the lines
+                        for(int y = 0; y < pixelDatabase.Height; y++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x, y);
+
+                            // if the object must be brighter than the background
+                            if (objectDetectionType == BackgroundObjectDetectionTypeEnum.ObjectTotalMustBeMoreThan)
+                            {
+                                // the pixel total is less than total, than this line is not blank
+                                if (pixel.Total > total)
+                                {
+                                    // not blank
+                                    lineIsBlank = false;
+
+                                    // exit inner loop
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                // default, if Pixel total ismore than total, line is not blank
+                                if (pixel.Total < total)
+                                {
+                                    // not blank
+                                    lineIsBlank = false;
+
+                                    // exit inner loop
+                                    break;
+                                }
+                            }
+                        }
+
+                        // if the value for lineIsBlank is true
+                        if (lineIsBlank)
+                        {
+                            // Add this x
+                            blankVerticalLines.Add(x);
+                        }
+                    }
+                }
+                
+                // return value
+                return blankVerticalLines;
+            }
+            #endregion
+            
+            #region GetBlankHorizontalLines(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            /// <summary>
+            /// returns a list of Blank rows (x values) Lines
+            /// </summary>
+            public static List<int> GetBlankHorizontalLines(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            {
+                // initial value
+                List<int> blankHorizontalLines = new List<int>();
+
+                // local
+                bool lineIsBlank = false;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the y pixels
+                    for(int y = 0; y < pixelDatabase.Height; y++)
+                    {
+                        // reset
+                        lineIsBlank = true;
+                        
+                        // iterate the columns
+                        for(int x = 0; x < pixelDatabase.Width; x++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x, y);
+
+                            // if the object must be brighter than the background
+                            if (objectDetectionType == BackgroundObjectDetectionTypeEnum.ObjectTotalMustBeMoreThan)
+                            {
+                                // the pixel total is less than total, than this line is not blank
+                                if (pixel.Total > total)
+                                {
+                                    // not blank
+                                    lineIsBlank = false;
+
+                                    // exit inner loop
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                // default, if Pixel total ismore than total, line is not blank
+                                if (pixel.Total < total)
+                                {
+                                    // not blank
+                                    lineIsBlank = false;
+
+                                    // exit inner loop
+                                    break;
+                                }
+                            }
+                        }
+
+                        // if the value for lineIsBlank is true
+                        if (lineIsBlank)
+                        {
+                            // Add this x
+                            blankHorizontalLines.Add(y);
+                        }
+                    }
+                }
+                
+                // return value
+                return blankHorizontalLines;
+            }
+            #endregion
+            
             #region GetColor(int x, int y)
             /// <summary>
             /// This method returns the Color at the x, y given.
@@ -2406,6 +2572,146 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region GetHighestWhiteY(PixelDatabase pixelDatabase)
+            /// <summary>
+            /// returns the Highest White Y
+            /// </summary>
+            public static int GetHighestWhiteY(PixelDatabase pixelDatabase)
+            {
+                // initial value
+                int highestWhiteY = -1;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the x by 10's
+                    for(int x = 0; x < pixelDatabase.Width; x += 10)
+                    {
+                        for (int y = 0; y < pixelDatabase.Height; y++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x , y);
+
+                            // if white
+                            if ((pixel.Total >= 765) && (y > highestWhiteY))
+                            {
+                                // get the new lowestY
+                                highestWhiteY = y;
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return highestWhiteY;
+            }
+            #endregion
+
+            #region GetHighestWhiteX(PixelDatabase pixelDatabase)
+            /// <summary>
+            /// returns the Highest White X
+            /// </summary>
+            public static int GetHighestWhiteX(PixelDatabase pixelDatabase)
+            {
+                // initial value
+                int highestWhiteX = -1;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the x by 10's
+                    for(int y = 0; y < pixelDatabase.Height; y += 10)
+                    {
+                        for (int x = 0; x < pixelDatabase.Width; x++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x , y);
+
+                            // if white
+                            if ((pixel.Total >= 765) && (x > highestWhiteX))
+                            {
+                                // get the new lowestX
+                                highestWhiteX = x;
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return highestWhiteX;
+            }
+            #endregion
+
+            #region GetLowestWhiteY(PixelDatabase pixelDatabase)
+            /// <summary>
+            /// returns the Lowest White Y
+            /// </summary>
+            public static int GetLowestWhiteY(PixelDatabase pixelDatabase)
+            {
+                // initial value
+                int lowestWhiteY = 999999;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the x by 10's
+                    for(int x = 0; x < pixelDatabase.Width; x += 10)
+                    {
+                        for (int y = 0; y < pixelDatabase.Height; y++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x , y);
+
+                            // if white
+                            if ((pixel.Total >= 765) && (y < lowestWhiteY))
+                            {
+                                // get the new lowestY
+                                lowestWhiteY = y;
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return lowestWhiteY;
+            }
+            #endregion
+
+            #region GetLowestWhiteX(PixelDatabase pixelDatabase)
+            /// <summary>
+            /// returns the Lowest White X
+            /// </summary>
+            public static int GetLowestWhiteX(PixelDatabase pixelDatabase)
+            {
+                // initial value
+                int lowestWhiteX = 999999;
+
+                // If the pixelDatabase object exists
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // iterate the x by 10's
+                    for(int y = 0; y < pixelDatabase.Height; y += 10)
+                    {
+                        for (int x = 0; x < pixelDatabase.Height; x++)
+                        {
+                            // get this pixel
+                            PixelInformation pixel = pixelDatabase.GetPixel(x , y);
+
+                            // if white
+                            if ((pixel.Total >= 765) && (x < lowestWhiteX))
+                            {
+                                // get the new lowestX
+                                lowestWhiteX = x;
+                            }
+                        }
+                    }
+                }
+                
+                // return value
+                return lowestWhiteX;
+            }
+            #endregion
+            
             #region GetMaxColor(Color color)
             /// <summary>
             /// This method returns the lowest valued color.
@@ -2499,6 +2805,147 @@ namespace DataJuggler.PixelDatabase
 
                 // return value
                 return meanColor;
+            }
+            #endregion
+            
+            #region DetectObjects(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            /// <summary>
+            /// method returns the Objects found in an image. 
+            /// </summary>
+            public static List<Rectangle> DetectObjects(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
+            {
+                // initial value
+                List<Rectangle> rectangles  = new List<Rectangle>();
+
+                // local
+                Rectangle rectangle = new Rectangle();
+                List<int> blankHorizontalLines = null;
+                List<int> blankVerticalLines = null;
+                string query = "";
+
+                // If the pixelDatabase object exists
+                // Avoid 
+                if (NullHelper.Exists(pixelDatabase))
+                {
+                    // First step is to get the blank lines
+                    // by blank, this means anything that counts as the background
+                    blankHorizontalLines = GetBlankHorizontalLines(pixelDatabase, total, objectDetectionType);
+                    blankVerticalLines = GetBlankVerticalLines(pixelDatabase, total, objectDetectionType);
+
+                    // if the lines exist
+                    if (ListHelper.HasOneOrMoreItems(blankVerticalLines))
+                    {
+                        // iterate the x rows
+                        for(int x = 0; x < blankVerticalLines.Count; x++)
+                        {
+                            // create an update Query
+                            query = "Update" + Environment.NewLine + "Set Color Firebrick" + Environment.NewLine + "Where" + Environment.NewLine + "X = " + blankVerticalLines[x];
+
+                            // update 
+                            pixelDatabase.ApplyQuery(query, null);
+                        }
+                    }
+
+                    // if the lines exist
+                    if (ListHelper.HasOneOrMoreItems(blankHorizontalLines))
+                    {
+                        // iterate the y axix
+                        for(int y = 0; y < blankHorizontalLines.Count; y++)
+                        {
+                            // create an update Query
+                            query = "Update" + Environment.NewLine + "Set Color Firebrick" + Environment.NewLine + "Where" + Environment.NewLine + "Y = " + blankHorizontalLines[y];
+
+                            // update 
+                            pixelDatabase.ApplyQuery(query, null);
+                        }
+                    }
+
+                    // Now, this query will make everything white, that isn't Firebrick                    
+                    query = "Update" + Environment.NewLine + "Set Color White" + Environment.NewLine + "Where" + Environment.NewLine + "MinMaxDiff < 140";
+
+                    // update 
+                    pixelDatabase.ApplyQuery(query, null);
+
+                    // by now we should have an image with white boxes
+                    int lowestWhiteY = GetLowestWhiteY(pixelDatabase);
+                    int lowestWhiteX = GetLowestWhiteX(pixelDatabase);
+                    int highestWhiteY = GetHighestWhiteY(pixelDatabase);
+                    int highestWhiteX = GetHighestWhiteX(pixelDatabase);
+
+                    // at this point we know the rectangle that contains everything
+
+                    // set the length
+                    int length = highestWhiteY - lowestWhiteY;
+
+                    // create a rectangle
+                    rectangle = new Rectangle();
+                    rectangle.X = lowestWhiteX;
+                    rectangle.Y = lowestWhiteY;
+                    rectangle.Height = length;
+                    rectangle.Width = 1;
+                    
+                    // local
+                    bool inRectangle = true;
+
+                    // set the index
+                    int index = 0;
+                    
+                    // iterate along the horizontal axis
+                    for (int x = lowestWhiteX; x < highestWhiteX; x++)
+                    {
+                        // get this pixel
+                        PixelInformation pixel = pixelDatabase.GetPixel(x, lowestWhiteY);
+
+                        // if the value for inRectangle is true
+                        if (inRectangle)
+                        {  
+                            // if not white
+                            if (pixel.Total < 765)
+                            {
+                                // add this item
+                                rectangles.Add(rectangle);
+
+                                // no longer in a rectangle
+                                inRectangle = false;
+                            }
+                            else
+                            {
+                                // increase the width of the recetangle
+                                rectangle.Width++;
+                            }
+                        }
+                        else
+                        {
+                            // if white
+                            if (pixel.Total == 765)
+                            {
+                                // Increment the value for index
+                                index++;
+
+                                // We started a new rectangle
+                                inRectangle = true;
+
+                                // create a rectangle
+                                rectangle = new Rectangle();
+
+                                // Set the width
+                                rectangle.X = x;
+                                rectangle.Y = lowestWhiteY;
+                                rectangle.Width = 1;
+                                rectangle.Height = length;
+                            }
+                        }
+                    }
+
+                    // add the last item
+                    rectangles.Add(rectangle);
+
+                    // no longer in a rectangle
+                    inRectangle = false;
+                }
+
+                // return value
+                return rectangles;
             }
             #endregion
             
