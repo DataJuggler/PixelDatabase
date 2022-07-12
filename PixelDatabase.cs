@@ -15,7 +15,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
-using ImageProcessor;
 
 #endregion
 
@@ -721,33 +720,6 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region ApplySaturation(PixelDatabase pixelDatabase, int percent)
-            /// <summary>
-            /// Apply Saturation. This method uses ImageFactory, testing in progress.
-            /// </summary>
-            public PixelDatabase ApplySaturation(PixelDatabase pixelDatabase, int percent)
-            {
-                // if the pixel exists and the number is between negative 100 and 100
-                if ((NullHelper.Exists(pixelDatabase)) && (NumericHelper.IsInRange(percent, -100, 100)))
-                {
-                    using (ImageFactory imageFactory = new ImageFactory(preserveExifData:true))
-                    {
-                        // Load, resize, set the format and quality and save an image.
-                        imageFactory.Load(pixelDatabase.DirectBitmap.Bitmap);
-
-                        // Apply the Saturation
-                        imageFactory.Saturation(percent);
-
-                        // load the pixelDatabse
-                        pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(imageFactory.Image, null);
-                    }
-                }
-
-                // return value
-                return pixelDatabase;
-            }
-            #endregion
-            
             #region CheckMatchAlpha(PixelInformation pixel, PixelCriteria criteria)
             /// <summary>
             /// This method returns the Match Alpha

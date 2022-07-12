@@ -11,7 +11,9 @@ This version is for .NET6 only.
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>
+    <PackageReleaseNotes>7.12.2022: I removed ImageProcessor. I didn't realize it was a .NET Framework project.
+I will learn how to do saturation with Primitives.
+
 		
 		12.11.2021: I am trying again to target only .Net6.0.
 		
@@ -220,7 +222,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.2.0</Version>
+    <Version>6.2.1</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -256,7 +258,6 @@ First release, i will update the rest of the info if it gets past proof of conce
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.RandomShuffler" Version="6.0.4" />
-    <PackageReference Include="ImageProcessor" Version="2.9.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
