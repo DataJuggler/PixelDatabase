@@ -1,6 +1,15 @@
 # PixelDatabase
 
-PixelDatabase.Net is now live: https://pixeldatabase.net
+10.21.2022:
+PixelDatabase has been updated to .NET7! The current version is 7.0.2-rc1. It is listed as pre release until .NET7 is out of preview next month.
+You will need Visual Studio Preview to compile this project now.
+
+Get Visual Studio Preview Here:
+https://visualstudio.microsoft.com/vs/preview/
+
+PixelDatabase.Net is now live: 
+https://pixeldatabase.net
+A Free Online Text Based Image Editor
 
 I am starting a batch version of this project now because I need it for videos.
 
