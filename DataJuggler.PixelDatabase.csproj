@@ -2,75 +2,76 @@
 
   <PropertyGroup>    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<TargetFramework>net6.0</TargetFramework>
+	<TargetFramework>net7.0</TargetFramework>
     <Description>PixelDatabase.Net is an image processing library that uses Bitmap Query Language (BQL). to manipulate
 images. If you know SQL for databases, you are 90% of the way to BQL.
 
-This version is for .NET6 only.
+This version is for .NET7 only. Use a 6.x version for .NET6.
 
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>7.12.2022: I removed ImageProcessor. I didn't realize it was a .NET Framework project.
+    <PackageReleaseNotes>10.21.2022: This version has been updated for .NET7. It listed as pre-release until .NET7 is out
+of preview.
+
+7.12.2022: I removed ImageProcessor. I didn't realize it was a .NET Framework project.
 I will learn how to do saturation with Primitives.
 
 		
-		12.11.2021: I am trying again to target only .Net6.0.
+12.11.2021: I am trying again to target only .Net6.0.
+
+12.11.2021: I added two overrides to the DrawText method to make it a little easier to call.
 		
-		12.11.2021: I added two overrides to the DrawText method to make it a little easier to call.
+12.10.2021
+Version 6.1.0: I added a DrawText method.
+
+11.17.2021
+Version 6.0.7: I changed the project to multi-target .Net5 and .Net6. The problem seems to occur in
+AspNet.Core.Components in my site PixelDatabase.Net.
+
+I made a few semi-breaking changes, which is I changed the calculation for the following properties:
+BlueAverageDifference
+BlueMaxDifference
+GreenAverageDifference
+GreenMaxDifference
+RedAverageDifference
+RedMaxDifference
 		
-		12.10.2021
-		Version 6.1.0: I added a DrawText method.
-
-		11.17.2021
-		Version 6.0.7: I changed the project to multi-target .Net5 and .Net6. The problem seems to occur in
-		AspNet.Core.Components in my site PixelDatabase.Net.
-
-		I made a few semi-breaking changes, which is I changed the calculation for the following properties:
-		BlueAverageDifference
-		BlueMaxDifference
-		GreenAverageDifference
-		GreenMaxDifference
-		RedAverageDifference
-		RedMaxDifference
+I made this change, because the name is confusing compared to the calculation, and even I got confused so hopefully
+this simplifies it. The only property that is a little confusing, is MinMaxDifference still takes Max - Min, but I justify
+this by Abs(Min - Max) is the same as Max - Min.
 		
-		I made this change, because the name is confusing compared to the calculation, and even I got confused so hopefully
-		this simplifies it. The only property that is a little confusing, is MinMaxDifference still takes Max - Min, but I justify
-		this by Abs(Min - Max) is the same as Max - Min.
-		
-		I am testing 6.0 version in an isolated Blazor project, to see if something else of mine is causing the conflict with
-		AspNetCore.Components.
 
-		11.13.2021 (Take Five)
-		Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
-		copied code that set TakeMax to TakeMin. Fixed.
+11.13.2021 (Take Five)
+Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
+copied code that set TakeMax to TakeMin. Fixed.
 
-		11.13.2021 (Take Four)
-		Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
+11.13.2021 (Take Four)
+Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
 
-		11.13.2021 (Take Three)
-		Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
+11.13.2021 (Take Three)
+Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
 
-		11.13.2021 (Take Two)
-		Version 6.0.3: Putting back to Any CPU. My mouse changed it to
-		x64 and Visual Studio didn't like it.
+11.13.2021 (Take Two)
+Version 6.0.3: Putting back to Any CPU. My mouse changed it to
+x64 and Visual Studio didn't like it.
 
-		11.13.2021
-		Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
+11.13.2021
+Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
 
-		11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
 
-		11.10.2021: 6.0 version now targets .Net 6.0.
+11.10.2021: 6.0 version now targets .Net 6.0.
 
-		10.6.2021
-		5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
-		the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
-		that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
+10.6.2021
+5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
+the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
+that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
 
-		A new update to PixelDatabase.Net website is coming now.
+A new update to PixelDatabase.Net website is coming now.
 
-		10.6.2021
-		5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
+10.6.2021
+5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
 Testing any impact, but I have been adding Alpha &gt; 2 to my queries for a while so this should solve that.
 
 5.1.10: After getting Draw River working, it wasn't worth it, so I took it out. I have a lot of ideas, not all are good.
@@ -222,7 +223,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>6.2.1</Version>
+    <Version>7.0.2-rc1</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -257,8 +258,9 @@ First release, i will update the rest of the info if it gets past proof of conce
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataJuggler.RandomShuffler" Version="6.0.4" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="DataJuggler.RandomShuffler" Version="7.0.3-rc1" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.2.22472.3" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
