@@ -76,7 +76,84 @@ namespace DataJuggler.PixelDatabase
 
                 try
                 {
-                   
+                    // We need the percentage of each color
+                    int xDiff1 = Math.Abs(Color1.X - x);
+                    int xDiff2 = Math.Abs(Color2.X - x);
+                    int yDiff1 = Math.Abs(Color1.Y - y);
+                    int yDiff2 = Math.Abs(Color2.Y - y);
+                    double diff1 = xDiff1 + yDiff1;
+                    double diff2 = xDiff2 + yDiff2;
+                    double totalDiff = diff1 + diff2;
+                    double bluePercent1 = 0;
+                    double bluePercent2 = 0;                    
+                    
+                    // if the totalDiff is set (avoids division by zero error)
+                    if (totalDiff > 0)
+                    {
+                        // Set the value for bluePercent1
+                        bluePercent1 = 100 / totalDiff * diff2;
+
+                        // Ensure in range (should never be out)
+
+                        // make sure bluePercent1 is at least zero
+                        bluePercent1 = NumericHelper.EnsureInRange(bluePercent1, 0, 100);
+
+                        // Set the bluePercent1
+                        bluePercent1 = bluePercent1 * .01;
+
+                        // The second number is opposite the first
+                        bluePercent2 = 1 - bluePercent1;
+
+                        // Get the value for blue1 and blue2
+                        double blue1 = Color1.Blue * bluePercent1;
+                        double blue2 = Color2.Blue * bluePercent2;
+
+                        // if blue is higher
+                        if (blue1 > blue2)
+                        {
+                            // if blue1 is less than half
+                            if (blue2 < (blue1 * .5))
+                            {
+                                // Increase (this .5 needs to be a variable)
+                                blue2 = blue1 * .5;
+                            }
+                        }
+                        else
+                        {
+                            // if blue1 is less than half
+                            if (blue1 < (blue2 * .5))
+                            {
+                                // Increase (this .5 needs to be a variable)
+                                blue1 = blue2 * .5;
+                            }
+                        }
+
+                        // if blue is higher
+                        if (blue1 > blue2)
+                        {
+                            // if blue1 is less than half
+                            if (blue2 < (blue1 * .5))
+                            {
+                                // Increase (this .5 needs to be a variable)
+                                blue2 = blue1 * .5;
+                            }
+                        }
+                        else
+                        {
+                            // if blue1 is less than half
+                            if (blue1 < (blue2 * .5))
+                            {
+                                // Increase (this .5 needs to be a variable)
+                                blue1 = blue2 * .5;
+                            }
+                        }
+
+                        // Set the value for blue
+                        blue = (int) (blue1 + blue2);
+
+                        // Ensure the value is in range
+                        blue = NumericHelper.EnsureInRange(blue, 0, 255);
+                    }
                 }
                 catch (Exception error)
                 {
