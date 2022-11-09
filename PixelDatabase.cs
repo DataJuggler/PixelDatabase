@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Xaml.Permissions;
 
 #endregion
 
@@ -2161,49 +2162,105 @@ namespace DataJuggler.PixelDatabase
             /// <param name="point2">The bottom right</param>
             public void DrawRectangle(Point point1, Point point2, Color color, int thickness)
             {
-                if ((point1 != Point.Empty) && (point2 != Point.Empty))
+                // locals
+                int a = 0;
+                int b = 0;
+                int line = 0;
+                
+                try
                 {
-                    // draw top line
-                    for (int x = point1.X; x < point2.X; x++)
+                    if ((point1 != Point.Empty) && (point2 != Point.Empty))
                     {
-                        for (int t = 0; t < thickness; t++)
+                        // draw top line
+                        for (int x = point1.X; x < point2.X; x++)
                         {
-                            // Draw the line
-                            DirectBitmap.SetPixel(x, point1.Y + t, color);  
+                            for (int t = 0; t < thickness; t++)
+                            {
+                                // set the value for a & b
+                                a = x;
+                                b = point1.Y + t;    
+
+                                // if in range
+                                if (b < Height)
+                                {
+                                    // Draw the line
+                                    DirectBitmap.SetPixel(a, b, color);  
+                                }
+                            }
+                        }
+
+                        // Increment the value for line
+                        line++;
+
+                        // draw left line
+
+                        // draw left line
+                        for (int y = point1.Y; y < point2.Y; y++)
+                        {
+                            for (int t = 0; t < thickness; t++)
+                            {
+                                // set the value for a & b
+                                a = point1.X + t;
+                                b = y;
+
+                                // if in range
+                                if (a < Width)
+                                {
+                                    // Draw the line
+                                    DirectBitmap.SetPixel(a, b, color);  
+                                }
+                            }
+                        }
+
+                         // Increment the value for line
+                        line++;
+
+                        // draw bottom line
+                        for (int x = point1.X; x < point2.X; x++)
+                        {
+                            for (int t = 0; t < thickness; t++)
+                            {
+                                // set the value for a & b
+                                a = x;
+                                b = point2.Y - t;
+
+                                // if in range
+                                if (b < Height)
+                                {
+                                    // Draw the line
+                                    DirectBitmap.SetPixel(a, b, color);  
+                                }
+                            }
+                        }
+
+                         // Increment the value for line
+                        line++;
+
+                        // draw right line
+                        for (int y = point1.Y; y < point2.Y; y++)
+                        {
+                            for (int t = 0; t < thickness; t++)
+                            {
+                                // set the value for a & b
+                                a = point2.X - t;
+                                b = y;
+
+                                if (a < Width)
+                                {
+                                    // Draw the line
+                                    DirectBitmap.SetPixel(a, b, color);  
+                                }
+                            }
                         }
                     }
 
-                    // draw left line
-
-                    // draw left line
-                    for (int y = point1.Y; y < point2.Y; y++)
-                    {
-                        for (int t = 0; t < thickness; t++)
-                        {
-                            // Draw the line
-                            DirectBitmap.SetPixel(point1.X + t, y, color);  
-                        }
-                    }
-
-                    // draw bottom line
-                    for (int x = point1.X; x < point2.X; x++)
-                    {
-                        for (int t = 0; t < thickness; t++)
-                        {
-                            // Draw the line
-                            DirectBitmap.SetPixel(x, point2.Y - t, color);  
-                        }
-                    }
-
-                    // draw right line
-                    for (int y = point1.Y; y < point2.Y; y++)
-                    {
-                        for (int t = 0; t < thickness; t++)
-                        {
-                            // Draw the line
-                            DirectBitmap.SetPixel(point2.X - t, y, color);  
-                        }
-                    }
+                     // Increment the value for line
+                    line++;
+                }
+                catch (Exception error)
+                {
+                    // for debugging only for now
+                    DebugHelper.WriteDebugError("DrawRectangle", "PixelDatabase", error);
                 }
             }
             #endregion
