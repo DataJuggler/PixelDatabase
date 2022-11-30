@@ -326,7 +326,7 @@ namespace DataJuggler.PixelDatabase
 
                 switch (c)
                 {
-                    case '0':
+                    case '9':
 
                         // set the return value
                         convertedChar = "a";
@@ -334,38 +334,16 @@ namespace DataJuggler.PixelDatabase
                         // required
                         break;
 
-                     case '1':
+                     case '8':
 
                         convertedChar = "b";
 
                         // required
                         break;
 
-                     case '2':
+                     case '7':
 
                         convertedChar = "c";
-
-                        // required
-                        break;
-
-                    case '3':
-
-                        // set the return value
-                        convertedChar = "d";
-
-                        // required
-                        break;
-
-                     case '4':
-
-                        convertedChar = "e";
-
-                        // required
-                        break;
-
-                     case '5':
-
-                        convertedChar = "f";
 
                         // required
                         break;
@@ -373,26 +351,48 @@ namespace DataJuggler.PixelDatabase
                     case '6':
 
                         // set the return value
+                        convertedChar = "d";
+
+                        // required
+                        break;
+
+                     case '5':
+
+                        convertedChar = "e";
+
+                        // required
+                        break;
+
+                     case '4':
+
+                        convertedChar = "f";
+
+                        // required
+                        break;
+
+                    case '3':
+
+                        // set the return value
                         convertedChar = "g";
 
                         // required
                         break;
 
-                     case '7':
+                     case '2':
 
                         convertedChar = "h";
 
                         // required
                         break;
 
-                     case '8':
+                     case '1':
 
                         convertedChar = "i";
 
                         // required
                         break;
 
-                     case '9':
+                     case '0':
 
                         convertedChar = "j";
 
@@ -740,6 +740,9 @@ namespace DataJuggler.PixelDatabase
                     // update status
                     statusUpdate("Status: Finished Analyzing. Setting new file names", count);
 
+                    // Now sort the images by the AverageBlue, AverageGreen and AverageRed.
+                    images = images.OrderBy(x => x.AverageBlue).ThenBy(x => x.AverageGreen).ThenBy(x => x.AverageRed).ToList();
+
                     // Now set the primary, secondary and minority colors so the image can be sorted
                     foreach (ImageClassification image in images)
                     {
@@ -747,8 +750,11 @@ namespace DataJuggler.PixelDatabase
                         image.NewName = SetNewName(image, outputDirectory);                        
                     }
 
-                    // Now sort the images by the new name
-                    images = images.OrderBy(x => x.NewName).ToList();
+                    // Now to rename them so that the highest average blues list in a folder first
+                    foreach (ImageClassification image in images)
+                    {
+                        
+                    }
 
                      // if statusUpdate exists
                     if (NullHelper.Exists(statusUpdate))

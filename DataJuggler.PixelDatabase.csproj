@@ -11,7 +11,10 @@ This version is for .NET7 only. Use a 6.x version for .NET6.
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>11.8.2022: This project has been updated for .NET 7. Use a 6.x version for .NET 6. All new development will
+    <PackageReleaseNotes>11.30.2022: I upgraded the way ImageClassification Works. My old method actually sorted wrong by color
+name was faoving lower average colors.
+
+11.8.2022: This project has been updated for .NET 7. Use a 6.x version for .NET 6. All new development will
 be on the .NET 7 version.
 
 10.25.2022: Gradient.CalculateBlue was returning 0 hard coded. I guess I never finished that.
@@ -228,7 +231,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>7.0.4</Version>
+    <Version>7.0.5</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
