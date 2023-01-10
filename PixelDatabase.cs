@@ -583,16 +583,24 @@ namespace DataJuggler.PixelDatabase
                             // If RemoveBackColor is true
                             if (pixelQuery.Criteria[0].RemoveBackColor)
                             {
-                                // remove the back color
-                                status("RemoveBackColor", 0);
+                                // If the status object exists
+                                if (NullHelper.Exists(status))
+                                {
+                                    // remove the back color
+                                    status("RemoveBackColor", 0);
+                                }
                             }
                             else
                             {
                                 // Send a message
                                 string message = "SetBackColor" + "|" + pixelQuery.Criteria[0].BackColor.Name;
 
-                                // Set the back color
-                                status(message, 0);
+                                // If the status object exists
+                                if (NullHelper.Exists(status))
+                                {
+                                    // Set the back color
+                                    status(message, 0);
+                                }
                             }
                         }
                         if (pixelQuery.ActionType == ActionTypeEnum.HideFrom)
@@ -614,7 +622,7 @@ namespace DataJuggler.PixelDatabase
                             pixelsUpdated = ApplyCriteria(pixelQuery, status);
 
                             // if there are one or more pixels
-                            if (pixelsUpdated < 1)
+                            if ((pixelsUpdated < 1) && (status != null))
                             {
                                 // show a message  
                                 status("No pixels could be found matching your search criteria", 0);
@@ -694,16 +702,24 @@ namespace DataJuggler.PixelDatabase
                                 // if abort is true
                                 if (Abort)
                                 {
-                                    // Show the user a message
-                                    status("Operation Aborted.", 0);
+                                    // If the status object exists
+                                    if (NullHelper.Exists(status))
+                                    {
+                                        // Show the user a message
+                                        status("Operation Aborted.", 0);
+                                    }
 
                                     // break out of the loop
                                     break;
                                 }
                                 else
                                 {
-                                    // Update the pixels affected by the query
-                                    status("Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", pixels.Count), count);    
+                                    // If the status object exists
+                                    if (NullHelper.Exists(status))
+                                    {
+                                        // Update the pixels affected by the query
+                                        status("Updated " + String.Format("{0:n0}", count) + " of " +  String.Format("{0:n0}", pixels.Count), count);    
+                                    }
                                 }
                             }
                         }
@@ -713,8 +729,12 @@ namespace DataJuggler.PixelDatabase
                     }
                 }
 
-                // Update the pixels affected by the query
-                status("Updated " + String.Format("{0:n0}", count) + " pixels.", count);
+                // If the status object exists
+                if (NullHelper.Exists(status))
+                {
+                    // Update the pixels affected by the query
+                    status("Updated " + String.Format("{0:n0}", count) + " pixels.", count);
+                }
 
                 // Reset
                 Abort = false;
