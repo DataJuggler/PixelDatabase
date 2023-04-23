@@ -1,11 +1,8 @@
 # PixelDatabase
 
-10.21.2022:
-PixelDatabase has been updated to .NET7! The current version is 7.0.2-rc1. It is listed as pre release until .NET7 is out of preview next month.
-You will need Visual Studio Preview to compile this project now.
-
-Get Visual Studio Preview Here:
-https://visualstudio.microsoft.com/vs/preview/
+Update 4.23.2023:
+The current version is 7.0.7. I added a Resize method which returns a PixelDatabase loaded with the new size.
+There was already a ResizeImage, but this method makes it easier for use with PixelDatabase.
 
 PixelDatabase.Net is now live: 
 https://pixeldatabase.net

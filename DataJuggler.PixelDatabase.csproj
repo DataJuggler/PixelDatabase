@@ -241,6 +241,7 @@ First release, i will update the rest of the info if it gets past proof of conce
     <PackageTags>C#,Imaging,Drawing,Bitmap,Canvas,EditImages,Pixel</PackageTags>
     <PackageProjectUrl>https://github.com/DataJuggler/PixelDatabase</PackageProjectUrl>
     <Nullable>disable</Nullable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -250,6 +251,7 @@ First release, i will update the rest of the info if it gets past proof of conce
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -275,6 +277,10 @@ First release, i will update the rest of the info if it gets past proof of conce
 
   <ItemGroup>
     <None Update="PixelDatabaseLogoSmall.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
