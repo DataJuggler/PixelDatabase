@@ -1,5 +1,4 @@
 ﻿
-
 #region using statements
 
 using DataJuggler.RandomShuffler;
@@ -2469,6 +2468,22 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region GetAdjacentPixels(int x, int y)
+            /// <summary>
+            /// returns a list of Adjacent Pixels
+            /// </summary>
+            public List<PixelInformation> GetAdjacentPixels(int x, int y)
+            {
+                // initial value
+                List<PixelInformation> adjacentPixels = null;
+
+
+                
+                // return value
+                return adjacentPixels;
+            }
+            #endregion
+            
             #region GetBlankVerticalLines(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
             /// <summary>
             /// returns a list of Blank Horizontal (y values) Lines. By blank, it means objects that are less than or greater than the total, depending on the objectDetectionType
@@ -3578,10 +3593,39 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region Resize(int height, int width)
+            /// <summary>
+            /// returns the
+            /// </summary>
+            public PixelDatabase Resize(int height, int width)
+            {
+                // initial value
+                PixelDatabase resizedPixelDatabase = null;
+                
+                // create the image from this bitmap
+                Image image = (Image) this.DirectBitmap.Bitmap;
+
+                // create the new size
+                Size newSize = new Size(height, width);
+
+                // resize the image
+                Image resizedImage = ResizeImage(image, newSize);
+
+                // resizedBitmap
+                Bitmap resizedBitmap = new Bitmap(resizedImage);
+
+                // load the resizedPixelDatabase
+                resizedPixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(resizedBitmap, null);
+                
+                // return value
+                return resizedPixelDatabase;
+            }
+            #endregion
+            
             #region ResizeImage(System.Drawing.Image imgToResize, Size size)  
             /// <summary>
-            /// This method will resize the image. Credit for this is given to Ish Bandhu and this C# Corner article
-            /// https://www.c-sharpcorner.com/UploadFile/ishbandhu2009/resize-an-image-in-C-Sharp/
+            /// This method will resizedImage the image. Credit for this is given to Ish Bandhu and this C# Corner article
+            /// https://www.c-sharpcorner.com/UploadFile/ishbandhu2009/resizedImage-an-image-in-C-Sharp/
             /// </summary>
             /// <param name="imgToResize"></param>
             /// <param name="size"></param>
@@ -4175,6 +4219,11 @@ namespace DataJuggler.PixelDatabase
                             // this pixel was already updated
                             shouldPixelBeUpdated = false;
                         }
+                    }
+
+                    if (pixelQuery.HasClump)
+                    {
+                        // This codei s not ready to be used yet
                     }
                 }
                 catch (Exception error)

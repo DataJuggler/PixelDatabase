@@ -55,6 +55,7 @@ namespace DataJuggler.PixelDatabase
         private Color normalizeColor;
         private DataJuggler.RandomShuffler.LargeNumberShuffler shuffler;
         private SplitImageSettings splitImageSettings;
+        private Clump clump;
         #endregion
 
         #region Constructor
@@ -265,6 +266,17 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region Clump
+            /// <summary>
+            /// This property gets or sets the value for 'Clump'.
+            /// </summary>
+            public Clump Clump
+            {
+                get { return clump; }
+                set { clump = value; }
+            }
+            #endregion
+            
             #region Color
             /// <summary>
             /// This property gets or sets the value for 'Color'.
@@ -409,6 +421,23 @@ namespace DataJuggler.PixelDatabase
                     
                     // return value
                     return hasAssignToColor;
+                }
+            }
+            #endregion
+            
+            #region HasClump
+            /// <summary>
+            /// This property returns true if this object has a 'Clump'.
+            /// </summary>
+            public bool HasClump
+            {
+                get
+                {
+                    // initial value
+                    bool hasClump = (this.Clump != null);
+                    
+                    // return value
+                    return hasClump;
                 }
             }
             #endregion
