@@ -3605,11 +3605,8 @@ namespace DataJuggler.PixelDatabase
                 // create the image from this bitmap
                 Image image = (Image) this.DirectBitmap.Bitmap;
 
-                // create the new size
-                Size newSize = new Size(height, width);
-
                 // resize the image
-                Image resizedImage = ResizeImage(image, newSize);
+                Image resizedImage = ResizeImage(image, width, height);
 
                 // resizedBitmap
                 Bitmap resizedBitmap = new Bitmap(resizedImage);
@@ -3624,44 +3621,34 @@ namespace DataJuggler.PixelDatabase
             
             #region ResizeImage(System.Drawing.Image imgToResize, Size size)  
             /// <summary>
-            /// This method will resizedImage the image. Credit for this is given to Ish Bandhu and this C# Corner article
-            /// https://www.c-sharpcorner.com/UploadFile/ishbandhu2009/resizedImage-an-image-in-C-Sharp/
+            /// Resizes an image
             /// </summary>
             /// <param name="imgToResize"></param>
             /// <param name="size"></param>
             /// <returns></returns>
-            public static System.Drawing.Image ResizeImage(System.Drawing.Image imgToResize, Size size)  
-            {  
-                //Get the image current width  
-                int sourceWidth = imgToResize.Width;  
-                //Get the image current height  
-                int sourceHeight = imgToResize.Height;  
-                float nPercent = 0;  
-                float nPercentW = 0;  
-                float nPercentH = 0;  
-                //Calulate  width with new desired size  
-                nPercentW = ((float)size.Width / (float)sourceWidth);  
-                //Calculate height with new desired size  
-                nPercentH = ((float)size.Height / (float)sourceHeight);  
-                if (nPercentH < nPercentW)  
-                    nPercent = nPercentH;  
-                else  
-                 nPercent = nPercentW;  
+            public static Bitmap ResizeImage(Image image, int width, int height)
+            {            
+                var destRect = new Rectangle(0, 0, width, height);
+                var destImage = new Bitmap(width, height);
 
-                 //New Width  and Height
-                 int destWidth = (int)(sourceWidth * nPercent);                   
-                 int destHeight = (int)(sourceHeight * nPercent);  
+                destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
-                 // Create a new bitmap
-                 Bitmap bitmap = new Bitmap(destWidth, destHeight);  
-                 Graphics g = Graphics.FromImage((System.Drawing.Image)bitmap);  
-                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;  
-                 // Draw image with new width and height  
-                 g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);  
-                 g.Dispose();  
+                using (var graphics = Graphics.FromImage(destImage))
+                {
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.CompositingQuality = CompositingQuality.HighQuality;
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                 // return value
-                 return (System.Drawing.Image)bitmap;  
+                    using (var wrapMode = new ImageAttributes())
+                    {
+                        wrapMode.SetWrapMode(WrapMode.TileFlipXY);                        
+                        graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);                        
+                    }
+                }
+
+                return destImage;
             }
             #endregion
 

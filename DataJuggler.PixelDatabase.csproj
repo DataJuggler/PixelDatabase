@@ -11,7 +11,10 @@ This version is for .NET7 only. Use a 6.x version for .NET6.
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>1.10.2023: I now check for null before calling back to the StatusUpdate delegate. 
+    <PackageReleaseNotes>4.24.2023: I found a better method of resizing an image, and wrote a new Resize method that returns
+a loaded PixelDatabase at the new size.
+
+1.10.2023: I now check for null before calling back to the StatusUpdate delegate. 
 
 11.30.2022: I upgraded the way ImageClassification Works. My old method actually sorted wrong by color
 name was faoving lower average colors.
@@ -233,7 +236,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>7.0.7</Version>
+    <Version>7.0.8</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -270,7 +273,7 @@ First release, i will update the rest of the info if it gets past proof of conce
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataJuggler.RandomShuffler" Version="7.0.3" />
+    <PackageReference Include="DataJuggler.RandomShuffler" Version="7.0.4" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>

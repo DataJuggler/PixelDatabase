@@ -1,5 +1,8 @@
 # PixelDatabase
 
+4.24.2023: I found a better method of resizing an image, and wrote a new Resize method that returns
+a loaded PixelDatabase at the new size.
+
 Update 4.23.2023:
 The current version is 7.0.7. I added a Resize method which returns a PixelDatabase loaded with the new size.
 There was already a ResizeImage, but this method makes it easier for use with PixelDatabase.
