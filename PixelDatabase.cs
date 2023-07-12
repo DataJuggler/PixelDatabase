@@ -3681,6 +3681,34 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region ScaleImage(Bitmap bitmap, int maxWidth, int maxHeight)
+            /// <summary>
+            /// method returns the Image
+            /// </summary>
+            public static Size ScaleImage(Bitmap bitmap, int maxWidth, int maxHeight)
+            {
+                // initial value
+                Size newSize = new Size(0, 0);
+                
+                // if the bitmap exists and the there is a width and height set to avoid division by zero
+                if ((NullHelper.Exists(bitmap)) && (bitmap.Width > 0) && (bitmap.Height > 0))
+                {
+                    double ratioX = (double)maxWidth / bitmap.Width;
+                    double ratioY = (double)maxHeight / bitmap.Height;
+                    double ratio = Math.Min(ratioX, ratioY);
+                    
+                    int newWidth = (int)(bitmap.Width * ratio);
+                    int newHeight = (int)(bitmap.Height * ratio);
+                    
+                    // Set the newSize
+                    newSize = new Size(newWidth, newHeight);
+                }
+                
+                // return value
+                return newSize;
+            }
+            #endregion
+            
             #region ScorePixel(PixelInformation source, PixelInformation target)
             /// <summary>
             /// This method returns the Pixel

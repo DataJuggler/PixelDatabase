@@ -1,5 +1,11 @@
 # PixelDatabase
 
+7.5.2023: I added a Rescale image, which returns the dimensions for a new image by passing in a
+MaxWidth and MaxHeight value, and the code determins the ratio by taking the lowest of ratio x
+and ratio y. To actually resize the image, call Resize. I am using this new method in 
+DataJuggler.BlazorGallery project for the FullScreenImageViewer component.
+Live sample (https://blazorgallery.com).
+
 4.24.2023: I found a better method of resizing an image, and wrote a new Resize method that returns
 a loaded PixelDatabase at the new size.
 
