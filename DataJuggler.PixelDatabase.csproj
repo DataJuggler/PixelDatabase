@@ -11,80 +11,87 @@ This version is for .NET7 only. Use a 6.x version for .NET6.
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
-    <PackageReleaseNotes>4.24.2023: I found a better method of resizing an image, and wrote a new Resize method that returns
-a loaded PixelDatabase at the new size.
+    <PackageReleaseNotes>
+		7.5.2023: I added a Rescale image, which returns the dimensions for a new image by passing in a
+		MaxWidth and MaxHeight value, and the code determins the ratio by taking the lowest of ratio x
+		and ratio y. To actually resize the image, call Resize. I am using this new method in
+		DataJuggler.BlazorGallery project for the FullScreenImageViewer component.
+		Live sample (https://blazorgallery.com).
 
-1.10.2023: I now check for null before calling back to the StatusUpdate delegate. 
+		4.24.2023: I found a better method of resizing an image, and wrote a new Resize method that returns
+		a loaded PixelDatabase at the new size.
 
-11.30.2022: I upgraded the way ImageClassification Works. My old method actually sorted wrong by color
-name was faoving lower average colors.
+		1.10.2023: I now check for null before calling back to the StatusUpdate delegate.
 
-11.8.2022: This project has been updated for .NET 7. Use a 6.x version for .NET 6. All new development will
-be on the .NET 7 version.
+		11.30.2022: I upgraded the way ImageClassification Works. My old method actually sorted wrong by color
+		name was faoving lower average colors.
 
-10.25.2022: Gradient.CalculateBlue was returning 0 hard coded. I guess I never finished that.
+		11.8.2022: This project has been updated for .NET 7. Use a 6.x version for .NET 6. All new development will
+		be on the .NET 7 version.
 
-10.21.2022: This version has been updated for .NET7. It listed as pre-release until .NET7 is out
-of preview.
+		10.25.2022: Gradient.CalculateBlue was returning 0 hard coded. I guess I never finished that.
 
-7.12.2022: I removed ImageProcessor. I didn't realize it was a .NET Framework project.
-I will learn how to do saturation with Primitives.
+		10.21.2022: This version has been updated for .NET7. It listed as pre-release until .NET7 is out
+		of preview.
 
-		
-12.11.2021: I am trying again to target only .Net6.0.
+		7.12.2022: I removed ImageProcessor. I didn't realize it was a .NET Framework project.
+		I will learn how to do saturation with Primitives.
 
-12.11.2021: I added two overrides to the DrawText method to make it a little easier to call.
-		
-12.10.2021
-Version 6.1.0: I added a DrawText method.
 
-11.17.2021
-Version 6.0.7: I changed the project to multi-target .Net5 and .Net6. The problem seems to occur in
-AspNet.Core.Components in my site PixelDatabase.Net.
+		12.11.2021: I am trying again to target only .Net6.0.
 
-I made a few semi-breaking changes, which is I changed the calculation for the following properties:
-BlueAverageDifference
-BlueMaxDifference
-GreenAverageDifference
-GreenMaxDifference
-RedAverageDifference
-RedMaxDifference
-		
-I made this change, because the name is confusing compared to the calculation, and even I got confused so hopefully
-this simplifies it. The only property that is a little confusing, is MinMaxDifference still takes Max - Min, but I justify
-this by Abs(Min - Max) is the same as Max - Min.
-		
+		12.11.2021: I added two overrides to the DrawText method to make it a little easier to call.
 
-11.13.2021 (Take Five)
-Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
-copied code that set TakeMax to TakeMin. Fixed.
+		12.10.2021
+		Version 6.1.0: I added a DrawText method.
 
-11.13.2021 (Take Four)
-Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
+		11.17.2021
+		Version 6.0.7: I changed the project to multi-target .Net5 and .Net6. The problem seems to occur in
+		AspNet.Core.Components in my site PixelDatabase.Net.
 
-11.13.2021 (Take Three)
-Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
+		I made a few semi-breaking changes, which is I changed the calculation for the following properties:
+		BlueAverageDifference
+		BlueMaxDifference
+		GreenAverageDifference
+		GreenMaxDifference
+		RedAverageDifference
+		RedMaxDifference
 
-11.13.2021 (Take Two)
-Version 6.0.3: Putting back to Any CPU. My mouse changed it to
-x64 and Visual Studio didn't like it.
+		I made this change, because the name is confusing compared to the calculation, and even I got confused so hopefully
+		this simplifies it. The only property that is a little confusing, is MinMaxDifference still takes Max - Min, but I justify
+		this by Abs(Min - Max) is the same as Max - Min.
 
-11.13.2021
-Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
 
-11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+		11.13.2021 (Take Five)
+		Version 6.0.6: Last and final fix to get Grayscale working. I had a bug in PixelQueryParser caused by
+		copied code that set TakeMax to TakeMin. Fixed.
 
-11.10.2021: 6.0 version now targets .Net 6.0.
+		11.13.2021 (Take Four)
+		Version 6.0.5: I wrote the GetMaxColor method, but I forgot to call it. Now it works for Set Grayscale Max.
 
-10.6.2021
-5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
-the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
-that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
+		11.13.2021 (Take Three)
+		Version 6.0.4: Set Grayscale now works for Average (default), Red, Green, Blue, Min, Max and Mean.
 
-A new update to PixelDatabase.Net website is coming now.
+		11.13.2021 (Take Two)
+		Version 6.0.3: Putting back to Any CPU. My mouse changed it to
+		x64 and Visual Studio didn't like it.
 
-10.6.2021
-5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
+		11.13.2021
+		Version 6.0.2: I added some new options for Set Grayscale for Min, Max and Mean.
+
+		11.11.2021: Back to .Net 5.0, as .Net 6.0 doesn't work at this time.
+
+		11.10.2021: 6.0 version now targets .Net 6.0.
+
+		10.6.2021
+		5.1.12: The previous version had a critical flaw, so please do not use version 5.1.11. I was trying to fix
+		the Alpha items getting updated on queries, and broke everything due to a copy and paste and not reading
+		that the Criteria List was being recreated. Now this is fixed, and the Alpha bug is fixed (finally!).
+
+		A new update to PixelDatabase.Net website is coming now.
+
+		10.6.2021
+		5.1.11: I now append Alpha &gt; 1 in all queries that don't have anything to do with Alpha.
 Testing any impact, but I have been adding Alpha &gt; 2 to my queries for a while so this should solve that.
 
 5.1.10: After getting Draw River working, it wasn't worth it, so I took it out. I have a lot of ideas, not all are good.
