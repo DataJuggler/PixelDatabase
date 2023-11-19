@@ -14,7 +14,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
-using System.Xaml.Permissions;
 
 #endregion
 
