@@ -6,12 +6,15 @@
     <Description>PixelDatabase.Net is an image processing library that uses Bitmap Query Language (BQL). to manipulate
 images. If you know SQL for databases, you are 90% of the way to BQL.
 
-This version is for .NET7 only. Use a 6.x version for .NET6.
+This version is for .NET8 only. Use a 7.x version for .NET7. 6.x Version for .NET6.
 
 This project started off inside a Windows Forms project called Transparency Maker, which I have ported to a Blazor project that is live PixelDatabase.Net https://pixeldatabase.net.
 
 This project has been tested while I built PixelDatabase.Net, but I am sure more updates may be needed.</Description>
     <PackageReleaseNotes>
+		11.18.2023
+		Version 8.0.0: This project has been updated to 8.0.0.
+		
 		7.5.2023: I added a Rescale image, which returns the dimensions for a new image by passing in a
 		MaxWidth and MaxHeight value, and the code determins the ratio by taking the lowest of ratio x
 		and ratio y. To actually resize the image, call Resize. I am using this new method in
