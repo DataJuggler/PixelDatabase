@@ -1,5 +1,7 @@
 # PixelDatabase
 
+11.22.2023: UltimateHelper was updated.
+
 11.18.2023
 Version 8.0.0: This project has been updated to 8.0.0.
 
