@@ -439,6 +439,66 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region MaxBlueDifference
+            /// <summary>
+            /// This read only property returns the value of Max - Blue.
+            /// Maximum value possible: 255
+            /// Min Value Possible: 0.
+            /// </summary>
+            public int MaxBlueDifference
+            {
+                
+                get
+                {
+                    // initial value
+                    int maxBlueDifference = Max - Blue;
+                    
+                    // return value
+                    return maxBlueDifference;
+                }
+            }
+            #endregion
+
+            #region MaxGreenDifference
+            /// <summary>
+            /// This read only property returns the value of Max - Green.
+            /// Maximum value possible: 255
+            /// Min Value Possible: 0.
+            /// </summary>
+            public int MaxGreenDifference
+            {
+                
+                get
+                {
+                    // initial value
+                    int maxGreenDifference = Max - Green;
+                    
+                    // return value
+                    return maxGreenDifference;
+                }
+            }
+            #endregion
+
+            #region MaxRedDifference
+            /// <summary>
+            /// This read only property returns the value of Max - Red.
+            /// Maximum value possible: 255
+            /// Min Value Possible: 0.
+            /// </summary>
+            public int MaxRedDifference
+            {
+                
+                get
+                {
+                    // initial value
+                    int maxRedDifference = Max - Red;
+                    
+                    // return value
+                    return maxRedDifference;
+                }
+            }
+            #endregion
+            
             #region MinMaxDifference
             /// <summary>
             /// This read only property returns Max - Min.
@@ -497,10 +557,10 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    int red = this.Color.R;
+                    int blue = this.Color.R;
 
                     // return value
-                    return red;
+                    return blue;
                 }
             }
             #endregion
@@ -515,10 +575,10 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    int redAverageDifference = Red - Average;
+                    int blueAverageDifference = Red - Average;
                     
                     // return value
-                    return redAverageDifference;
+                    return blueAverageDifference;
                 }
             }
             #endregion
@@ -533,10 +593,10 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    int redMaxDifference = Red - Max;
+                    int blueMaxDifference = Red - Max;
                     
                     // return value
-                    return redMaxDifference;
+                    return blueMaxDifference;
                 }
             }
             #endregion
@@ -551,10 +611,10 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    int redMinDifference = Red - Min;
+                    int blueMinDifference = Red - Min;
                     
                     // return value
-                    return redMinDifference;
+                    return blueMinDifference;
                 }
             }
             #endregion

@@ -152,7 +152,10 @@ namespace DataJuggler.PixelDatabase.Enumerations
         RedMinDifference = 25,
         Total = 26,
         X = 27,
-        Y = 28
+        Y = 28,
+        MaxBlueDifference = 29,
+        MaxGreenDifference = 30,
+        MaxRedDifference = 31
     }
     #endregion
 

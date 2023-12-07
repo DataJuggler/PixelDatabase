@@ -1351,6 +1351,114 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region CheckMatchMaxBlueDifference(PixelInformation pixel, PixelCriteria criteria)
+            /// <summary>
+            /// returns true if MaxBlueDifference matches the criteria
+            /// </summary>
+            public bool CheckMatchMaxBlueDifference(PixelInformation pixel, PixelCriteria criteria)
+            {
+                // initial value
+                bool match = false;
+
+                // if a Greater Than
+                if (criteria.ComparisonType == ComparisonTypeEnum.GreaterThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxBlueDifference >= criteria.MinValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Between)
+                {
+                    // Set the return value
+                    match = ((pixel.MaxBlueDifference >= criteria.MinValue) && (pixel.BlueMaxDifference <= criteria.MaxValue));
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.LessThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxBlueDifference <= criteria.MaxValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Equals)
+                {
+                    // Set the return value
+                    match = (pixel.MaxBlueDifference == criteria.TargetValue);
+                }
+
+                // return value
+                return match;
+            }
+            #endregion
+
+            #region CheckMatchMaxGreenDifference(PixelInformation pixel, PixelCriteria criteria)
+            /// <summary>
+            /// returns true if MaxGreenDifference matches the criteria
+            /// </summary>
+            public bool CheckMatchMaxGreenDifference(PixelInformation pixel, PixelCriteria criteria)
+            {
+                // initial value
+                bool match = false;
+
+                // if a Greater Than
+                if (criteria.ComparisonType == ComparisonTypeEnum.GreaterThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxGreenDifference >= criteria.MinValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Between)
+                {
+                    // Set the return value
+                    match = ((pixel.MaxGreenDifference >= criteria.MinValue) && (pixel.GreenMaxDifference <= criteria.MaxValue));
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.LessThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxGreenDifference <= criteria.MaxValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Equals)
+                {
+                    // Set the return value
+                    match = (pixel.MaxGreenDifference == criteria.TargetValue);
+                }
+
+                // return value
+                return match;
+            }
+            #endregion
+
+            #region CheckMatchMaxRedDifference(PixelInformation pixel, PixelCriteria criteria)
+            /// <summary>
+            /// returns true if MaxRedDifference matches the criteria
+            /// </summary>
+            public bool CheckMatchMaxRedDifference(PixelInformation pixel, PixelCriteria criteria)
+            {
+                // initial value
+                bool match = false;
+
+                // if a Greater Than
+                if (criteria.ComparisonType == ComparisonTypeEnum.GreaterThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxRedDifference >= criteria.MinValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Between)
+                {
+                    // Set the return value
+                    match = ((pixel.MaxRedDifference >= criteria.MinValue) && (pixel.RedMaxDifference <= criteria.MaxValue));
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.LessThan)
+                {
+                    // Set the return value
+                    match = (pixel.MaxRedDifference <= criteria.MaxValue);
+                }
+                else if (criteria.ComparisonType == ComparisonTypeEnum.Equals)
+                {
+                    // Set the return value
+                    match = (pixel.MaxRedDifference == criteria.TargetValue);
+                }
+
+                // return value
+                return match;
+            }
+            #endregion
+            
             #region CheckMatchMin(PixelInformation pixel, PixelCriteria criteria)
             /// <summary>
             /// This method returns the Match Min
@@ -1986,10 +2094,34 @@ namespace DataJuggler.PixelDatabase
                         // required
                         break;
 
-                     case PixelTypeEnum.Max:
+                    case PixelTypeEnum.Max:
 
                         // check the Max
                         doesMatch = CheckMatchMax(pixel, pixelCriteria);
+
+                        // required
+                        break;
+
+                    case PixelTypeEnum.MaxBlueDifference:
+
+                        // check the Max
+                        doesMatch = CheckMatchMaxBlueDifference(pixel, pixelCriteria);
+
+                        // required
+                        break;
+
+                    case PixelTypeEnum.MaxGreenDifference:
+
+                        // check the Max
+                        doesMatch = CheckMatchMaxGreenDifference(pixel, pixelCriteria);
+
+                        // required
+                        break;
+
+                    case PixelTypeEnum.MaxRedDifference:
+
+                        // check the Max
+                        doesMatch = CheckMatchMaxRedDifference(pixel, pixelCriteria);
 
                         // required
                         break;

@@ -1,9 +1,12 @@
 # PixelDatabase
 
+12.7.2023: New Properties - MaxBlueDifference, MaxGreenDifference, MaxRedDifference. This allows you to query on 
+positive numbers, verse RedMaxDifference made you work with negative numbers and it is a little unnatural feeling.
+
 11.22.2023: UltimateHelper was updated.
 
 11.18.2023
-Version 8.0.0: This project has been updated to 8.0.0.
+Version 8.0.0: This project has been updated to .NET Core 8.0.0.
 
 7.5.2023: I added a Rescale image, which returns the dimensions for a new image by passing in a
 MaxWidth and MaxHeight value, and the code determins the ratio by taking the lowest of ratio x
