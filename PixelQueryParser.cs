@@ -630,6 +630,21 @@ namespace DataJuggler.PixelDatabase
                             // Set the PixelType
                             pixelCriteria.PixelType = PixelTypeEnum.Min;
                         }
+                        else if (text.Contains("maxbluediff"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.MaxBlueDifference;
+                        }
+                        else if (text.Contains("maxgreendiff"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.MaxGreenDifference;
+                        }
+                        else if (text.Contains("maxreddiff"))
+                        {
+                            // Set the PixelType
+                            pixelCriteria.PixelType = PixelTypeEnum.MaxRedDifference;
+                        }
                         else if (text.Contains("max"))
                         {
                             // Set the PixelType
