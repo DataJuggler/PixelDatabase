@@ -1,5 +1,8 @@
 # PixelDatabase
 
+2.16.2024: PixelDatabase.DrawLine and DrawRepeatingLine were updated. A Bitmap is now returned from the methods, so you can 
+get the updates that were applied. 
+
 12.7.2023: New Properties - MaxBlueDifference, MaxGreenDifference, MaxRedDifference. This allows you to query on 
 positive numbers, verse RedMaxDifference made you work with negative numbers and it is a little unnatural feeling.
 

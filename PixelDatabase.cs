@@ -2184,8 +2184,11 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// This method Draws a Line based upon the pixelCriteria
             /// </summary>
-            public void DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, StatusUpdate status, Graphics graphics, bool replaceColors = true, Color? colorToUse = null)
+            public Bitmap DrawLine(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, StatusUpdate status, Graphics graphics, bool replaceColors = true, Color? colorToUse = null)
             {
+                // initial value
+                // PixelDatabase pixelDatabase = null;
+
                 // locals
                 bool useColor = false;
                 Color color = Color.Empty;
@@ -2219,26 +2222,20 @@ namespace DataJuggler.PixelDatabase
                     color = (Color) colorToUse;
 
                     // color
-                    pen = new Pen(color, pixelCriteria.Thickness);
-
-                    // no need
-                    replaceColors = false;
+                    pen = new Pen(color, pixelCriteria.Thickness);                    
                 }
                 
-                // Draw the line in LineColor
+                // Draw the line in LineColor                
                 graphics.DrawLine(pen, pixelCriteria.StartPoint, pixelCriteria.EndPoint);
-                
+               
                 // if replaceColors is true
                 if (replaceColors)
                 {
-                    // Reload the PixelDatabase
-                    PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
-
                     // Now get the pixels that are equal to the lineColor
                     List<PixelInformation> pixels = null;
                     
                     // Get the pixels in the LineColor (it is supposed to be unique)
-                    pixels = pixelDatabase.GetPixels(LineColor);
+                    pixels = GetPixels(LineColor);
 
                     // if one or more pixels were founds
                     if (ListHelper.HasOneOrMoreItems(pixels))
@@ -2283,7 +2280,7 @@ namespace DataJuggler.PixelDatabase
                                 pixel.Color = color;
                                
                                 // Set the color
-                                this.DirectBitmap.SetPixel(pixel.X, pixel.Y, color);
+                                DirectBitmap.SetPixel(pixel.X, pixel.Y, color);
 
                                 // Update the color of the source
                                 source.Color = color;
@@ -2300,7 +2297,10 @@ namespace DataJuggler.PixelDatabase
                             status(message, pixels.Count);
                         }
                     }
-                }
+                } 
+
+                // return the bitmap
+                return bitmap;
             }
             #endregion
             
@@ -2419,7 +2419,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>, 
             /// This method Draw Repeating Lines
             /// </summary>
-            public void DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, StatusUpdate status, Graphics graphics, Color? colorToUse = null)
+            public Bitmap DrawRepeatingLines(PixelCriteria pixelCriteria, int alpha, Bitmap bitmap, StatusUpdate status, Graphics graphics, Color? colorToUse = null)
             {
                 // verify all objects exist                
                 if (NullHelper.Exists(pixelCriteria, bitmap, graphics))
@@ -2447,6 +2447,8 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
                 }
+
+                return bitmap;
             }
             #endregion
 
