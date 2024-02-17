@@ -3718,6 +3718,50 @@ namespace DataJuggler.PixelDatabase
 
                             // required
                             break;
+
+                        case RepeatTypeEnum.DownAndLeft:
+
+                            // Adjust the StartPoint
+                            pixelCriteria.StartPoint = new Point(pixelCriteria.StartPoint.X - pixelCriteria.Distance2, pixelCriteria.StartPoint.Y + pixelCriteria.Distance);
+
+                            // Adjust the EndPoint
+                            pixelCriteria.EndPoint = new Point(pixelCriteria.EndPoint.X - pixelCriteria.Distance2, pixelCriteria.EndPoint.Y + pixelCriteria.Distance);
+
+                            // required
+                            break;
+
+                        case RepeatTypeEnum.DownAndRight:
+
+                            // Adjust the StartPoint
+                            pixelCriteria.StartPoint = new Point(pixelCriteria.StartPoint.X + pixelCriteria.Distance2, pixelCriteria.StartPoint.Y + pixelCriteria.Distance);
+
+                            // Adjust the EndPoint
+                            pixelCriteria.EndPoint = new Point(pixelCriteria.EndPoint.X + pixelCriteria.Distance2, pixelCriteria.EndPoint.Y + pixelCriteria.Distance);
+
+                            // required
+                            break;
+
+                        case RepeatTypeEnum.UpAndLeft:
+
+                            // Adjust the StartPoint
+                            pixelCriteria.StartPoint = new Point(pixelCriteria.StartPoint.X - pixelCriteria.Distance2, pixelCriteria.StartPoint.Y - pixelCriteria.Distance);
+
+                            // Adjust the EndPoint
+                            pixelCriteria.EndPoint = new Point(pixelCriteria.EndPoint.X - pixelCriteria.Distance2, pixelCriteria.EndPoint.Y - pixelCriteria.Distance);
+
+                            // required
+                            break;
+
+                        case RepeatTypeEnum.UpAndRight:
+
+                            // Adjust the StartPoint
+                            pixelCriteria.StartPoint = new Point(pixelCriteria.StartPoint.X + pixelCriteria.Distance2, pixelCriteria.StartPoint.Y - pixelCriteria.Distance);
+
+                            // Adjust the EndPoint
+                            pixelCriteria.EndPoint = new Point(pixelCriteria.EndPoint.X + pixelCriteria.Distance2, pixelCriteria.EndPoint.Y - pixelCriteria.Distance);
+
+                            // required
+                            break;
                     }
                 }
                 

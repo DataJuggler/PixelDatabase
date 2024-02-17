@@ -169,7 +169,11 @@ namespace DataJuggler.PixelDatabase.Enumerations
         Down = 1,
         Left = 2,
         Right = 3,
-        Up = 4
+        Up = 4,
+        DownAndLeft = 5,
+        DownAndRight = 6,
+        UpAndLeft = 7,
+        UpAndRight = 8
     }
     #endregion
 

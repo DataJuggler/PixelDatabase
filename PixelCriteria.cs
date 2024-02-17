@@ -29,6 +29,7 @@ namespace DataJuggler.PixelDatabase
         private RepeatTypeEnum repeatType;
         private int repititions;
         private int distance;
+        private int distance2;
         private Color backColor;
         private bool removeBackColor;
         private int index;
@@ -94,6 +95,17 @@ namespace DataJuggler.PixelDatabase
             {
                 get { return distance; }
                 set { distance = value; }
+            }
+            #endregion
+            
+            #region Distance2
+            /// <summary>
+            /// This property gets or sets the value for 'Distance2'.
+            /// </summary>
+            public int Distance2
+            {
+                get { return distance2; }
+                set { distance2 = value; }
             }
             #endregion
             
