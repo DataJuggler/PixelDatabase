@@ -1762,13 +1762,13 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName)
+            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor)
             /// <summary>
             /// method returns the Calendar
             /// </summary>
             /// <param name="blankImage">1120 x 740 image</param>
             /// <param name="headerImage">1120 x 80</param>
-            public PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName)
+            public static PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor)
             {
                 // initial value
                 PixelDatabase pixelDatabase;
@@ -1835,13 +1835,13 @@ namespace DataJuggler.PixelDatabase
                 Point point2 = new Point(560, 40);
                 
                 // Create a white brush
-                SolidBrush brush = new SolidBrush(Color.White);
+                SolidBrush headerBrush = new SolidBrush(headerColor);
                 
                 // Set the Month and Year
                 string title = month.ToString().ToUpper() + " " + year.ToString();
                 
                 // Draw the Text
-                pixelDatabase.DrawText(title, font, point2, StringAlignment.Center, StringAlignment.Center, brush);
+                pixelDatabase.DrawText(title, font, point2, StringAlignment.Center, StringAlignment.Center, headerBrush);
                 
                 // Increment the value for progress
                 progress++;
@@ -1863,8 +1863,8 @@ namespace DataJuggler.PixelDatabase
                 // Create the Graphics object
                 Graphics g = Graphics.FromImage(pixelDatabase.DirectBitmap.Bitmap);
                 
-                // Draw the line
-                Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, Color.Black);
+                // Draw the top line
+                Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, baseColor);
                 
                 // loop for each day
                 for (int x = 0; x < 7; x++)
@@ -1876,7 +1876,7 @@ namespace DataJuggler.PixelDatabase
                     criteria2.BackColor = Color.Black;
                     
                     // Draw the line
-                    bitmap = pixelDatabase.DrawLine(criteria2, 255, bitmap, null, g, true, Color.Black);
+                    bitmap = pixelDatabase.DrawLine(criteria2, 255, bitmap, null, g, true, baseColor);
                     
                     // Increment the value for progress
                     progress++;
@@ -1890,16 +1890,16 @@ namespace DataJuggler.PixelDatabase
                 }
                 
                 // draw 6 lines
-                for (int x = 0; x < 6; x++)
+                for (int x = 0; x < 7; x++)
                 {
                     PixelCriteria criteria3 = new PixelCriteria();
                     criteria3.StartPoint = new Point(0, 140 + (x * 100));
                     criteria3.EndPoint = new Point(1120, 140 + (x * 100));
                     criteria3.Thickness = 2;
-                    criteria3.BackColor = Color.Black;
+                    criteria3.BackColor = baseColor;
                     
                     // Draw the line
-                    bitmap = pixelDatabase.DrawLine(criteria3, 255, bitmap, null, g, true, Color.Black);
+                    bitmap = pixelDatabase.DrawLine(criteria3, 255, bitmap, null, g, true, baseColor);
                     
                     // Increment the value for progress
                     progress++;
@@ -1916,7 +1916,7 @@ namespace DataJuggler.PixelDatabase
                 pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
                 
                 // Create a white brush
-                SolidBrush blackBrush = new SolidBrush(Color.Black);
+                SolidBrush mainBrush = new SolidBrush(baseColor);
                 
                 // draw each day
                 for (int x = 0; x < 7; x++)
@@ -1931,7 +1931,7 @@ namespace DataJuggler.PixelDatabase
                     font = new Font("Broadway", 28);
                     
                     // Draw the Text
-                    pixelDatabase.DrawText(dayName, font, point4, StringAlignment.Center, StringAlignment.Center, blackBrush);
+                    pixelDatabase.DrawText(dayName, font, point4, StringAlignment.Center, StringAlignment.Center, mainBrush);
                     
                     // Increment the value for progress
                     progress++;
@@ -1957,7 +1957,7 @@ namespace DataJuggler.PixelDatabase
                     Point point5 = GetCalendarPoint(x, dateToUse, daysInMonth);
                     
                     // Draw the Text
-                    pixelDatabase.DrawText(x.ToString(), font, point5, StringAlignment.Near, StringAlignment.Center, blackBrush);
+                    pixelDatabase.DrawText(x.ToString(), font, point5, StringAlignment.Near, StringAlignment.Center, mainBrush);
                     
                     // Increment the value for progress
                     progress++;
@@ -3264,7 +3264,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns the Point for where to write a number for a Calendar
             /// </summary>
-            public Point GetCalendarPoint(int day, DateTime dateToUse, int daysInMonth)
+            public static Point GetCalendarPoint(int day, DateTime dateToUse, int daysInMonth)
             {
                 // locals
                 int x = 0;
@@ -3601,7 +3601,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns the Week Number. Used by the DrawCalendar function of PixelDatabase
             /// </summary>
-            public int GetWeekNumber(DateTime dateToUse)
+            public static int GetWeekNumber(DateTime dateToUse)
             {
                 // initial value
                 int weekNumber = 1;
