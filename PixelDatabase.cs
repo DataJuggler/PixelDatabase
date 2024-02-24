@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Data;
 
 #endregion
 
@@ -1761,6 +1762,251 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName)
+            /// <summary>
+            /// method returns the Calendar
+            /// </summary>
+            /// <param name="blankImage">1120 x 740 image</param>
+            /// <param name="headerImage">1120 x 80</param>
+            public PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName)
+            {
+                // initial value
+                PixelDatabase pixelDatabase;
+
+                // local
+                int progress = 0;
+
+                // If the callback object exists
+                if (NullHelper.Exists(updateCallback))
+                {
+                    // Set the graph max
+                    updateCallback("SetGraphMax", 60);
+
+                    // Notify client
+                    updateCallback("Status: Creating Calendar", 1);
+                }
+                
+                // Reload
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(blankImage, null);
+
+                // Increment the value for progress
+                progress++;
+
+                // If the callback object exists
+                if (NullHelper.Exists(updateCallback))
+                {
+                    // Notify client
+                    updateCallback("Loaded Blank Image.", progress);
+                }
+                
+                // Load the second image
+                PixelDatabase pixelDatabase2 = PixelDatabaseLoader.LoadPixelDatabase(headerImage, null);
+                
+                // Increment the value for progress
+                progress++;
+
+                // If the callback object exists
+                if (NullHelper.Exists(updateCallback))
+                {
+                    // Notify client
+                    updateCallback("Load Header Image", progress);
+                }
+                
+                // Top Left
+                Point point = new Point(0, 0);
+                
+                // Copy the sub image
+                pixelDatabase.CopySubImage(pixelDatabase2, point);
+                
+                // Increment the value for progress
+                progress++;
+
+                // If the callback object exists
+                if (NullHelper.Exists(updateCallback))
+                {
+                    // Notify client
+                    updateCallback("Copy Header Image onto Main Image", progress);
+                }
+                
+                // Create a font
+                Font font = new Font("Broadway", 36);
+                
+                // Second point
+                Point point2 = new Point(560, 40);
+                
+                // Create a white brush
+                SolidBrush brush = new SolidBrush(Color.White);
+                
+                // Set the Month and Year
+                string title = month.ToString().ToUpper() + " " + year.ToString();
+                
+                // Draw the Text
+                pixelDatabase.DrawText(title, font, point2, StringAlignment.Center, StringAlignment.Center, brush);
+                
+                // Increment the value for progress
+                progress++;
+                
+                // If the callback object exists
+                if (NullHelper.Exists(updateCallback))
+                {
+                    // Notify client
+                    updateCallback("Draw Title Complete", progress);
+                }
+                
+                // Create a Criteria
+                PixelCriteria criteria = new PixelCriteria();
+                criteria.StartPoint = new Point(0, 140);
+                criteria.EndPoint = new Point(1120, 140);
+                criteria.Thickness = 2;
+                criteria.BackColor = Color.Black;
+                
+                // Create the Graphics object
+                Graphics g = Graphics.FromImage(pixelDatabase.DirectBitmap.Bitmap);
+                
+                // Draw the line
+                Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, Color.Black);
+                
+                // loop for each day
+                for (int x = 0; x < 7; x++)
+                {
+                    PixelCriteria criteria2 = new PixelCriteria();
+                    criteria2.StartPoint = new Point(x * 160, 80);
+                    criteria2.EndPoint = new Point(x * 160, 740);
+                    criteria2.Thickness = 2;
+                    criteria2.BackColor = Color.Black;
+                    
+                    // Draw the line
+                    bitmap = pixelDatabase.DrawLine(criteria2, 255, bitmap, null, g, true, Color.Black);
+                    
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("Creating Calendar Grid Lines", progress);
+                    }
+                }
+                
+                // draw 6 lines
+                for (int x = 0; x < 6; x++)
+                {
+                    PixelCriteria criteria3 = new PixelCriteria();
+                    criteria3.StartPoint = new Point(0, 140 + (x * 100));
+                    criteria3.EndPoint = new Point(1120, 140 + (x * 100));
+                    criteria3.Thickness = 2;
+                    criteria3.BackColor = Color.Black;
+                    
+                    // Draw the line
+                    bitmap = pixelDatabase.DrawLine(criteria3, 255, bitmap, null, g, true, Color.Black);
+                    
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("Creating Calendar Grid Lines", progress);
+                    }
+                }
+                
+                // Load the pixelDatabase
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                
+                // Create a white brush
+                SolidBrush blackBrush = new SolidBrush(Color.Black);
+                
+                // draw each day
+                for (int x = 0; x < 7; x++)
+                {
+                    // Get the dayName
+                    string dayName = ((DayEnum) x + 1).ToString().Substring(0, 3);
+                    
+                    // create a point
+                    Point point4 = new Point(x * 160 + 80, 108);
+                    
+                    // Smaller Font
+                    font = new Font("Broadway", 28);
+                    
+                    // Draw the Text
+                    pixelDatabase.DrawText(dayName, font, point4, StringAlignment.Center, StringAlignment.Center, blackBrush);
+                    
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("Creating Day Names", progress);
+                    }
+                }
+                
+                // Get the days in month
+                int daysInMonth = System.DateTime.DaysInMonth(year, (int) month);
+                
+                // Draw Numbers
+                for (int x = 1; x <= daysInMonth; x++)
+                {
+                    // Get the month to use
+                    DateTime dateToUse = new DateTime(year, (int) month, x);
+                    
+                    // create a point
+                    Point point5 = GetCalendarPoint(x, dateToUse, daysInMonth);
+                    
+                    // Draw the Text
+                    pixelDatabase.DrawText(x.ToString(), font, point5, StringAlignment.Near, StringAlignment.Center, blackBrush);
+                    
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("Adding Day Numbers", progress);
+                    }
+                }
+                
+                // If checked
+                if (writeToDisk)
+                {  
+                    // make sure unique in folder
+                    fileName = FileHelper.CreateFileNameWithPartialGuid(fileName, 12);
+                    
+                    // Save the file
+                    pixelDatabase.SaveAs(fileName);
+
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("The file has been saved to: " + fileName, progress);
+                    }
+                }
+                else
+                {
+                    // Increment the value for progress
+                    progress++;
+                
+                    // If the callback object exists
+                    if (NullHelper.Exists(updateCallback))
+                    {
+                        // Notify client
+                        updateCallback("Finished.", progress);
+                    }
+                }
+
+                // return value
+                return pixelDatabase;
+            }
+            #endregion
+            
             #region CreateQueryRange()
             /// <summary>
             /// This method returns the Query Range
@@ -1808,7 +2054,7 @@ namespace DataJuggler.PixelDatabase
                 return range;
             }
             #endregion
-
+            
             #region CreateSubImage(Point topLeft, Rectangle size)
             /// <summary>
             /// This method returns a Sub Image
@@ -3013,6 +3259,39 @@ namespace DataJuggler.PixelDatabase
                 return meanColor;
             }
             #endregion
+
+            #region GetCalendarPoint(int day, DateTime dateToUse, int daysInMonth)
+            /// <summary>
+            /// returns the Point for where to write a number for a Calendar
+            /// </summary>
+            public Point GetCalendarPoint(int day, DateTime dateToUse, int daysInMonth)
+            {
+                // locals
+                int x = 0;
+                int y = 0;
+
+                // get the day of the week for this date
+                DayOfWeek dayOfWeek = dateToUse.DayOfWeek;
+
+                // initial value
+                int weekNumber = GetWeekNumber(dateToUse);
+
+                // get the dayOfWeek
+                int dayOfWeekNumber = (int) dayOfWeek;
+
+                // Set x
+                x = dayOfWeekNumber * 160 + 8;
+
+                // Set the value for y
+                y = 168 + (100 * (weekNumber - 1));
+
+                // initial value
+                Point point = new Point(x, y);
+                
+                // return value
+                return point;
+            }
+            #endregion
             
             #region DetectObjects(PixelDatabase pixelDatabase, int total, BackgroundObjectDetectionTypeEnum objectDetectionType)
             /// <summary>
@@ -3315,6 +3594,34 @@ namespace DataJuggler.PixelDatabase
                 
                 // return value
                 return pixels;
+            }
+            #endregion
+
+            #region GetWeekNumber(DateTime dateToUse)
+            /// <summary>
+            /// returns the Week Number. Used by the DrawCalendar function of PixelDatabase
+            /// </summary>
+            public int GetWeekNumber(DateTime dateToUse)
+            {
+                // initial value
+                int weekNumber = 1;
+
+                // count the Saturdays
+                for (int x = 1; x < dateToUse.Day; x++)
+                {
+                    // Create a tempDate
+                    DateTime tempDate = new DateTime(dateToUse.Year, dateToUse.Month, x);
+
+                    // if Saturday
+                    if (tempDate.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        // Increment the value for weekNumber
+                        weekNumber++;
+                    }
+                }
+                
+                // return value
+                return weekNumber;
             }
             #endregion
     

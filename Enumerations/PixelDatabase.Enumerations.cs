@@ -46,6 +46,22 @@ namespace DataJuggler.PixelDatabase.Enumerations
         In = 4
     }
     #endregion    
+    
+    #region DayEnum : int
+    /// <summary>
+    /// Used by the Create Calendar method of PixelDatabase
+    /// </summary>
+    public enum DayEnum : int
+    {
+        Sun = 1,
+        Monday = 2,
+        Tuesday = 3,
+        Wednesday = 4,
+        Thursday = 5,
+        Friday = 6,
+        Saturday = 7
+    }
+    #endregion
 
     #region DirectionEnum : int
     /// <summary>
@@ -90,6 +106,27 @@ namespace DataJuggler.PixelDatabase.Enumerations
         NoAction = 0,
         Add = 1,
         Replace = 2
+    }
+    #endregion
+
+    #region MonthEnum : int
+    /// <summary>
+    /// Used by the Create Calendar method of PixelDatabase
+    /// </summary>
+    public enum MonthEnum : int
+    {
+        January = 1,
+        February = 2,
+        March = 3,
+        April = 4,
+        May = 5,
+        June = 6,
+        July = 7,
+        August = 8,
+        September = 9,
+        October = 10,
+        November = 11,
+        December = 12
     }
     #endregion
 
