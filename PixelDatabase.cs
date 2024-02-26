@@ -1762,13 +1762,13 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor)
+            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor, Font baseFont, Font headerFont)
             /// <summary>
             /// method returns the Calendar
             /// </summary>
             /// <param name="blankImage">1120 x 740 image</param>
             /// <param name="headerImage">1120 x 80</param>
-            public static PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor)
+            public static PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor, Font baseFont, Font headerFont)
             {
                 // initial value
                 PixelDatabase pixelDatabase;
@@ -1828,9 +1828,6 @@ namespace DataJuggler.PixelDatabase
                     updateCallback("Copy Header Image onto Main Image", progress);
                 }
                 
-                // Create a font
-                Font font = new Font("Broadway", 36);
-                
                 // Second point
                 Point point2 = new Point(560, 40);
                 
@@ -1840,8 +1837,8 @@ namespace DataJuggler.PixelDatabase
                 // Set the Month and Year
                 string title = month.ToString().ToUpper() + " " + year.ToString();
                 
-                // Draw the Text
-                pixelDatabase.DrawText(title, font, point2, StringAlignment.Center, StringAlignment.Center, headerBrush);
+                // Draw the Title
+                pixelDatabase.DrawText(title, headerFont, point2, StringAlignment.Center, StringAlignment.Center, headerBrush);
                 
                 // Increment the value for progress
                 progress++;
@@ -1927,11 +1924,8 @@ namespace DataJuggler.PixelDatabase
                     // create a point
                     Point point4 = new Point(x * 160 + 80, 108);
                     
-                    // Smaller Font
-                    font = new Font("Broadway", 28);
-                    
                     // Draw the Text
-                    pixelDatabase.DrawText(dayName, font, point4, StringAlignment.Center, StringAlignment.Center, mainBrush);
+                    pixelDatabase.DrawText(dayName, baseFont, point4, StringAlignment.Center, StringAlignment.Center, mainBrush);
                     
                     // Increment the value for progress
                     progress++;
@@ -1957,7 +1951,7 @@ namespace DataJuggler.PixelDatabase
                     Point point5 = GetCalendarPoint(x, dateToUse, daysInMonth);
                     
                     // Draw the Text
-                    pixelDatabase.DrawText(x.ToString(), font, point5, StringAlignment.Near, StringAlignment.Center, mainBrush);
+                    pixelDatabase.DrawText(x.ToString(), baseFont, point5, StringAlignment.Near, StringAlignment.Center, mainBrush);
                     
                     // Increment the value for progress
                     progress++;

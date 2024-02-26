@@ -1,5 +1,8 @@
 # PixelDatabase
 
+2.26.2024: I changed NuGet PixelDatabase.CreateCalendar to accept a BaseFont and a HeaderFont. It is a breaking
+change, but I figure now is the time to break this method since it is new.
+
 2.23.2024: I added a new method to PixelDatabase - CreateCalendar, which takes in an argument for a Month and a Year.
 View the demo project here: https://github.com/DataJuggler/CalendarCreator
 
