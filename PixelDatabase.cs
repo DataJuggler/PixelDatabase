@@ -1862,6 +1862,19 @@ namespace DataJuggler.PixelDatabase
                 
                 // Draw the top line
                 Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, baseColor);
+
+                // Now Draw The Header Row For The Week
+
+                // recreate
+                criteria = new PixelCriteria();
+                criteria.StartPoint = new Point(0, 81);
+                criteria.EndPoint = new Point(1120, 81);
+                criteria.Thickness = 2;
+                criteria.Distance = 60;
+                criteria.BackColor = Color.Black;
+
+                // Draw the top line
+                bitmap = pixelDatabase.DrawRepeatingLines(criteria, 255, bitmap, null, g, headerColor);
                 
                 // loop for each day
                 for (int x = 0; x < 7; x++)
@@ -1919,7 +1932,7 @@ namespace DataJuggler.PixelDatabase
                 for (int x = 0; x < 7; x++)
                 {
                     // Get the dayName
-                    string dayName = ((DayEnum) x + 1).ToString().Substring(0, 3);
+                    string dayName = ((DayEnum) x + 1).ToString().ToUpper().Substring(0, 3);
                     
                     // create a point
                     Point point4 = new Point(x * 160 + 80, 108);
