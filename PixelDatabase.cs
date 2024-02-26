@@ -1762,13 +1762,13 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor, Font baseFont, Font headerFont)
+            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor, Font baseFont, Font headerFont, PixelDatabase dayRowImage = null)
             /// <summary>
             /// method returns the Calendar
             /// </summary>
             /// <param name="blankImage">1120 x 740 image</param>
             /// <param name="headerImage">1120 x 80</param>
-            public static PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor, Font baseFont, Font headerFont)
+            public static PixelDatabase CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor, Font baseFont, Font headerFont, PixelDatabase dayRowImage = null)
             {
                 // initial value
                 PixelDatabase pixelDatabase;
@@ -1863,19 +1863,16 @@ namespace DataJuggler.PixelDatabase
                 // Draw the top line
                 Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, baseColor);
 
-                // Now Draw The Header Row For The Week
+                // if the dayRowImage was passed in
+                if (NullHelper.Exists(dayRowImage))
+                {
+                    if ((dayRowImage.Width == 1120) && (dayRowImage.Height == 60))
+                    {
+                        // Copy the dayRowImage
+                        pixelDatabase.CopySubImage(dayRowImage, new Point(0, 81));
+                    }
+                }
 
-                // recreate
-                criteria = new PixelCriteria();
-                criteria.StartPoint = new Point(0, 81);
-                criteria.EndPoint = new Point(1120, 81);
-                criteria.Thickness = 2;
-                criteria.Distance = 60;
-                criteria.BackColor = Color.Black;
-
-                // Draw the top line
-                bitmap = pixelDatabase.DrawRepeatingLines(criteria, 255, bitmap, null, g, headerColor);
-                
                 // loop for each day
                 for (int x = 0; x < 7; x++)
                 {
@@ -1935,7 +1932,7 @@ namespace DataJuggler.PixelDatabase
                     string dayName = ((DayEnum) x + 1).ToString().ToUpper().Substring(0, 3);
                     
                     // create a point
-                    Point point4 = new Point(x * 160 + 80, 108);
+                    Point point4 = new Point(x * 160 + 80, 112);
                     
                     // Draw the Text
                     pixelDatabase.DrawText(dayName, baseFont, point4, StringAlignment.Center, StringAlignment.Center, mainBrush);
