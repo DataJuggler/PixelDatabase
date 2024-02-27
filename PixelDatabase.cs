@@ -1850,18 +1850,12 @@ namespace DataJuggler.PixelDatabase
                     updateCallback("Draw Title Complete", progress);
                 }
                 
-                // Create a Criteria
-                PixelCriteria criteria = new PixelCriteria();
-                criteria.StartPoint = new Point(0, 140);
-                criteria.EndPoint = new Point(1120, 140);
-                criteria.Thickness = 2;
-                criteria.BackColor = Color.Black;
+                
                 
                 // Create the Graphics object
                 Graphics g = Graphics.FromImage(pixelDatabase.DirectBitmap.Bitmap);
                 
-                // Draw the top line
-                Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, baseColor);
+                
 
                 // if the dayRowImage was passed in
                 if (NullHelper.Exists(dayRowImage))
@@ -1871,7 +1865,31 @@ namespace DataJuggler.PixelDatabase
                         // Copy the dayRowImage
                         pixelDatabase.CopySubImage(dayRowImage, new Point(0, 81));
                     }
+                    else
+                    {
+                        // If the callback object exists
+                        if (NullHelper.Exists(updateCallback))
+                        {
+                            // Notify client
+                            updateCallback("Day Row Image Is Not 1120 x 60", progress);
+                        }
+                    }
                 }
+
+                // Criteria is used to draw lines - Draw a Line Separating The Header and Day Row
+
+                // Create a Criteria
+                PixelCriteria criteria = new PixelCriteria();
+                criteria.StartPoint = new Point(0, 81);
+                criteria.EndPoint = new Point(1120, 81);
+                criteria.Thickness = 2;
+                criteria.BackColor = Color.Black;
+
+                // Draw the top line
+                Bitmap bitmap = pixelDatabase.DrawLine(criteria, 255, pixelDatabase.DirectBitmap.Bitmap, null, g, true, baseColor);
+
+                // Draw the top line
+                bitmap = pixelDatabase.DrawLine(criteria, 255, bitmap, null, g, true, baseColor);
 
                 // loop for each day
                 for (int x = 0; x < 7; x++)
@@ -1880,7 +1898,6 @@ namespace DataJuggler.PixelDatabase
                     criteria2.StartPoint = new Point(x * 160, 80);
                     criteria2.EndPoint = new Point(x * 160, 740);
                     criteria2.Thickness = 2;
-                    criteria2.BackColor = Color.Black;
                     
                     // Draw the line
                     bitmap = pixelDatabase.DrawLine(criteria2, 255, bitmap, null, g, true, baseColor);

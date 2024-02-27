@@ -1,5 +1,8 @@
 # PixelDatabase
 
+2.27.2024: I now draw a line between Header and Day Roy Image. If no Day Row Image, it is still a horizontal line
+1 vertical pixel below the header.
+
 2.26.2024: I changed NuGet PixelDatabase.CreateCalendar to accept a BaseFont and a HeaderFont. It is a breaking
 change, but I figure now is the time to break this method since it is new.
 Also added an optional parameter as of a pixel database for the day row image. This is the row where the
