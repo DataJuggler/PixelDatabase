@@ -1,5 +1,7 @@
 # PixelDatabase
 
+2.28.2024: I moved the Title of each calendar up 8 pixels. 
+
 2.27.2024: I now draw a line between Header and Day Roy Image. If no Day Row Image, it is still a horizontal line
 1 vertical pixel below the header.
 

@@ -1829,7 +1829,7 @@ namespace DataJuggler.PixelDatabase
                 }
                 
                 // Second point
-                Point point2 = new Point(560, 40);
+                Point point2 = new Point(560, 32);
                 
                 // Create a white brush
                 SolidBrush headerBrush = new SolidBrush(headerColor);
