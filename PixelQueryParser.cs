@@ -96,7 +96,7 @@ namespace DataJuggler.PixelDatabase
                     {
                         if (expectation == NextLineExpectationEnum.Unknown)
                         {
-                            // if the line starts with Normalize                        
+                            // if the line starts with create gradient                        
                             if (line.Text.ToLower().StartsWith("create gradient"))
                             {
                                 // Create an emptyGradient

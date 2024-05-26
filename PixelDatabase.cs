@@ -1712,11 +1712,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region CopySubImage(PixelDatabase subImage, Point start)
+            #region CopySubImage(PixelDatabase subImage, Point start, bool copyAlpha = false)
             /// <summary>
             /// This method Copies the pixels from the Sub Image into the current database
             /// </summary>
-            public void CopySubImage(PixelDatabase subImage, Point start)
+            public void CopySubImage(PixelDatabase subImage, Point start, bool copyAlpha = false)
             {
                 // locals
                 PixelInformation pixel = null;
@@ -1739,15 +1739,19 @@ namespace DataJuggler.PixelDatabase
                                 // If the pixel object exists
                                 if (NullHelper.Exists(pixel))
                                 {
-                                    // now convert the subImage pixel to this pixel x and y
-                                    localX = start.X + x;
-                                    localY = start.Y + y;
-
-                                    // if the localX and localY is in range
-                                    if ((NumericHelper.IsInRange(localX, 0, Width - 1)) && (NumericHelper.IsInRange(localY, 0, Height - 1)))
+                                    // transparent pixels will not be copied unless copyAlpha is true
+                                    if ((copyAlpha) || (pixel.Alpha > 0))
                                     {
-                                        // Now update the pixel
-                                        SetPixelColor(localX, localY, pixel.Color, false, 0);
+                                        // now convert the subImage pixel to this pixel x and y
+                                        localX = start.X + x;
+                                        localY = start.Y + y;
+
+                                        // if the localX and localY is in range
+                                        if ((NumericHelper.IsInRange(localX, 0, Width - 1)) && (NumericHelper.IsInRange(localY, 0, Height - 1)))
+                                        {
+                                            // Now update the pixel
+                                            SetPixelColor(localX, localY, pixel.Color, false, 0);
+                                        }
                                     }
                                 }
                             }
@@ -1762,7 +1766,7 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color textColor, Color headerColor, Font baseFont, Font headerFont, PixelDatabase dayRowImage = null)
+            #region CreateCalendar(Bitmap blankImage, Bitmap headerImage, StatusUpdate updateCallback, MonthEnum month, int year, bool writeToDisk, string fileName, Color baseColor, Color headerColor, Font baseFont, Font headerFont, PixelDatabase dayRowImage = null)
             /// <summary>
             /// method returns the Calendar
             /// </summary>
@@ -1850,13 +1854,9 @@ namespace DataJuggler.PixelDatabase
                     updateCallback("Draw Title Complete", progress);
                 }
                 
-                
-                
                 // Create the Graphics object
                 Graphics g = Graphics.FromImage(pixelDatabase.DirectBitmap.Bitmap);
                 
-                
-
                 // if the dayRowImage was passed in
                 if (NullHelper.Exists(dayRowImage))
                 {
@@ -1913,7 +1913,7 @@ namespace DataJuggler.PixelDatabase
                     }
                 }
                 
-                // draw 6 lines
+                // draw 7 lines
                 for (int x = 0; x < 7; x++)
                 {
                     PixelCriteria criteria3 = new PixelCriteria();
