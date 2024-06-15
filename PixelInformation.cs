@@ -28,6 +28,7 @@ namespace DataJuggler.PixelDatabase
         private int y;
         private bool isMask;
         private long score;
+        private bool assigned;
         #endregion
 
         #region Constructors
@@ -110,6 +111,20 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region Assigned
+            /// <summary>
+            /// This property gets or sets the value for 'Assigned'.
+            /// </summary>
+            /// This property is used in projects where I need to apply some effect in batch, and / or
+            /// randomly pick pixels from 1 image and apply them to another. By setting assigned as you apply,
+            /// you can query on all the pixels in a pixel database that have not been assigned.
+            public bool Assigned
+            {
+                get { return assigned; }
+                set { assigned = value; }
+            }
+            #endregion
+            
             #region Average
             /// <summary>
             /// This read only property returns the value for 'Average'.
