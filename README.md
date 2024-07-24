@@ -1,6 +1,8 @@
 # PixelDatabase
 
-7.23.2024: I added a new method Clone, to create a copy of a PixelDatase. Untested.
+7.24.2024: RandomShuffler and UltimateHelper were updated.
+
+7.24.2024: I added a new method Clone, to create a copy of a PixelDatase. Untested.
 
 2.28.2024: I moved the Title of each calendar up 8 pixels. 
 
