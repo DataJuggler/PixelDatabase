@@ -1719,8 +1719,7 @@ namespace DataJuggler.PixelDatabase
             public PixelDatabase Clone()
             {
                 // initial value
-                PixelDatabase clone = new PixelDatabase();
-                clone.DirectBitmap = DirectBitmap;
+                PixelDatabase clone = PixelDatabaseLoader.LoadPixelDatabase(DirectBitmap.Bitmap, null);
                 
                 // return value
                 return clone;
