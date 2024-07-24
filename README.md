@@ -1,5 +1,7 @@
 # PixelDatabase
 
+7.23.2024: I added a new method Clone, to create a copy of a PixelDatase. Untested.
+
 2.28.2024: I moved the Title of each calendar up 8 pixels. 
 
 2.27.2024: I now draw a line between Header and Day Roy Image. If no Day Row Image, it is still a horizontal line

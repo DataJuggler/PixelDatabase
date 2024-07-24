@@ -1712,6 +1712,21 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
+            #region Clone()
+            /// <summary>
+            /// This method creates a copy of this object.
+            /// </summary>
+            public PixelDatabase Clone()
+            {
+                // initial value
+                PixelDatabase clone = new PixelDatabase();
+                clone.DirectBitmap = DirectBitmap;
+                
+                // return value
+                return clone;
+            }
+            #endregion
+            
             #region CopySubImage(PixelDatabase subImage, Point start, bool copyAlpha = false)
             /// <summary>
             /// This method Copies the pixels from the Sub Image into the current database
@@ -3595,20 +3610,16 @@ namespace DataJuggler.PixelDatabase
                             // get the color at this coordinate
                             Color tempColor = this.DirectBitmap.Bitmap.GetPixel(x, y);
 
-                            // if this is the color being sought. Change to compare by values, not color because names #ffffff does not equal white, example
-                            if ((tempColor.R == color.R) && (tempColor.G == color.G) && (tempColor.B == color.B) && (tempColor.A == color.A))
-                            {
-                                // Create a new instance of a 'PixelInformation' object.
-                                PixelInformation pixel = new PixelInformation();
+                            // Create a new instance of a 'PixelInformation' object.
+                            PixelInformation pixel = new PixelInformation();
 
-                                // set the properties
-                                pixel.X = x;
-                                pixel.Y = y;
-                                pixel.Color = color;
+                            // set the properties
+                            pixel.X = x;
+                            pixel.Y = y;
+                            pixel.Color = color;
 
-                                // Add this item
-                                pixels.Add(pixel);
-                            }
+                            // Add this item
+                            pixels.Add(pixel);
                         }
                     }
                 }
