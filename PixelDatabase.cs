@@ -1356,7 +1356,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns true if MaxBlueDifference matches the criteria
             /// </summary>
-            public bool CheckMatchMaxBlueDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMaxBlueDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1392,7 +1392,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns true if MaxGreenDifference matches the criteria
             /// </summary>
-            public bool CheckMatchMaxGreenDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMaxGreenDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -1428,7 +1428,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns true if MaxRedDifference matches the criteria
             /// </summary>
-            public bool CheckMatchMaxRedDifference(PixelInformation pixel, PixelCriteria criteria)
+            public static bool CheckMatchMaxRedDifference(PixelInformation pixel, PixelCriteria criteria)
             {
                 // initial value
                 bool match = false;
@@ -2037,6 +2037,26 @@ namespace DataJuggler.PixelDatabase
                     }
                 }
 
+                // return value
+                return pixelDatabase;
+            }
+            #endregion
+            
+            #region CreateNew(int width, int height)
+            /// <summary>
+            /// returns the New Image
+            /// </summary>
+            public static PixelDatabase CreateNew(int width, int height)
+            {
+                // initial value
+                PixelDatabase pixelDatabase = null;
+
+                // Create a new bitmap
+                Bitmap bitmap = new Bitmap(width, height);
+
+                // Create a new PixelDatabase
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                
                 // return value
                 return pixelDatabase;
             }
@@ -2886,7 +2906,7 @@ namespace DataJuggler.PixelDatabase
             /// <summary>
             /// returns a list of Adjacent Pixels
             /// </summary>
-            public List<PixelInformation> GetAdjacentPixels(int x, int y)
+            public static List<PixelInformation> GetAdjacentPixels(int x, int y)
             {
                 // initial value
                 List<PixelInformation> adjacentPixels = null;
