@@ -1,8 +1,10 @@
 # PixelDatabase
 
-7.24.2024: RandomShuffler and UltimateHelper were updated.
+11.3.2024: I added a new method to PixelDatabase called CreateNew. This creates a new 
+Bitmap and loads a pixeldatabase for the Width and Height givne.
 
-7.24.2024: I added a new method Clone, to create a copy of a PixelDatase. Untested.
+7.24.2024: RandomShuffler and UltimateHelper were updated.
+I also added a new method Clone, whiich creates a copy of a PixelDatase. Untested.
 
 2.28.2024: I moved the Title of each calendar up 8 pixels. 
 
