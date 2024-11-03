@@ -2497,7 +2497,7 @@ namespace DataJuggler.PixelDatabase
                 Pen pen;
 
                 // create the pen to use the LineColor
-                pen =  new Pen(LineColor, thickness);
+                pen =  new Pen(color, thickness);
 
                 // Create the Graphics object
                 Graphics graphics = Graphics.FromImage(DirectBitmap.Bitmap);
