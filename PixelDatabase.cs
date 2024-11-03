@@ -2487,26 +2487,23 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region DrawLine(Point startPoint, Point endPoint, int thickness, Color color)
+            #region DrawLine(Bitmap bitmap, Point startPoint, Point endPoint, int thickness, Color color)
             /// <summary>
             /// This method Draws a Line based upon the pixelCriteria
             /// </summary>
-            public Bitmap DrawLine(Point startPoint, Point endPoint, int thickness, Color color)
+            public Bitmap DrawLine(Bitmap bitmap, Point startPoint, Point endPoint, int thickness, Color color)
             {
                 // Create a pen
-                Pen pen;
-
-                // create the pen to use the LineColor
-                pen =  new Pen(color, thickness);
+                Pen pen =  new Pen(color, thickness);
 
                 // Create the Graphics object
-                Graphics graphics = Graphics.FromImage(DirectBitmap.Bitmap);
+                Graphics graphics = Graphics.FromImage(bitmap);
 
                 // Draw the line in LineColor                
                 graphics.DrawLine(pen, startPoint, endPoint);
                
                 // return the bitmap
-                return DirectBitmap.Bitmap;
+                return bitmap;
             }
             #endregion
 
@@ -2628,6 +2625,49 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
                 } 
+
+                // return the bitmap
+                return bitmap;
+            }
+            #endregion
+
+            #region DrawTransparentLine(Bitmap bitmap, Point startPoint, Point endPoint, int thickness)
+            /// <summary>
+            /// This method Draws a Line based on a color not in your image, then runs a query to remove that image.
+            /// </summary>
+            public Bitmap DrawTransparentLine(Bitmap bitmap, Point startPoint, Point endPoint, int thickness)
+            {
+                // local
+                string newLine = Environment.NewLine;
+
+                // Load this PixelDatabase
+                PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+
+                // Set a color to use
+                Color colorNotInImage = pixelDatabase.SetLineColor();
+
+                // Draw a line
+                bitmap = DrawLine(bitmap, startPoint, endPoint, thickness, colorNotInImage);
+
+                // reload
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+
+                // Now Get all the pixes
+                List<PixelInformation> pixels = pixelDatabase.GetPixels(colorNotInImage);
+
+                // If the pixels collection exists and has one or more items
+                if (ListHelper.HasOneOrMoreItems(pixels))
+                {
+                    // Iterate the collection of PixelInformation objects
+                    foreach (PixelInformation pixel in pixels)
+                    {
+                        // Set the Alpha to 0
+                        Color transparentColor = Color.FromArgb(0, pixel.Color);
+
+                        // Set the color to transparent
+                        pixelDatabase.SetPixelColor(pixel.X, pixel.Y, transparentColor, false, pixel.Index);
+                    }
+                }
 
                 // return the bitmap
                 return bitmap;
@@ -4566,7 +4606,7 @@ namespace DataJuggler.PixelDatabase
             
             #region SetLineColor()
             /// <summary>
-            /// This method returns the Line Color
+            /// This method returns a Line Color not in your Image. This is used by DrawTransparentLine
             /// </summary>
             public Color SetLineColor()
             {
@@ -4585,6 +4625,7 @@ namespace DataJuggler.PixelDatabase
                         // iterate blue up to 255
                         for (int blue = 0; blue < 255; blue++)
                         {
+                            // Set the color
                             Color color = Color.FromArgb(red, green, blue);
 
                             // attempt to get a list of pixels with this value
@@ -4607,8 +4648,8 @@ namespace DataJuggler.PixelDatabase
                         // if the line color has been set
                         if (LineColorSet)
                         {
-                                // break out of this loop also
-                                break;
+                            // break out of this loop also
+                            break;
                         }
                     }
 
