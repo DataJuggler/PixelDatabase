@@ -2056,6 +2056,12 @@ namespace DataJuggler.PixelDatabase
 
                 // Create a new PixelDatabase
                 pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+
+                // The new bitmap starts off transparent, so turn it white
+                string query = "Update" + Environment.NewLine + "Set Color White" + Environment.NewLine + "Where" + Environment.NewLine + "Alpha < 10";
+
+                // Set Coor White
+                pixelDatabase.ApplyQuery(query, null);
                 
                 // return value
                 return pixelDatabase;
@@ -2478,6 +2484,29 @@ namespace DataJuggler.PixelDatabase
 
                 // return value
                 return doesMatch;
+            }
+            #endregion
+
+            #region DrawLine(Point startPoint, Point endPoint, int thickness, Color color)
+            /// <summary>
+            /// This method Draws a Line based upon the pixelCriteria
+            /// </summary>
+            public Bitmap DrawLine(Point startPoint, Point endPoint, int thickness, Color color)
+            {
+                // Create a pen
+                Pen pen;
+
+                // create the pen to use the LineColor
+                pen =  new Pen(LineColor, thickness);
+
+                // Create the Graphics object
+                Graphics graphics = Graphics.FromImage(DirectBitmap.Bitmap);
+
+                // Draw the line in LineColor                
+                graphics.DrawLine(pen, startPoint, endPoint);
+               
+                // return the bitmap
+                return DirectBitmap.Bitmap;
             }
             #endregion
 
@@ -3678,7 +3707,7 @@ namespace DataJuggler.PixelDatabase
     
             #region HandleDrawLine(PixelQuery pixelQuery, StatusUpdate status)
             /// <summary>
-            /// This method Handle Draw Line
+            /// This method Handles Draw Line
             /// </summary>
             public PixelQuery HandleDrawLine(PixelQuery pixelQuery,  StatusUpdate status)
             {
