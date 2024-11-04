@@ -2042,11 +2042,11 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
-            #region CreateNew(int width, int height)
+            #region CreateNew(int width, int height, Color backgroundColor, bool transparentBackground = false)
             /// <summary>
             /// returns the New Image
             /// </summary>
-            public static PixelDatabase CreateNew(int width, int height)
+            public static PixelDatabase CreateNew(int width, int height, Color backgroundColor, bool transparentBackground = false)
             {
                 // initial value
                 PixelDatabase pixelDatabase = null;
@@ -2057,12 +2057,24 @@ namespace DataJuggler.PixelDatabase
                 // Create a new PixelDatabase
                 pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
 
-                // The new bitmap starts off transparent, so turn it white
-                string query = "Update" + Environment.NewLine + "Set Color White" + Environment.NewLine + "Where" + Environment.NewLine + "Alpha < 10";
+                // if the value for transparentBackground is false
+                if (!transparentBackground)
+                {
+                    // Get the pixels
+                    List<PixelInformation> pixels = pixelDatabase.GetPixels();
 
-                // Set Coor White
-                pixelDatabase.ApplyQuery(query, null);
-                
+                    // If the pixels collection exists and has one or more items
+                    if (ListHelper.HasOneOrMoreItems(pixels))
+                    {
+                        // Iterate the collection of PixelInformation objects
+                        foreach (PixelInformation pixel in pixels)
+                        {
+                            // Set the Color
+                            pixel.Color = Color.FromArgb(255, backgroundColor);
+                        }
+                    }
+                }
+
                 // return value
                 return pixelDatabase;
             }
