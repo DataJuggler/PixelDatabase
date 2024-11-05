@@ -638,23 +638,27 @@ namespace DataJuggler.PixelDatabase
                 get
                 {
                     // initial value
-                    bool isValid = (this.ActionType != ActionTypeEnum.Unknown);
+                    bool isValid = (ActionType != ActionTypeEnum.Unknown);
 
                     // if we not have any criteria
                     if ((isValid) && (!ListHelper.HasOneOrMoreItems(Criteria)))
                     {
-                        // create default pixel criteria
-                        PixelCriteria pixelCriteria = new PixelCriteria();
+                        // if Alpha is not part of this query
+                        if ((!queryText.ToLower().Contains("alpha")) && (ActionType != ActionTypeEnum.ShowPixels))
+                        {
+                            // create default pixel criteria
+                            PixelCriteria pixelCriteria = new PixelCriteria();
 
-                        // Set the Properties on the criteria
-                        pixelCriteria.CriteriaText = "Alpha > 0";
-                        pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
-                        pixelCriteria.PixelType = PixelTypeEnum.Alpha;
-                        pixelCriteria.MinValue = 1;
+                            // Set the Properties on the criteria
+                            pixelCriteria.CriteriaText = "Alpha > 0";
+                            pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
+                            pixelCriteria.PixelType = PixelTypeEnum.Alpha;
+                            pixelCriteria.MinValue = 1;
 
-                        // Create Default Criteria
-                        Criteria = new List<PixelCriteria>();
-                        Criteria.Add(pixelCriteria);
+                            // Create Default Criteria
+                            Criteria = new List<PixelCriteria>();
+                            Criteria.Add(pixelCriteria);
+                        }
                     }
 
                     // adding a test for UpdateQueries

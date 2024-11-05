@@ -1027,21 +1027,24 @@ namespace DataJuggler.PixelDatabase
                     }
 
                     // Update 10.6.2021: If there are not any Alpha settings in the query,
-                    // then the query gets updated to append alpha > 0
-                    // if there is not any alpha criteria, we need to add one for Alpha > 0
+                    // then the query gets updated to append alpha > 0                    
                     if (!ListHelper.HasOneOrMoreItems(criteriaList))
                     {
-                        // create default pixel criteria
-                        pixelCriteria = new PixelCriteria();
+                        // if ShowPixels
+                        if (actionType != ActionTypeEnum.ShowPixels)
+                        {
+                            // create default pixel criteria
+                            pixelCriteria = new PixelCriteria();
 
-                        // Set the Properties on the criteria
-                        pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
-                        pixelCriteria.PixelType = PixelTypeEnum.Alpha;
-                        pixelCriteria.MinValue = 1;
+                            // Set the Properties on the criteria
+                            pixelCriteria.ComparisonType = ComparisonTypeEnum.GreaterThan;
+                            pixelCriteria.PixelType = PixelTypeEnum.Alpha;
+                            pixelCriteria.MinValue = 1;
 
-                         // Create Default Criteria
-                        criteriaList = new List<PixelCriteria>();
-                        criteriaList.Add(pixelCriteria);
+                             // Create Default Criteria
+                            criteriaList = new List<PixelCriteria>();
+                            criteriaList.Add(pixelCriteria);
+                        }
                     } 
                     else
                     {

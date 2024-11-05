@@ -1,5 +1,18 @@
 # PixelDatabase
 
+11.5.2024: I fixed a bug where the CreateNew was not setting the background image. This was
+caused by when I added a default Criteria of Alpha > 0 so most queries only affect the visible part of an image.
+This also fixes the Show query.
+
+    // Simple Show query, will set the alpha value to 255 for all pixels
+    string query = "Show";"
+
+	// Update
+	PixelQuery pixelQuery = pixelDatabase.ApplyQuery(query, null);
+
+	// test the results
+	int pixelUpdated = pixelQuery.PixelsUpdated;
+
 11.3.2024: I added a new method to PixelDatabase called CreateNew. This creates a new 
 Bitmap and loads a pixeldatabase for the Width and Height givne.
 I also added a new DrawLine method to simplify Line drawing.

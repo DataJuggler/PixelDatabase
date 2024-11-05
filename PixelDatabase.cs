@@ -2054,25 +2054,28 @@ namespace DataJuggler.PixelDatabase
                 // Create a new bitmap
                 Bitmap bitmap = new Bitmap(width, height);
 
+                // local
+                PixelQuery pixelQuery = null;
+
                 // Create a new PixelDatabase
                 pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
 
                 // if the value for transparentBackground is false
                 if (!transparentBackground)
                 {
-                    // Get the pixels
-                    List<PixelInformation> pixels = pixelDatabase.GetPixels();
+                    // Set the background color
+                    string newLine = Environment.NewLine;
 
-                    // If the pixels collection exists and has one or more items
-                    if (ListHelper.HasOneOrMoreItems(pixels))
-                    {
-                        // Iterate the collection of PixelInformation objects
-                        foreach (PixelInformation pixel in pixels)
-                        {
-                            // Set the Color
-                            pixel.Color = Color.FromArgb(255, backgroundColor);
-                        }
-                    }
+                    // First set the alpha
+                    string query = "Show";
+                    pixelQuery = pixelDatabase.ApplyQuery(query, null);
+
+                    // test
+                    int pixelsUpdated = pixelQuery.PixelsUpdated;
+
+                    // Now set the background color
+                    query = "Update" + newLine + "Set Color " + backgroundColor.Name;
+                    pixelQuery = pixelDatabase.ApplyQuery(query, null);                   
                 }
 
                 // return value
@@ -4796,33 +4799,42 @@ namespace DataJuggler.PixelDatabase
                     // If the pixelQuery object exists
                     if (NullHelper.Exists(pixelQuery))
                     {
-                        // set the value for criteriaList
-                        criteriaList = pixelQuery.Criteria;
-                
-                        // Set the expected count
-                        expectedCount = criteriaList.Count;
-   
-                        // Iterate the collection of PixelCriteria objects
-                        foreach (PixelCriteria criteria in criteriaList)
+                        // If the pixelQuery.Criteria collection exists and has one or more items
+                        if (ListHelper.HasOneOrMoreItems(pixelQuery.Criteria))
                         {
-                            // Check if the pixel matches this criteria
-                            pixelMatchesThisCriteria = DoesPixelMatchThisCriteria(pixel, criteria);
+                            // set the value for criteriaList
+                            criteriaList = pixelQuery.Criteria;
 
-                            // if the value for pixelMatchesThisCriteria is true
-                            if (pixelMatchesThisCriteria)
+                            // Set the expected count
+                            expectedCount = criteriaList.Count;
+   
+                            // Iterate the collection of PixelCriteria objects
+                            foreach (PixelCriteria criteria in criteriaList)
                             {
-                                // Increment the value for actualTrueCount
-                                actualCount++;
+                                // Check if the pixel matches this criteria
+                                pixelMatchesThisCriteria = DoesPixelMatchThisCriteria(pixel, criteria);
+
+                                // if the value for pixelMatchesThisCriteria is true
+                                if (pixelMatchesThisCriteria)
+                                {
+                                    // Increment the value for actualTrueCount
+                                    actualCount++;
+                                }
+                                else
+                                {
+                                    // break out of the loop
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                // break out of the loop
-                                break;
-                            }
+
+                            // set to true if the expected count matches the actual count
+                            shouldPixelBeUpdated = (expectedCount == actualCount);
                         }
-
-                        // set to true if the expected count matches the actual count
-                        shouldPixelBeUpdated = (expectedCount == actualCount);
+                        else
+                        {
+                            // Always updated with no criteria
+                            shouldPixelBeUpdated = true;
+                        }
 
                         // if the value for shouldPixelBeUpdated is true
                         if ((shouldPixelBeUpdated) && (pixelQuery.Scatter) && (pixelQuery.HasShuffler))
@@ -4850,13 +4862,14 @@ namespace DataJuggler.PixelDatabase
                         
                             // this pixel was already updated
                             shouldPixelBeUpdated = false;
-                        }
+                        }                        
                     }
 
-                    if (pixelQuery.HasClump)
-                    {
-                        // This codei s not ready to be used yet
-                    }
+                    // Code Not used Yet
+                    //if (pixelQuery.HasClump)
+                    //{
+                    //    // This codei s not ready to be used yet
+                    //}
                 }
                 catch (Exception error)
                 {
