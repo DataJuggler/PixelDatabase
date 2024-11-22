@@ -1,5 +1,7 @@
 # PixelDatabase
 
+11.22.2024: This project has been updated to .NET 9.
+
 11.5.2024: I fixed a bug where the CreateNew was not setting the background image. This was
 caused by when I added a default Criteria of Alpha > 0 so most queries only affect the visible part of an image.
 This also fixes the Show query.
