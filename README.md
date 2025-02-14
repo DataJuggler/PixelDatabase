@@ -1,5 +1,7 @@
 # PixelDatabase
 
+2.14.2025: System.Drawing.Common library was updated to 9.0.2.
+
 11.22.2024: This project has been updated to .NET 9.
 
 11.5.2024: I fixed a bug where the CreateNew was not setting the background image. This was

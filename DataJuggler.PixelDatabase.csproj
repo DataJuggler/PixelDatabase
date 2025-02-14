@@ -250,7 +250,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>8.3.6</Version>
+    <Version>9.0.0</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -288,7 +288,7 @@ First release, i will update the rest of the info if it gets past proof of conce
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.RandomShuffler" Version="9.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.2" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
