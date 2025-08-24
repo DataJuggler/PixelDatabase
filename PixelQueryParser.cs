@@ -1461,6 +1461,11 @@ namespace DataJuggler.PixelDatabase
                         // If the lines collection exists and has one or more items
                         if (ListHelper.HasOneOrMoreItems(lines))
                         {
+                            foreach (TextLine line in lines)
+                            {
+                                
+                            }
+
                             // Parse the Criteria (this is the matching part)
                             pixelQuery.Criteria = ParseCriteria(lines, pixelQuery.ActionType);
                         }

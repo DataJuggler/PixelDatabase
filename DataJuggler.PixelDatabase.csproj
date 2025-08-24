@@ -250,7 +250,7 @@ I need to create an abort for Draw Line, just haven't had a chance yet. I will w
 First release, i will update the rest of the info if it gets past proof of concept.</PackageReleaseNotes>
     <PackageIcon>PixelDatabaseLogoSmall.png</PackageIcon>
     <PackageIconUrl />
-    <Version>9.0.1</Version>
+    <Version>9.0.2</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <UserSecretsId>35699f2d-2930-4328-a080-1aff53ed2b0f</UserSecretsId>
     <RepositoryUrl>https://github.com/DataJuggler/PixelDatabase</RepositoryUrl>
@@ -262,11 +262,11 @@ First release, i will update the rest of the info if it gets past proof of conce
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;IDE0060;IDE0305;</NoWarn>
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;IDE0060;IDE0305;WFO1000;</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;IDE0060;IDE0305;</NoWarn>
+    <NoWarn>1701;1702;IDE0090;IDE0059;IDE0028;IDE0017;IDE0063;IDE0057;CA1416;IDE0060;IDE0305;WFO1000;</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -288,7 +288,7 @@ First release, i will update the rest of the info if it gets past proof of conce
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.RandomShuffler" Version="9.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.4" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 

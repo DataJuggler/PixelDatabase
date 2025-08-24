@@ -22,6 +22,7 @@ namespace DataJuggler.PixelDatabase
         #region Private Variables
         private ActionTypeEnum actionType;
         private List<PixelCriteria> criteria;
+        private List<PixelCriteria> clumpCriteria;
         private Directions directions;
         private int red;
         private int green;
@@ -277,6 +278,17 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region ClumpCriteria
+            /// <summary>
+            /// This property gets or sets the value for 'ClumpCriteria'.
+            /// </summary>
+            public List<PixelCriteria> ClumpCriteria
+            {
+                get { return clumpCriteria; }
+                set { clumpCriteria = value; }
+            }
+            #endregion
+            
             #region Color
             /// <summary>
             /// This property gets or sets the value for 'Color'.
@@ -438,6 +450,23 @@ namespace DataJuggler.PixelDatabase
                     
                     // return value
                     return hasClump;
+                }
+            }
+            #endregion
+            
+            #region HasClumpCriteria
+            /// <summary>
+            /// This property returns true if this object has a 'ClumpCriteria'.
+            /// </summary>
+            public bool HasClumpCriteria
+            {
+                get
+                {
+                    // initial value
+                    bool hasClumpCriteria = (ClumpCriteria != null);
+
+                    // return value
+                    return hasClumpCriteria;
                 }
             }
             #endregion

@@ -4866,10 +4866,11 @@ namespace DataJuggler.PixelDatabase
                     }
 
                     // Code Not used Yet
-                    //if (pixelQuery.HasClump)
-                    //{
-                    //    // This codei s not ready to be used yet
-                    //}
+                    if (pixelQuery.HasClump)
+                    {
+                        // This codei s not ready to be used yet
+
+                    }
                 }
                 catch (Exception error)
                 {
