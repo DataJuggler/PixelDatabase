@@ -207,6 +207,8 @@ namespace DataJuggler.PixelDatabase
                 // If the lines collection exists and has one or more items
                 if (ListHelper.HasOneOrMoreItems(lines))
                 {
+                    char[] delimiter = { ' ' };
+
                     // Iterate the collection of TextLine objects
                     foreach (TextLine line in lines)
                     {
@@ -214,7 +216,7 @@ namespace DataJuggler.PixelDatabase
                         if (line.Text.ToLower().StartsWith("normalize "))
                         {
                             // get the words
-                            List<Word> words = TextHelper.GetWords(line.Text);
+                            List<Word> words = TextHelper.GetWords(line.Text, delimiter);
 
                             // if there are exactly 4 or more words
                             if (ListHelper.HasXOrMoreItems(words, 4))
