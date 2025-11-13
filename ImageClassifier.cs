@@ -445,29 +445,11 @@ namespace DataJuggler.PixelDatabase
                 // initial value
                 List<string> files = new List<string>();
 
-                // locals
-                List<string> tempFiles = null;
-
                 // if there are extensions listed
                 if (ListHelper.HasOneOrMoreItems(extensions))
                 {
-                    // Iterate the collection of string objects
-                    foreach (string extension in extensions)
-                    {
-                        // Get the tempFiles
-                        tempFiles = FileHelper.GetFiles(sourceDirectory, extension);
-
-                        // If the tempFiles collection exists and has one or more items
-                        if (ListHelper.HasOneOrMoreItems(tempFiles))
-                        {
-                            // append each file
-                            foreach (string file in tempFiles)
-                            {
-                                // Add this file
-                                files.Add(file);
-                            }
-                        }
-                    }
+                    // Get the files
+                    files = FileHelper.GetFiles(sourceDirectory, extensions);
                 }
                 
                 // return value
