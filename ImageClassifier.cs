@@ -639,11 +639,11 @@ namespace DataJuggler.PixelDatabase
                 string primary = GetColorName(image.PrimaryColor);
                 int valuePrimary = GetPrimaryValue(image);
                 string secondary = GetColorName(image.SecondaryColor);
-                int ValueSecondary = GetSecondaryValue(image);
+                int valueSecondary = GetSecondaryValue(image);
                 string minority = GetColorName(image.MinorityColor);
                 int valueMinority = GetMinorityValue(image);
                 string value1 = GetValueAsText(valuePrimary);
-                string value2 = GetValueAsText(ValueSecondary);
+                string value2 = GetValueAsText(valueSecondary);
                 string value3 = GetValueAsText(valueMinority);
 
                 // Now build the string
@@ -653,6 +653,15 @@ namespace DataJuggler.PixelDatabase
                 sb.Append(value1);
                 sb.Append(value2);
                 sb.Append(value3);
+
+                // Update 2.25.2026: Appending the original filename
+                // add a separator
+                sb.Append(".");
+
+                // add the original name
+                sb.Append(fileInfo.Name);
+
+                // Add the extension
                 sb.Append(fileInfo.Extension);
 
                 // Add the new name

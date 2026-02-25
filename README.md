@@ -1,5 +1,7 @@
 # PixelDatabase
 
+2.25.2026: I added a new feature to ImageClassifier where the original filename is now included in the name.
+
 11.22.2025: This project has been updated to .NET 10
 
 2.14.2025: System.Drawing.Common library was updated to 9.0.2.
