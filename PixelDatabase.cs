@@ -2923,7 +2923,7 @@ namespace DataJuggler.PixelDatabase
                             PixelInformation tempPixel = GetPixel(x, startY);
 
                             // if a pixel was found
-                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Alpha >= minAlpha))
                             {
                                 // set the return value
                                 pixel = tempPixel;
@@ -2945,7 +2945,7 @@ namespace DataJuggler.PixelDatabase
                             PixelInformation tempPixel = GetPixel(x, startY);
 
                             // if a pixel was found
-                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Alpha >= minAlpha))
                             {
                                 // set the return value
                                 pixel = tempPixel;
@@ -2967,7 +2967,7 @@ namespace DataJuggler.PixelDatabase
                             PixelInformation tempPixel = GetPixel(startX, y);
 
                             // if a pixel was found
-                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Alpha >= minAlpha))
                             {
                                 // set the return value
                                 pixel = tempPixel;
@@ -2989,7 +2989,7 @@ namespace DataJuggler.PixelDatabase
                             PixelInformation tempPixel = GetPixel(startX, y);
 
                             // if a pixel was found
-                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Alpha >= minAlpha))
                             {
                                 // set the return value
                                 pixel = tempPixel;
