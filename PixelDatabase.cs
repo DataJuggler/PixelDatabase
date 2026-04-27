@@ -2903,6 +2903,111 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
             
+            #region FindFirstVisiblePixel(int startX, int startY, DirectionEnum direction, int minAlpha = 100)
+            /// <summary>
+            /// returns the First Visible Pixel
+            /// </summary>
+            public PixelInformation FindFirstVisiblePixel(int startX, int startY, DirectionEnum direction, int minAlpha = 100)
+            {
+                // initial value
+                PixelInformation pixel = null;
+
+                switch (direction)
+                {
+                     case DirectionEnum.LeftToRight:
+
+                        // iterate from left to right
+                        for (int x = startX; x < Width; x++)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(x, startY);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.RightToLeft:
+
+                        // iterate from right to left
+                        for (int x = startX; x >= 0; x--)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(x, startY);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.TopToBottom:
+
+                        // iterate from top to bottom
+                        for (int y = startY; y < Height; y++)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(startX, y);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.BottomToTop:
+
+                        // iterate from bottom to top
+                        for (int y = startY; y > 0; y--)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(startX, y);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (pixel.Alpha >= minAlpha))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+                }
+
+                // return value
+                return pixel;
+            }
+            #endregion
+            
             #region FindModifiedPixels(PixelDatabase compareDatabase, StatusUpdate statusUpdate, int startX = 0, int endX = 0, int startY = 0, int endY = 0)
             /// <summary>
             /// This method returns a list of Modified Pixels

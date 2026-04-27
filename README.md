@@ -1,5 +1,14 @@
 # PixelDatabase
 
+4.27.2026: I added a new feature to PixelDatabase:
+
+FindFirstVisiblePixel(DirectionEnum, int startX, int startY, int minAlpha = 100)
+
+Depending on the DirectionEnum it will iterate and find the first pixel with alpha > than or equal to minAlpha.
+I am building an application called Isolater that makes it easy to capture objects in a transparent image, which I need
+because I created 52 Playing Cards with AI recently. It's a pain to try and size them all by hand to be the exact same size so
+Isolater should help. I may incorporate the features into this project once it works.
+
 2.25.2026: I added a new feature to ImageClassifier where the original filename is now included in the name.
 
 11.22.2025: This project has been updated to .NET 10
