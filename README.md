@@ -8,6 +8,10 @@ I also added a new feature to draw text on any rotation. I added this feature so
 
     DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush, float rotationDegrees = 0f)
 
+Also today Grok helped me write an override to CopySubIimage that passes in a rotation value. So you can copy a subimage and use 180f for a vlue to 
+draw an upside subimage for example. The old way is pixel by pixel, and the new way is faster, but doesn't handle copyAlpha the way the original 
+CopySubImage does.
+
 4.27.2026: I added a new feature to PixelDatabase:
 
     FindFirstVisiblePixel(DirectionEnum, int startX, int startY, int minAlpha = 100)

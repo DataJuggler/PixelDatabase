@@ -1724,20 +1724,59 @@ namespace DataJuggler.PixelDatabase
                 // return value
                 return clone;
             }
+        #endregion
+
+            # region CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees = 0f)
+            /// <summary>
+            /// This method copies the subimage and can be rotated.
+            /// </summary>
+            public static void CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees = 0f)
+            {
+                // If the subImage object exists
+                if (NullHelper.Exists(subImage))
+                {
+                    using (Graphics g = Graphics.FromImage(subImage.DirectBitmap.Bitmap))
+                    {
+                        // Quality settings
+                        g.SmoothingMode = SmoothingMode.AntiAlias;
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                        if (Math.Abs(rotationDegrees) < 0.01f)
+                        {
+                            // Normal copy - no rotation
+                            g.DrawImage(subImage.DirectBitmap.Bitmap, destination.X, destination.Y);
+                        }
+                        else
+                        {
+                            GraphicsState state = g.Save();
+
+                            g.TranslateTransform(destination.X, destination.Y);
+                            g.RotateTransform(rotationDegrees);
+
+                            // Center the sub-image on the destination point
+                            float offsetX = -subImage.Width / 2f;
+                            float offsetY = -subImage.Height / 2f;
+
+                            g.DrawImage(subImage.DirectBitmap.Bitmap, offsetX, offsetY);
+
+                            g.Restore(state);
+                        }
+                    }
+                }
+            }
             #endregion
-            
+
             #region CopySubImage(PixelDatabase subImage, Point start, bool copyAlpha = false)
             /// <summary>
-            /// This method Copies the pixels from the Sub Image into the current database
+            /// This override copies pixel by pixel and is best used if you have a transparent pixels in the subImage
             /// </summary>
             public void CopySubImage(PixelDatabase subImage, Point start, bool copyAlpha = false)
             {
                 // locals
                 PixelInformation pixel = null;
                 int localX = 0;
-                int localY = 0;
-
-                // If the subImage object exists
+                int localY = 0;// If the subImage object exists
                 if (NullHelper.Exists(subImage))
                 {
                     try
