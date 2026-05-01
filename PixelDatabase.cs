@@ -2185,8 +2185,12 @@ namespace DataJuggler.PixelDatabase
                             endX = NumericHelper.EnsureInRange(endX, 0, this.Width -1);
                             endY = NumericHelper.EnsureInRange(endY, 0, this.Height -1);
 
+                            // locals
+                            int width = size.Width;
+                            int height = size.Height;
+
                             // create a subimage
-                            subImage = new Bitmap(size.Width, size.Height);
+                            subImage = new Bitmap(width, height);
 
                             // Code To Lockbits
                             BitmapData bitmapData = subImage.LockBits(new Rectangle(0, 0, size.Width, size.Height), ImageLockMode.ReadWrite, source.PixelFormat);
@@ -2990,6 +2994,111 @@ namespace DataJuggler.PixelDatabase
 
                             // if a pixel was found
                             if ((NullHelper.Exists(tempPixel)) && (tempPixel.Alpha >= minAlpha))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+                }
+
+                // return value
+                return pixel;
+            }
+            #endregion
+
+            #region FindFirstNonWhitePixel(int startX, int startY, DirectionEnum direction, int threshhold = 700)
+            /// <summary>
+            /// returns the First Pixel that isn't white
+            /// </summary>
+            public PixelInformation FindFirstNonWhitePixel(int startX, int startY, DirectionEnum direction, int threshhold = 700)
+            {
+                // initial value
+                PixelInformation pixel = null;
+
+                switch (direction)
+                {
+                     case DirectionEnum.LeftToRight:
+
+                        // iterate from left to right
+                        for (int x = startX; x < Width; x++)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(x, startY);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Total < threshhold))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.RightToLeft:
+
+                        // iterate from right to left
+                        for (int x = startX; x >= 0; x--)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(x, startY);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Total < threshhold))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.TopToBottom:
+
+                        // iterate from top to bottom
+                        for (int y = startY; y < Height; y++)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(startX, y);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Total < threshhold))
+                            {
+                                // set the return value
+                                pixel = tempPixel;
+
+                                // break out of for loop
+                                break;
+                            }
+                        }
+
+                        // required
+                        break;
+
+                    case DirectionEnum.BottomToTop:
+
+                        // iterate from bottom to top
+                        for (int y = startY; y > 0; y--)
+                        {
+                            // find this pixel
+                            PixelInformation tempPixel = GetPixel(startX, y);
+
+                            // if a pixel was found
+                            if ((NullHelper.Exists(tempPixel)) && (tempPixel.Total < threshhold))
                             {
                                 // set the return value
                                 pixel = tempPixel;
