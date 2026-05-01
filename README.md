@@ -1,8 +1,12 @@
 # PixelDatabase
 
+5.1.2026: I added a new method FindFirstNonWhitePixel. Very similar to FindFirstVisiblePixel, except total is what's compared
+
+    FindFirstNonWhitePixel(DirectionEnum, int startX, int startY, int threshhold = 700)
+
 4.27.2026: I added a new feature to PixelDatabase:
 
-FindFirstVisiblePixel(DirectionEnum, int startX, int startY, int minAlpha = 100)
+    FindFirstVisiblePixel(DirectionEnum, int startX, int startY, int minAlpha = 100)
 
 Depending on the DirectionEnum it will iterate and find the first pixel with alpha > than or equal to minAlpha.
 I am building an application called Isolater that makes it easy to capture objects in a transparent image, which I need
