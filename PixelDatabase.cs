@@ -2841,58 +2841,68 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush, float rotationDegrees = 0f)
             /// <summary>
             /// Draw Text
             /// </summary>
-            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush, float rotationDegrees = 0f)
             {
-                // Get a reference to the internal Bitmap
                 Bitmap bitmap = DirectBitmap.Bitmap;
-
-                // Create graphic object that will draw onto the bitmap
-                Graphics g = Graphics.FromImage(bitmap);
-
-                // ------------------------------------------
-                // Ensure the best possible quality rendering
-                // ------------------------------------------
-                // The smoothing mode specifies whether lines, curves, and the edges of filled areas use smoothing (also called antialiasing). 
-                // One exception is that path gradient brushes do not obey the smoothing mode. 
-                // Areas filled using a PathGradientBrush are rendered the same way (aliased) regardless of the SmoothingMode property.
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-
-                // The interpolation mode determines how intermediate values between two endpoints are calculated.
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-
-                // Use this property to specify either higher quality, slower rendering, or lower quality, faster rendering of the contents of this Graphics object.
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                // This one is important
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-
-                // Create string formatting options (used for alignment)
-                StringFormat format = new StringFormat()
+                using (Graphics g = Graphics.FromImage(bitmap))
                 {
-                    Alignment = textAlignment,
-                    LineAlignment = lineAlignment                    
-                };
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-                // Draw the text onto the image
-                g.DrawString(text, font, brush, location.X, location.Y, format);
+                    StringFormat format = new StringFormat
+                    {
+                        Alignment = textAlignment,
+                        LineAlignment = lineAlignment
+                    };
 
-                // Flush all graphics changes to the bitmap
-                g.Flush();
+                    GraphicsState state = g.Save();
+
+                    if (Math.Abs(rotationDegrees) > 0.01f)
+                    {
+                        SizeF textSize = g.MeasureString(text, font, new PointF(0, 0), format);
+
+                        // Move origin to the desired location
+                        g.TranslateTransform(location.X, location.Y);
+                        g.RotateTransform(rotationDegrees);
+
+                        // For 180° (upside down), center it nicely on the point
+                        float offsetX = 0;
+                        float offsetY = 0;
+
+                        if (Math.Abs(rotationDegrees - 180f) < 1f)
+                        {
+                            offsetX = -textSize.Width / 2;
+                            offsetY = -textSize.Height / 2;
+                        }
+                        // You can add cases for 90/270 if you ever need them
+
+                        g.DrawString(text, font, brush, offsetX, offsetY, format);
+                    }
+                    else
+                    {
+                        g.DrawString(text, font, brush, location.X, location.Y, format);
+                    }
+
+                    g.Restore(state);
+                    g.Flush();
+                }
             }
             #endregion
 
-            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush)
+            #region DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, float rotationDegrees = 0f)
             /// <summary>
             /// Draw Text
             /// </summary>
-            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment)
+            public void DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, float rotationDegrees = 0f)
             {
                 // call the override
-                DrawText(text, font, location, textAlignment, lineAlignment, Brushes.Black);
+                DrawText(text, font, location, textAlignment, lineAlignment, Brushes.Black, rotationDegrees);
             }
             #endregion
 

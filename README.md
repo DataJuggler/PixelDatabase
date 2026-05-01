@@ -4,6 +4,10 @@
 
     FindFirstNonWhitePixel(DirectionEnum, int startX, int startY, int threshhold = 700)
 
+I also added a new feature to draw text on any rotation. I added this feature so I can draw playing cards bottom corners upside down.
+
+    DrawText(string text, Font font, Point location, StringAlignment textAlignment, StringAlignment lineAlignment, Brush brush, float rotationDegrees = 0f)
+
 4.27.2026: I added a new feature to PixelDatabase:
 
     FindFirstVisiblePixel(DirectionEnum, int startX, int startY, int minAlpha = 100)
