@@ -1726,7 +1726,7 @@ namespace DataJuggler.PixelDatabase
             }
         #endregion
 
-            # region CopySubImage(PixelDatabase subImage, Point destination)
+            # region CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees)
             /// <summary>
             /// This method copies the subimage and can be rotated.
             /// </summary>
@@ -1750,6 +1750,7 @@ namespace DataJuggler.PixelDatabase
                         else
                         {
                             GraphicsState state = g.Save();
+                            g.PixelOffsetMode = PixelOffsetMode.None;
                             g.TranslateTransform(destination.X + subImage.Width / 2f, destination.Y + subImage.Height / 2f);
                             g.RotateTransform(rotationDegrees);
                             g.DrawImage(subImage.DirectBitmap.Bitmap, -subImage.Width / 2f, -subImage.Height / 2f);
