@@ -1726,16 +1726,16 @@ namespace DataJuggler.PixelDatabase
             }
         #endregion
 
-            # region CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees = 0f)
+            # region CopySubImage(PixelDatabase subImage, Point destination)
             /// <summary>
             /// This method copies the subimage and can be rotated.
             /// </summary>
-            public static void CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees = 0f)
+            public void CopySubImage(PixelDatabase subImage, Point destination, float rotationDegrees)
             {
                 // If the subImage object exists
                 if (NullHelper.Exists(subImage))
                 {
-                    using (Graphics g = Graphics.FromImage(subImage.DirectBitmap.Bitmap))
+                    using (Graphics g = Graphics.FromImage(this.DirectBitmap.Bitmap))
                     {
                         // Quality settings
                         g.SmoothingMode = SmoothingMode.AntiAlias;
