@@ -1750,16 +1750,9 @@ namespace DataJuggler.PixelDatabase
                         else
                         {
                             GraphicsState state = g.Save();
-
-                            g.TranslateTransform(destination.X, destination.Y);
+                            g.TranslateTransform(destination.X + subImage.Width / 2f, destination.Y + subImage.Height / 2f);
                             g.RotateTransform(rotationDegrees);
-
-                            // Center the sub-image on the destination point
-                            float offsetX = -subImage.Width / 2f;
-                            float offsetY = -subImage.Height / 2f;
-
-                            g.DrawImage(subImage.DirectBitmap.Bitmap, offsetX, offsetY);
-
+                            g.DrawImage(subImage.DirectBitmap.Bitmap, -subImage.Width / 2f, -subImage.Height / 2f);
                             g.Restore(state);
                         }
                     }
