@@ -24,6 +24,48 @@ namespace DataJuggler.PixelDatabase
     {
 
         #region Methods
+
+            #region LoadPixelDatabase(Image original)
+            /// <summary>
+            /// This method is used to load a PixelDatabase and its DirectBitmap object.
+            /// Use this overload when no status update callback is needed.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <returns></returns>
+            public static PixelDatabase LoadPixelDatabase(Image original)
+            {
+                // call the overload with null for the status update
+                return LoadPixelDatabase(original, null);
+            }
+            #endregion
+
+            #region LoadPixelDatabase(string imagePath)
+            /// <summary>
+            /// This method is used to load a PixelDatabase and its DirectBitmap object from an imagePath.
+            /// Use this overload when no status update callback is needed.
+            /// </summary>
+            /// <param name="imagePath">The path to the image</param>
+            /// <returns></returns>
+            public static PixelDatabase LoadPixelDatabase(string imagePath)
+            {
+                // call the overload with null for the status update
+                return LoadPixelDatabase(imagePath, null);
+            }
+            #endregion
+
+            #region LoadPixelDatabase(Bitmap original)
+            /// <summary>
+            /// This method is used to load a PixelDatabase and its DirectBitmap object.
+            /// Use this overload when no status update callback is needed.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <returns></returns>
+            public static PixelDatabase LoadPixelDatabase(Bitmap original)
+            {
+                // call the overload with null for the status update
+                return LoadPixelDatabase(original, null);
+            }
+            #endregion
             
             #region LoadPixelDatabase(Image original, StatusUpdate updateCallback)
             /// <summary>

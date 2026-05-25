@@ -4,6 +4,9 @@
 
     FindFirstNonBlackPixel(DirectionEnum, int startX, int startY, int threshhold = 50)
 
+I also added a 3 new constructors for PixelDatabaseLoader that do not require a StatusUpdate (delegate) callback.
+For years I have passed in null if I didn't need the callback, but its now simpler to just pass in a path, or Bitmap or Image.
+
 5.1.2026: I added a new method FindFirstNonWhitePixel. Very similar to FindFirstVisiblePixel, except total must be lower than threshold
 
     FindFirstNonWhitePixel(DirectionEnum, int startX, int startY, int threshhold = 700)
