@@ -1,6 +1,10 @@
 # PixelDatabase
 
-5.1.2026: I added a new method FindFirstNonWhitePixel. Very similar to FindFirstVisiblePixel, except total is what's compared
+5.25.2026: I added a new method FindFirstNonBlackPixe. Very similar to FindFirstNonWhitePixel, except total must be greater than threshold
+
+    FindFirstNonBlackPixel(DirectionEnum, int startX, int startY, int threshhold = 50)
+
+5.1.2026: I added a new method FindFirstNonWhitePixel. Very similar to FindFirstVisiblePixel, except total must be lower than threshold
 
     FindFirstNonWhitePixel(DirectionEnum, int startX, int startY, int threshhold = 700)
 
