@@ -20,6 +20,8 @@ This example is loading an image from my NuGet package DataJuggler.PixelDatabase
 I also took out the statusUpdate callback delegate from PixelDatabaseLoader. Sorry if this breaks anyone's projects.
 Just remove the delegate.
 
+Random Shuffler was updated. 
+
 5.25.2026: I added a new method FindFirstNonBlackPixe. Very similar to FindFirstNonWhitePixel, except total must be greater than threshold
 
     FindFirstNonBlackPixel(DirectionEnum, int startX, int startY, int threshhold = 50)
