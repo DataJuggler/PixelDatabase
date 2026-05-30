@@ -24,56 +24,14 @@ namespace DataJuggler.PixelDatabase
     {
 
         #region Methods
-
-            #region LoadPixelDatabase(Image original)
-            /// <summary>
-            /// This method is used to load a PixelDatabase and its DirectBitmap object.
-            /// Use this overload when no status update callback is needed.
-            /// </summary>
-            /// <param name="original"></param>
-            /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(Image original)
-            {
-                // call the overload with null for the status update
-                return LoadPixelDatabase(original, null);
-            }
-            #endregion
-
-            #region LoadPixelDatabase(string imagePath)
-            /// <summary>
-            /// This method is used to load a PixelDatabase and its DirectBitmap object from an imagePath.
-            /// Use this overload when no status update callback is needed.
-            /// </summary>
-            /// <param name="imagePath">The path to the image</param>
-            /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(string imagePath)
-            {
-                // call the overload with null for the status update
-                return LoadPixelDatabase(imagePath, null);
-            }
-            #endregion
-
-            #region LoadPixelDatabase(Bitmap original)
-            /// <summary>
-            /// This method is used to load a PixelDatabase and its DirectBitmap object.
-            /// Use this overload when no status update callback is needed.
-            /// </summary>
-            /// <param name="original"></param>
-            /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(Bitmap original)
-            {
-                // call the overload with null for the status update
-                return LoadPixelDatabase(original, null);
-            }
-            #endregion
             
-            #region LoadPixelDatabase(Image original, StatusUpdate updateCallback)
+            #region LoadPixelDatabase(Image original)
             /// <summary>
             /// This method is used to load a PixelDatabase and its DirectBitmap object.
             /// </summary>
             /// <param name="bitmap"></param>
             /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(Image original, StatusUpdate updateCallback)
+            public static PixelDatabase LoadPixelDatabase(Image original)
             {
                 // initial valule
                 PixelDatabase pixelDatabase = null;
@@ -84,7 +42,7 @@ namespace DataJuggler.PixelDatabase
                     Bitmap bitmap = (Bitmap) original;
 
                     // Load the PixelDatabase
-                    pixelDatabase = LoadPixelDatabase(bitmap, updateCallback);
+                    pixelDatabase = LoadPixelDatabase(bitmap);
                 }
                 catch (Exception error)
                 {
@@ -101,15 +59,13 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
+            #region LoadPixelDatabase(string imagePath)
             /// <summary>
             /// This method is used to load a PixelDatabase and its DirectBitmap object from an imagePath
             /// </summary>
-            /// <param name="imagePath">The path to the image</param>
-            /// <param name="updateCallback">The delegate to call during load for status.</param>
-            /// <param name="copyInPlaceForResetImage">If true, a copy of the image will be created, and the ResetPath and UndoPath will be set to this new filename.</param>
+            /// <param name="imagePath">The path to the image</param>            
             /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(string imagePath, StatusUpdate updateCallback)
+            public static PixelDatabase LoadPixelDatabase(string imagePath)
             {
                 // initial valule
                 PixelDatabase pixelDatabase = null;
@@ -123,7 +79,7 @@ namespace DataJuggler.PixelDatabase
                         using (Bitmap bitmap = (Bitmap) Bitmap.FromFile(imagePath))
                         {
                             // load the pixelDatabase
-                            pixelDatabase = LoadPixelDatabase(bitmap, updateCallback);                            
+                            pixelDatabase = LoadPixelDatabase(bitmap);                            
                         }
                     }   
                 }
@@ -142,20 +98,17 @@ namespace DataJuggler.PixelDatabase
             }
             #endregion
 
-            #region LoadPixelDatabase(Bitmap original, StatusUpdate updateCallback)
+            #region LoadPixelDatabase(Bitmap original)
             /// <summary>
             /// This method is used to load a PixelDatabase and its DirectBitmap object.
             /// </summary>
             /// <param name="bitmap"></param>
             /// <returns></returns>
-            public static PixelDatabase LoadPixelDatabase(Bitmap original, StatusUpdate updateCallback)
+            public static PixelDatabase LoadPixelDatabase(Bitmap original)
             {
                 // initial valule
                 PixelDatabase pixelDatabase = null;
 
-                // locals
-                int max = 0;
-                
                 try
                 {
                     // if we have an image
@@ -182,8 +135,6 @@ namespace DataJuggler.PixelDatabase
 
                             // End Code To Lockbits
 
-                            
-
                             // locals
                             Color color = Color.FromArgb(0, 0, 0);
                             int red = 0;
@@ -197,16 +148,6 @@ namespace DataJuggler.PixelDatabase
                             int x = -1;
                             int y = 0;
                             
-                            // if the UpdateCallback exists
-                            if (NullHelper.Exists(updateCallback))
-                            {
-                                // Set the value for max
-                                max = height * width;    
-
-                                // Set the graph max
-                                updateCallback("SetGraphMax", max);
-                            }
-
                             // Iterating the pixel array, every 4th byte is a new pixel, much faster than GetPixel
                             for (int a = 0; a < pixels.Length; a += 4)
                             {
@@ -239,6 +180,41 @@ namespace DataJuggler.PixelDatabase
                         
                         // Create the MaskManager 
                         pixelDatabase.MaskManager = new MaskManager();
+                    }
+                }
+                catch (Exception error)
+                {
+                    // write to console for now
+                    DebugHelper.WriteDebugError("LoadPixelDatabase", "PixelDatabaseLoader", error);
+                }
+
+                // return value
+                return pixelDatabase;
+            }
+            #endregion
+
+            #region LoadPixelDatabase(Stream stream)
+            /// <summary>
+            /// This method is used to load a PixelDatabase and its DirectBitmap object from a Stream.
+            /// </summary>
+            /// <param name="stream">The stream containing the image</param>            
+            /// <returns></returns>
+            public static PixelDatabase LoadPixelDatabase(Stream stream)
+            {
+                // initial value
+                PixelDatabase pixelDatabase = null;
+
+                try
+                {
+                    // if the stream exists
+                    if (NullHelper.Exists(stream))
+                    {
+                        // create the Bitmap from the stream
+                        using (Bitmap bitmap = new Bitmap(stream))
+                        {
+                            // load the pixelDatabase
+                            pixelDatabase = LoadPixelDatabase(bitmap);
+                        }
                     }
                 }
                 catch (Exception error)

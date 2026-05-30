@@ -711,7 +711,7 @@ namespace DataJuggler.PixelDatabase
                         string path = System.IO.Path.Combine(sourceDirectory, fileName);
 
                         // load the pixelDatabase
-                        PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(path, null);
+                        PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(path);
 
                         // Classify this image
                         ImageClassification classification = ImageClassifier.Classify(pixelDatabase, fastSortFactor);

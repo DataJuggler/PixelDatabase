@@ -1,5 +1,25 @@
 # PixelDatabase
 
+5.30.2026: You can now load a PixelDatabase from a Stream.
+
+This example is loading an image from my NuGet package DataJuggler.PixelDatabase. This has a deck of cards embedded in it.
+
+    // Get the stream from an embedded resource
+    Stream stream = typeof(Dealer).Assembly.GetManifestResourceStream("DataJuggler.PlayingCards.wwwroot.Decks.TheGildedDeck.AceHearts.png");
+
+    // Load the PixelDatabase from the stream
+    PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(stream);
+
+    // If the pixelDatabase object exists
+    if (NullHelper.Exists(pixelDatabase))
+    {
+        // Use the bitmap
+        pictureBox.Image = pixelDatabase.DirectBitmap.Bitmap;
+    }
+
+I also took out the statusUpdate callback delegate from PixelDatabaseLoader. Sorry if this breaks anyone's projects.
+Just remove the delegate.
+
 5.25.2026: I added a new method FindFirstNonBlackPixe. Very similar to FindFirstNonWhitePixel, except total must be greater than threshold
 
     FindFirstNonBlackPixel(DirectionEnum, int startX, int startY, int threshhold = 50)

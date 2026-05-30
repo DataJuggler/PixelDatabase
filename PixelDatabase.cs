@@ -1719,7 +1719,7 @@ namespace DataJuggler.PixelDatabase
             public PixelDatabase Clone()
             {
                 // initial value
-                PixelDatabase clone = PixelDatabaseLoader.LoadPixelDatabase(DirectBitmap.Bitmap, null);
+                PixelDatabase clone = PixelDatabaseLoader.LoadPixelDatabase(DirectBitmap.Bitmap);
                 
                 // return value
                 return clone;
@@ -1838,7 +1838,7 @@ namespace DataJuggler.PixelDatabase
                 }
                 
                 // Reload
-                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(blankImage, null);
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(blankImage);
 
                 // Increment the value for progress
                 progress++;
@@ -1851,7 +1851,7 @@ namespace DataJuggler.PixelDatabase
                 }
                 
                 // Load the second image
-                PixelDatabase pixelDatabase2 = PixelDatabaseLoader.LoadPixelDatabase(headerImage, null);
+                PixelDatabase pixelDatabase2 = PixelDatabaseLoader.LoadPixelDatabase(headerImage);
                 
                 // Increment the value for progress
                 progress++;
@@ -1984,7 +1984,7 @@ namespace DataJuggler.PixelDatabase
                 }
                 
                 // Load the pixelDatabase
-                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap);
                 
                 // Create a white brush
                 SolidBrush mainBrush = new SolidBrush(baseColor);
@@ -2091,7 +2091,7 @@ namespace DataJuggler.PixelDatabase
                 PixelQuery pixelQuery = null;
 
                 // Create a new PixelDatabase
-                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap);
 
                 // if the value for transparentBackground is false
                 if (!transparentBackground)
@@ -2834,7 +2834,7 @@ namespace DataJuggler.PixelDatabase
                 string newLine = Environment.NewLine;
 
                 // Load this PixelDatabase
-                PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap);
 
                 // Set a color to use
                 Color colorNotInImage = pixelDatabase.SetLineColor();
@@ -2843,7 +2843,7 @@ namespace DataJuggler.PixelDatabase
                 bitmap = DrawLine(bitmap, startPoint, endPoint, thickness, colorNotInImage);
 
                 // reload
-                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(bitmap);
 
                 // Now Get all the pixes
                 List<PixelInformation> pixels = pixelDatabase.GetPixels(colorNotInImage);
@@ -4163,7 +4163,7 @@ namespace DataJuggler.PixelDatabase
                     }
 
                     // load again
-                    PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(this.DirectBitmap.Bitmap, status);
+                    PixelDatabase pixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(this.DirectBitmap.Bitmap);
 
                     // If the pixelDatabase object exists
                     if (NullHelper.Exists(pixelDatabase))
@@ -4593,7 +4593,7 @@ namespace DataJuggler.PixelDatabase
                 Bitmap resizedBitmap = new Bitmap(resizedImage);
 
                 // load the resizedPixelDatabase
-                resizedPixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(resizedBitmap, null);
+                resizedPixelDatabase = PixelDatabaseLoader.LoadPixelDatabase(resizedBitmap);
                 
                 // return value
                 return resizedPixelDatabase;
@@ -4777,7 +4777,7 @@ namespace DataJuggler.PixelDatabase
                 try
                 {
                     // load the tempDB
-                    tempDB = PixelDatabaseLoader.LoadPixelDatabase(bitmap, null);
+                    tempDB = PixelDatabaseLoader.LoadPixelDatabase(bitmap);
 
                     // If the tempDB object exists
                     if (NullHelper.Exists(tempDB))
