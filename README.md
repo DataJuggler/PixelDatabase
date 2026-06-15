@@ -1,4 +1,6 @@
-# PixelDatabase
+# PixelDatabase # Updates
+
+6.14.2026: Random Shuffler Was Updated
 
 5.30.2026: You can now load a PixelDatabase from a Stream.
 
@@ -115,9 +117,9 @@ Update 4.23.2023:
 The current version is 7.0.7. I added a Resize method which returns a PixelDatabase loaded with the new size.
 There was already a ResizeImage, but this method makes it easier for use with PixelDatabase.
 
-PixelDatabase.Net is now live: 
-https://pixeldatabase.net
-A Free Online Text Based Image Editor
+PixelDatabase.Net is no longer live. I got tired of paying for a server. I will probably get a new server soon if I can keep my job.
+Kind of scary in the age of AI.
+
 
 I am starting a batch version of this project now because I need it for videos.
 
