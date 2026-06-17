@@ -1,6 +1,8 @@
 # PixelDatabase # Updates
 
-6.14.2026: Random Shuffler Was Updated
+6.16.2016: Random Shuffler was updated.
+
+6.14.2026: Random Shuffler Was updated
 
 5.30.2026: You can now load a PixelDatabase from a Stream.
 
