@@ -2872,9 +2872,12 @@ namespace DataJuggler.PixelDatabase
             /// This method Draw Rectangle
             /// </summary>
             /// <param name="point1">The top left corner of the rectangle</param>
-            /// <param name="point2">The bottom right</param>
-            public void DrawRectangle(Point point1, Point point2, Color color, int thickness)
+            /// <param name="point2">The bottom right corner of the rectangle</param>
+            public QueryResponse DrawRectangle(Point point1, Point point2, Color color, int thickness)
             {
+                // initial value
+                QueryResponse response = new QueryResponse();
+
                 // locals
                 int a = 0;
                 int b = 0;
@@ -2896,6 +2899,9 @@ namespace DataJuggler.PixelDatabase
                                 // if in range
                                 if (b < Height)
                                 {
+                                    // Increment the value for PixelsUpdated
+                                    response.PixelsUpdated++;
+
                                     // Draw the line
                                     DirectBitmap.SetPixel(a, b, color);  
                                 }
@@ -2919,6 +2925,9 @@ namespace DataJuggler.PixelDatabase
                                 // if in range
                                 if (a < Width)
                                 {
+                                    // Increment the value for PixelsUpdated
+                                    response.PixelsUpdated++;
+
                                     // Draw the line
                                     DirectBitmap.SetPixel(a, b, color);  
                                 }
@@ -2940,6 +2949,9 @@ namespace DataJuggler.PixelDatabase
                                 // if in range
                                 if (b < Height)
                                 {
+                                    // Increment the value for PixelsUpdated
+                                    response.PixelsUpdated++;
+
                                     // Draw the line
                                     DirectBitmap.SetPixel(a, b, color);  
                                 }
@@ -2960,6 +2972,9 @@ namespace DataJuggler.PixelDatabase
 
                                 if (a < Width)
                                 {
+                                    // Increment the value for PixelsUpdated
+                                    response.PixelsUpdated++;
+
                                     // Draw the line
                                     DirectBitmap.SetPixel(a, b, color);  
                                 }
@@ -2967,14 +2982,23 @@ namespace DataJuggler.PixelDatabase
                         }
                     }
 
+                    // Set the values
+                    response.Success = true;
+
                      // Increment the value for line
                     line++;
                 }
                 catch (Exception error)
                 {
+                    // return the error
+                    response.Error = error;
+
                     // for debugging only for now
                     DebugHelper.WriteDebugError("DrawRectangle", "PixelDatabase", error);
                 }
+
+                // return value
+                return response;
             }
             #endregion
             

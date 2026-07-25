@@ -1,5 +1,8 @@
 # PixelDatabase # Updates
 
+7.24.2026: I added a new class QueryResponse. DrawRectangle method is not working.
+Giving it one chance to fix it else will have to redo it. 
+
 7.10.2026: Random Shuffler was updated.
 
 7.9.2026: Random Shuffler was updated.
