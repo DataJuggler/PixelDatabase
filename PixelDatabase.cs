@@ -2881,112 +2881,96 @@ namespace DataJuggler.PixelDatabase
                 // locals
                 int a = 0;
                 int b = 0;
-                int line = 0;
                 
                 try
-                {
-                    if ((point1 != Point.Empty) && (point2 != Point.Empty))
+                {  
+                    // draw top line
+                    for (int x = point1.X; x < point2.X; x++)
                     {
-                        // draw top line
-                        for (int x = point1.X; x < point2.X; x++)
+                        for (int t = 0; t < thickness; t++)
                         {
-                            for (int t = 0; t < thickness; t++)
+                            // set the value for a & b
+                            a = x;
+                            b = point1.Y + t;    
+
+                            // if in range
+                            if (b < Height)
                             {
-                                // set the value for a & b
-                                a = x;
-                                b = point1.Y + t;    
+                                // Increment the value for PixelsUpdated
+                                response.PixelsUpdated++;
 
-                                // if in range
-                                if (b < Height)
-                                {
-                                    // Increment the value for PixelsUpdated
-                                    response.PixelsUpdated++;
-
-                                    // Draw the line
-                                    DirectBitmap.SetPixel(a, b, color);  
-                                }
+                                // Draw the line
+                                DirectBitmap.SetPixel(a, b, color);  
                             }
                         }
+                    }
 
-                        // Increment the value for line
-                        line++;
+                    // draw left line
 
-                        // draw left line
-
-                        // draw left line
-                        for (int y = point1.Y; y < point2.Y; y++)
+                    // draw left line
+                    for (int y = point1.Y; y < point2.Y; y++)
+                    {
+                        for (int t = 0; t < thickness; t++)
                         {
-                            for (int t = 0; t < thickness; t++)
+                            // set the value for a & b
+                            a = point1.X + t;
+                            b = y;
+
+                            // if in range
+                            if (a < Width)
                             {
-                                // set the value for a & b
-                                a = point1.X + t;
-                                b = y;
+                                // Increment the value for PixelsUpdated
+                                response.PixelsUpdated++;
 
-                                // if in range
-                                if (a < Width)
-                                {
-                                    // Increment the value for PixelsUpdated
-                                    response.PixelsUpdated++;
-
-                                    // Draw the line
-                                    DirectBitmap.SetPixel(a, b, color);  
-                                }
+                                // Draw the line
+                                DirectBitmap.SetPixel(a, b, color);  
                             }
                         }
+                    }
 
-                         // Increment the value for line
-                        line++;
-
-                        // draw bottom line
-                        for (int x = point1.X; x < point2.X; x++)
+                    // draw bottom line
+                    for (int x = point1.X; x < point2.X; x++)
+                    {
+                        for (int t = 0; t < thickness; t++)
                         {
-                            for (int t = 0; t < thickness; t++)
+                            // set the value for a & b
+                            a = x;
+                            b = point2.Y - t;
+
+                            // if in range
+                            if (b < Height)
                             {
-                                // set the value for a & b
-                                a = x;
-                                b = point2.Y - t;
+                                // Increment the value for PixelsUpdated
+                                response.PixelsUpdated++;
 
-                                // if in range
-                                if (b < Height)
-                                {
-                                    // Increment the value for PixelsUpdated
-                                    response.PixelsUpdated++;
-
-                                    // Draw the line
-                                    DirectBitmap.SetPixel(a, b, color);  
-                                }
+                                // Draw the line
+                                DirectBitmap.SetPixel(a, b, color);  
                             }
                         }
+                    }
 
-                         // Increment the value for line
-                        line++;
-
-                        // draw right line
-                        for (int y = point1.Y; y < point2.Y; y++)
+                    // draw right line
+                    for (int y = point1.Y; y < point2.Y; y++)
+                    {
+                        for (int t = 0; t < thickness; t++)
                         {
-                            for (int t = 0; t < thickness; t++)
+                            // set the value for a & b
+                            a = point2.X - t;
+                            b = y;
+
+                            if (a < Width)
                             {
-                                // set the value for a & b
-                                a = point2.X - t;
-                                b = y;
+                                // Increment the value for PixelsUpdated
+                                response.PixelsUpdated++;
 
-                                if (a < Width)
-                                {
-                                    // Increment the value for PixelsUpdated
-                                    response.PixelsUpdated++;
-
-                                    // Draw the line
-                                    DirectBitmap.SetPixel(a, b, color);  
-                                }
+                                // Draw the line
+                                DirectBitmap.SetPixel(a, b, color);  
                             }
                         }
                     }
 
                     // Set the values
                     response.Success = true;
-
-                     // Increment the value for line
-                    line++;
                 }
                 catch (Exception error)
                 {
