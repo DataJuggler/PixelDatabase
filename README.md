@@ -1,5 +1,7 @@
 # PixelDatabase # Updates
 
+11.11.2026: I updated this project to .NET 11 and RandomShuffler was updated. 
+
 7.24.2026: I added a new class QueryResponse. DrawRectangle method is not working.
 Giving it one chance to fix it else will have to redo it. 
 I fixed a bug in DrawRectangle. I learned a point with 0, 0 is considred Point.Empty.
